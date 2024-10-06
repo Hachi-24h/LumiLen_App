@@ -1,20 +1,88 @@
-import { StatusBar } from 'expo-status-bar';
-import { StyleSheet, Text, View } from 'react-native';
+import React from "react";
+import { NavigationContainer } from "@react-navigation/native";
+import { createStackNavigator } from "@react-navigation/stack";
+import HomeTabs from "./Screen/Home/Home_Screen"; // Import HomeTabs thay vì HomeScreen
+import SignUp from "./Screen/Screen_SignUp/SignUp_Screen";
+import SignUp1 from "./Screen/Screen_SignUp/SignUp_01_Screen";
+import SignUp2 from "./Screen/Screen_SignUp/SignUp_02_Screen";
+import SignUp3 from "./Screen/Screen_SignUp/SignUp_03_Screen";
+import SignUp4 from "./Screen/Screen_SignUp/SignUp_04_Screen";
+import Search from "./Screen/Search/Search_Screen";
+import SignIn from "./Screen/SignIn/SignIn_Screen";
 
-export default function App() {
+const Stack = createStackNavigator();
+
+const App = () => {
   return (
-    <View style={styles.container}>
-      <Text>Open up App.js to start working on your app!</Text>
-      <StatusBar style="auto" />
-    </View>
+    <NavigationContainer>
+      <Stack.Navigator initialRouteName="Home">
+        <Stack.Screen
+          name="Home"
+          component={HomeTabs}  // Dùng HomeTabs thay cho Home
+          options={{
+            title: "Home",
+            headerShown: false, // Ẩn header
+          }}
+        />
+        <Stack.Screen
+          name="Search"
+          component={Search}
+          options={{
+            title: "Search",
+            headerShown: false, // Ẩn header
+          }}
+        />
+        <Stack.Screen
+          name="SignUp"
+          component={SignUp}
+          options={{
+            title: "SignUp",
+            headerShown: false,
+          }}
+        />
+        <Stack.Screen
+          name="SignUp1"
+          component={SignUp1}
+          options={{
+            title: "SignUp 01",
+            headerShown: false,
+          }}
+        />
+        <Stack.Screen
+          name="SignUp2"
+          component={SignUp2}
+          options={{
+            title: "SignUp 02",
+            headerShown: false,
+          }}
+        />
+        <Stack.Screen
+          name="SignUp3"
+          component={SignUp3}
+          options={{
+            title: "SignUp 03",
+            headerShown: false,
+          }}
+        />
+        <Stack.Screen
+          name="SignUp4"
+          component={SignUp4}
+          options={{
+            title: "SignUp 04",
+            headerShown: false,
+          }}
+        />
+        <Stack.Screen
+          name="SignIn"
+          component={SignIn}
+          options={{
+            title: "SignIn",
+            headerShown: false,
+          }}
+        />
+      </Stack.Navigator>
+    </NavigationContainer>
   );
-}
+};
 
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    backgroundColor: '#fff',
-    alignItems: 'center',
-    justifyContent: 'center',
-  },
-});
+export default App;

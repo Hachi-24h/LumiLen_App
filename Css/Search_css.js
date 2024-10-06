@@ -8,19 +8,18 @@ const styles = StyleSheet.create({
     backgroundColor: "#fff",
   },
   header: {
-    marginTop: 20,
+    paddingTop:30,
     padding: 10,
     justifyContent: "center",
     alignItems: "center",
     width: "100%",
-    height: "10%",
-  },
+    height: 70,
+    backgroundColor : "#fff",
+     },
   section: {
-    flexGrow: 1, // Đảm bảo cuộn khi nội dung vượt quá chiều cao màn hình
+    flex: 1, // Đảm bảo rằng phần nội dung sẽ lấp đầy không gian còn lại
     width: "100%",
     backgroundColor: "#fff",
-    
-    
   },
 
   footerText: {
@@ -90,14 +89,35 @@ const styles = StyleSheet.create({
     justifyContent: "center",
     alignItems: "center",
     overflow: "hidden",
-
   },
   spotlightText: {
     color: "white",
     fontSize: 16,
     fontWeight: "bold",
   },
- 
+  searchBarContainer: {
+
+    flexDirection: "row",
+    alignItems: "center",
+    justifyContent: "space-between",
+  
+   
+  },
+
+  searchBarActive: {
+   
+    width: "80%", // Kéo ngắn thanh nhập khi đang focus
+  },
+
+  cancelButton: {
+    padding: 10,
+    
+  },
+
+  cancelText: {
+    color: "black", 
+    fontWeight: "bold",
+  },
 });
 
 export default styles;

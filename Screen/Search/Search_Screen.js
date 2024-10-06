@@ -1,8 +1,7 @@
-import React, { useState, useRef } from "react";
+import React, { useState, useEffect } from "react";
 import {
   View,
   Text,
-  Image,
   TextInput,
   FlatList,
   ImageBackground,
@@ -10,9 +9,10 @@ import {
   ScrollView,
   Dimensions,
   TouchableOpacity,
+  Keyboard,
 } from "react-native";
 import styles from "../../Css/Search_css";
-import Footer from "../footer"; 
+import Footer from "../footer";
 
 const { width } = Dimensions.get("window");
 
@@ -41,27 +41,68 @@ const spotlightData = [
   { id: 4, image: require("../../Picture/image_6.png") },
 ];
 
-const Search = () => {
+const Search = ({navigation}) => {
+  const [isSearchActive, setIsSearchActive] = useState(false);
+  const [searchText, setSearchText] = useState(""); 
+  const [keyboardVisible, setKeyboardVisible] = useState(false); 
 
-  const inspirationRef = useRef(null);
-  const spotlightRef = useRef(null);
+  useEffect(() => {
+    const keyboardDidShowListener = Keyboard.addListener(
+      "keyboardDidShow",
+      () => {
+        setKeyboardVisible(true); // Bàn phím xuất hiện
+      }
+    );
+    const keyboardDidHideListener = Keyboard.addListener(
+      "keyboardDidHide",
+      () => {
+        setKeyboardVisible(false); // Bàn phím ẩn đi
+      }
+    );
 
- 
+    return () => {
+      keyboardDidShowListener.remove();
+      keyboardDidHideListener.remove();
+    };
+  }, []);
+
+  const handleCancel = () => {
+    setIsSearchActive(false);
+    setSearchText("");
+    Keyboard.dismiss();
+  };
+
   return (
-    <View style={styles.container}>
+    <View style={{ flex: 1 }}>
       <StatusBar hidden={false} />
 
       {/* Search Bar */}
       <View style={styles.header}>
-        <TextInput
-          style={styles.searchBar}
-          placeholder="Search for a project of any size"
-          placeholderTextColor="#C4C4C4"
-        />
+        <View style={styles.searchBarContainer}>
+          <TextInput
+            style={[
+              styles.searchBar,
+              isSearchActive ? styles.searchBarActive : null, 
+            ]}
+            placeholder="Search for a project of any size"
+            placeholderTextColor="#C4C4C4"
+            value={searchText}
+            onFocus={() => setIsSearchActive(true)}
+            onChangeText={(text) => setSearchText(text)}
+          />
+          {isSearchActive && (
+            <TouchableOpacity onPress={handleCancel} style={styles.cancelButton}>
+              <Text style={styles.cancelText}>Cancel</Text>
+            </TouchableOpacity>
+          )}
+        </View>
       </View>
 
       {/* Sử dụng ScrollView để cuộn nội dung khi vượt quá kích thước */}
-      <ScrollView style={styles.section}>
+      <ScrollView 
+        style={styles.section}
+        keyboardShouldPersistTaps="handled" // Ngăn không để bàn phím ảnh hưởng đến cuộn
+      >
         {/* Ideas Section */}
         <View style={styles.ideaSection}>
           <Text style={styles.sectionTitle}>Ideas for you</Text>
@@ -84,7 +125,6 @@ const Search = () => {
           <FlatList
             horizontal
             data={inspirationData}
-            ref={inspirationRef}
             renderItem={({ item }) => (
               <ImageBackground
                 source={item.image}
@@ -97,11 +137,11 @@ const Search = () => {
             showsHorizontalScrollIndicator={false}
             pagingEnabled
             snapToAlignment="center"
-            snapToInterval={width * 0.8 + 20} // Đảm bảo ảnh nằm giữa
-            decelerationRate="fast" // Giảm tốc độ cuộn để dừng lại đúng vị trí
+            snapToInterval={width * 0.8 + 20}
+            decelerationRate="fast"
             contentContainerStyle={{
               paddingHorizontal: (width - width * 1) / 2,
-            }} // Căn giữa nội dung
+            }}
           />
         </View>
 
@@ -111,7 +151,6 @@ const Search = () => {
           <FlatList
             horizontal
             data={spotlightData}
-            ref={spotlightRef}
             renderItem={({ item }) => (
               <ImageBackground
                 source={item.image}
@@ -124,17 +163,16 @@ const Search = () => {
             showsHorizontalScrollIndicator={false}
             pagingEnabled
             snapToAlignment="center"
-            snapToInterval={width * 0.8 + 20} // Đảm bảo ảnh nằm giữa
-            decelerationRate="fast" // Giảm tốc độ cuộn để dừng lại đúng vị trí
+            snapToInterval={width * 0.8 + 20}
+            decelerationRate="fast"
             contentContainerStyle={{
               paddingHorizontal: (width - width * 1) / 2,
-            }} // Căn giữa nội dung
+            }}
           />
         </View>
       </ScrollView>
 
-        {/* Footer */}
-        <Footer />
+      {!keyboardVisible &&   <Footer navigation={navigation} />} 
     </View>
   );
 };

@@ -1,6 +1,6 @@
 import React from "react";
 import { View, Text, TextInput, TouchableOpacity, Image } from "react-native";
-import styles from "../../Css/SignUp_01_css";
+import styles from "../../Css/SignUp_01234_css";
 
 const SignUp_01_Screen = ({ navigation }) => {
   return (

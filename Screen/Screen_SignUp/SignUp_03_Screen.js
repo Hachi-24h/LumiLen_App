@@ -1,8 +1,8 @@
 import React from "react";
 import { View, Text, TouchableOpacity, Image, TextInput } from "react-native";
-import styles from "../../Css/SignUp_01_css";
+import styles from "../../Css/SignUp_01234_css";
 
-const SignUp_02_Screen = ({ navigation }) => {
+const SignUp_03_Screen = ({ navigation }) => {
   return (
     <View style={styles.container}>
       <View style={styles.header}>
@@ -20,10 +20,11 @@ const SignUp_02_Screen = ({ navigation }) => {
 
       <View style={styles.section}>
         <View>
-          <Text style={styles.title}>Create a password</Text>
+          <Text style={styles.title}>How old are you ?</Text>
+          <Text style={{ color: 'gray', opacity: 0.8 }}>This helps us find you more relevant content. We won’t show it on  your profile.</Text>
           <TextInput
-            style={styles.input}
-            placeholder="Enter your password"
+            style={[styles.input,{fontSize:28,  marginTop: 10,}]}
+            placeholder="Age"
             placeholderTextColor="#b0b0b0"
             secureTextEntry={true}  
           />
@@ -37,7 +38,7 @@ const SignUp_02_Screen = ({ navigation }) => {
       </View>
 
       <View style={styles.footer}>
-        <TouchableOpacity style={styles.nextButton} >
+        <TouchableOpacity style={styles.nextButton}  onPress={() => navigation.navigate("SignUp4")} >
           <Text style={styles.nextButtonText}>Next</Text>
         </TouchableOpacity>
       </View>
@@ -45,4 +46,4 @@ const SignUp_02_Screen = ({ navigation }) => {
   );
 };
 
-export default SignUp_02_Screen;
+export default SignUp_03_Screen;

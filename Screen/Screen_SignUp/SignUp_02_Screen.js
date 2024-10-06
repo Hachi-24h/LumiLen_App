@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import { View, Text, TouchableOpacity, Image, TextInput } from "react-native";
-import styles from "../../Css/SignUp_01_css";
+import styles from "../../Css/SignUp_01234_css";
 
 const SignUp_02_Screen = ({ navigation }) => {
   const [showPassword, setShowPassword] = useState(false); // State để theo dõi việc hiển thị mật khẩu

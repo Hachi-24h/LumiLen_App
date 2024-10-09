@@ -1,13 +1,13 @@
 import React from 'react';
 import { View, Text, TouchableOpacity, ScrollView } from 'react-native';
-import styles from '../../Css/AccountSetting_Css'; // Import CSS
+import styles from '../../../../../Css/AccountSetting_Css'; // Import CSS
 import { Ionicons } from "@expo/vector-icons";
-import Footer from '../footer';
+import Footer from '../../../../footer';
 
 const AccountScreen = ({ navigation }) => {
   return (
     <View style={styles.container}>
-      {/* Header */}
+   
       <View style={styles.header}>
         <TouchableOpacity>
           <Ionicons name="chevron-back-outline" size={24} />
@@ -15,7 +15,7 @@ const AccountScreen = ({ navigation }) => {
         <Text style={styles.headerTitle}>Tài khoản của bạn</Text>
       </View>
 
-      {/* Profile Section */}
+    
       <TouchableOpacity style={styles.profileSection}>
         <Ionicons name="person-circle-outline" size={50} />
         <View style={styles.profileInfo}>
@@ -25,9 +25,9 @@ const AccountScreen = ({ navigation }) => {
         <Ionicons name="chevron-forward-outline" size={20} />
       </TouchableOpacity>
 
-      {/* ScrollView để cuộn toàn bộ phần nội dung */}
+      
       <ScrollView contentContainerStyle={styles.scrollContent}>
-        {/* Settings Section */}
+    
         <View style={styles.settingsContainer}>
           <Text style={styles.sectionTitle}>Cài đặt</Text>
 
@@ -107,7 +107,7 @@ const AccountScreen = ({ navigation }) => {
         </View>
       </ScrollView>
 
-      {/* Footer */}
+
       <Footer navigation={navigation} />  
     </View>
   );

@@ -42,3 +42,5 @@ expo install react-native-gesture-handler@~2.16.1 react-native-safe-area-context
 
 ==== lệnh git push =====
 git add Css Screen Picture Icon note.txt
+git commit -m "Đã làm thêm phần info " 
+git push origin main         

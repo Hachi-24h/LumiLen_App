@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import { View, Text, TouchableOpacity, StatusBar } from "react-native";
 import DateTimePicker from "@react-native-community/datetimepicker";
-import styles from "../../../Css/DOB_Css";
+import styles from "../../../../../../Css/DOB_Css";
 import { Ionicons } from "@expo/vector-icons";
 
 const BirthdayScreen = ({ navigation }) => {

@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { View, Text, TouchableOpacity } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
-import styles from '../../../Css/GenderInfo_Css'; // Tạo file CSS tương tự
+import styles from '../../../../../../Css/GenderInfo_Css'; // Tạo file CSS tương tự
 
 const GenderInfoScreen = ({ navigation, route }) => {
   const [selectedGender, setSelectedGender] = useState(route.params?.gender || 'Nam'); // Lấy giá trị giới tính hiện tại hoặc mặc định là Nam

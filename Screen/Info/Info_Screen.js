@@ -11,7 +11,7 @@ import {
   Dimensions,
   StyleSheet,
 } from "react-native";
-import styles from "../../Css/Info_Css"; // Import CSS
+import styles from "../../Css/Info_Css"; 
 import Footer from "../footer";
 const { width } = Dimensions.get("window");
 
@@ -72,7 +72,8 @@ const InfoScreen = ({ navigation }) => {
 
   return (
     <View style={styles.container}>
-      {/* Header Section */}
+      
+     
       <View style={styles.header}>
         <View style={styles.headerLeft}>
           <TouchableOpacity onPress={() => navigation.navigate("AccountSetting")}>
@@ -93,12 +94,12 @@ const InfoScreen = ({ navigation }) => {
         </View>
       </View>
 
-      {/* Search Bar */}
+    
       <View style={styles.searchBarContainer}>
         <TextInput style={styles.searchBar} placeholder="Tìm Ghim của bạn" />
       </View>
 
-      {/* Filter Options */}
+    
       <View style={styles.filterContainer}>
         <TouchableOpacity style={styles.filterButton}>
           <Image
@@ -114,7 +115,6 @@ const InfoScreen = ({ navigation }) => {
         </TouchableOpacity>
       </View>
 
-      {/* Boards Section */}
       <FlatList
         data={boardsData}
         renderItem={renderBoardItem}

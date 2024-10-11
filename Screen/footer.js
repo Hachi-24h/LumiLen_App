@@ -1,18 +1,18 @@
 import React, { useState } from "react";
 import { View, TouchableOpacity, Image, StyleSheet } from "react-native";
 import styles from "../Css/footer_css";
-const Footer = () => {
+const Footer = ({ navigation }) => {
   const [selectedIcon, setSelectedIcon] = useState("home");
 
   // Hàm đổi icon
   const handleIconPress = (iconName) => {
-    setSelectedIcon(iconName); // Đặt icon được chọn
+    setSelectedIcon(iconName); 
   };
 
   return (
     <View style={styles.footer}>
       {/* Home Icon */}
-      <TouchableOpacity onPress={() => handleIconPress("home")}>
+      <TouchableOpacity onPress={()=> navigation.navigate('Home')}>
         <Image
           source={
             selectedIcon === "home"
@@ -24,7 +24,7 @@ const Footer = () => {
       </TouchableOpacity>
 
       {/* Search Icon */}
-      <TouchableOpacity onPress={() => handleIconPress("search")}>
+      <TouchableOpacity  onPress={()=> navigation.navigate('Search')}>
         <Image
           source={
             selectedIcon === "search"
@@ -36,7 +36,7 @@ const Footer = () => {
       </TouchableOpacity>
 
       {/* Plus Icon */}
-      <TouchableOpacity onPress={() => handleIconPress("plus")}>
+      <TouchableOpacity onPress={()=> navigation.navigate('SignUp2')}>
         <Image
           source={
             selectedIcon === "plus"
@@ -48,7 +48,7 @@ const Footer = () => {
       </TouchableOpacity>
 
       {/* Message Icon */}
-      <TouchableOpacity onPress={() => handleIconPress("mess")}>
+      <TouchableOpacity onPress={()=> navigation.navigate('SignUp2')}>
         <Image
           source={
             selectedIcon === "mess"
@@ -60,7 +60,7 @@ const Footer = () => {
       </TouchableOpacity>
 
       {/* Account Icon */}
-      <TouchableOpacity onPress={() => handleIconPress("account")}>
+      <TouchableOpacity onPress={()=> navigation.navigate('Info')}>
         <Image
           source={
             selectedIcon === "account"

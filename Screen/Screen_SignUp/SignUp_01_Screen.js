@@ -10,6 +10,7 @@ const SignUp_01_Screen = ({ navigation }) => {
           style={styles.backButton}
           onPress={() => navigation.navigate("SignUp")}
         >
+         
           <Image
             source={require("../../Icon/back.png")}
             style={styles.backButton}
@@ -26,6 +27,7 @@ const SignUp_01_Screen = ({ navigation }) => {
             placeholder="Email address"
             placeholderTextColor="#b0b0b0"
           />
+
         </View>
         <View style={styles.progressContainer}>
           <View style={styles.progress}>

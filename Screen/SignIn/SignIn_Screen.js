@@ -37,6 +37,7 @@ const LoginScreen = ({ navigation }) => {
     }
   };
 
+  
   return (
     <ImageBackground
       source={require("../../Picture/background.png")}

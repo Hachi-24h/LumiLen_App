@@ -23,6 +23,9 @@ https://ionic.io/ionicons
 ==== thư viện lịch ====
 yarn add @react-native-community/datetimepicker
 
+
+yarn add react-native-elements
+
 === thư viện thông báo từ trên xún ===- 
 yarn add react-native-flash-message
 
@@ -41,6 +44,6 @@ expo install react-native-gesture-handler@~2.16.1 react-native-safe-area-context
 
 
 ==== lệnh git push =====
-git add Css Screen Picture Icon note.txt
+git add Css/ Icon/ Picture/ Screen/ note.txt App.json
 git commit -m "Đã làm thêm phần info " 
 git push origin main         

@@ -1,245 +1,202 @@
 import React, { useState } from 'react';
-import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import { View, Text, ScrollView, Image, TouchableOpacity, Modal } from 'react-native';
-import styles from '../../Css/Home_Css';  // Import styles từ file Home_Css.js
 import Ionicons from 'react-native-vector-icons/Ionicons';
-import Icon from 'react-native-vector-icons/Ionicons';
+import styles from '../../Css/Home_Css';  // Import styles từ file Home_Css.js
 
 const imageData = [
-  { id: 1, src: require('../../Picture/image_1.png'), likes: 2 },
+  { id: 1, src: require('../../Picture/image_1.png') },
   { id: 2, src: require('../../Picture/image_1.png') },
-  { id: 3, src: require('../../Picture/image_1.png'), likes: 5 },
+  { id: 3, src: require('../../Picture/image_1.png') },
   { id: 4, src: require('../../Picture/image_1.png') },
   { id: 5, src: require('../../Picture/image_1.png') },
   { id: 6, src: require('../../Picture/image_1.png') },
 ];
 
+const options = [
+  { icon: 'bookmark-outline', action: () => console.log('Lưu') },  // Lưu
+  { icon: 'share-social-outline', action: () => console.log('Chia sẻ') },  // Chia sẻ
+  { icon: 'chatbubble-outline', action: () => console.log('Bình luận') },  // Bình luận
+  { icon: 'eye-off-outline', action: () => console.log('Ẩn ghim') },  // Ẩn ghim
+];
+
 const HomeScreen = () => {
-  const [selectedImageId, setSelectedImageId] = useState(null); // State để lưu trữ hình được chọn
-  const [modalVisible, setModalVisible] = useState(false); // State để hiển thị modal
+  const [selectedImageId, setSelectedImageId] = useState(null);
+  const [modalVisible, setModalVisible] = useState(false);  // Modal cho sự kiện đè vào màn hình
+  const [bottomSheetVisible, setBottomSheetVisible] = useState(false);  // Modal từ dưới lên
   const [modalPosition, setModalPosition] = useState({ top: 0, left: 0 });
+  const [screenLocked, setScreenLocked] = useState(false);
 
-  const handleImagePress = (id) => {
-    setSelectedImageId(id); // Cập nhật state với ID của hình được chọn
+  const handleBottomSheetClose = () => {
+    setBottomSheetVisible(false);
+    setSelectedImageId(null);
   };
 
-  const handleOutsidePress = () => {
-    setSelectedImageId(null); // Reset state khi nhấn ra ngoài
-    setModalVisible(false); // Đóng modal khi nhấn ra ngoài
-  };
-
-  const toggleModal = (event) => {
-    const { pageY, pageX } = event.nativeEvent; // Lấy tọa độ của nút ba chấm
-    setModalPosition({ 
-        top: pageY - 170, // Đẩy modal xuống dưới nút ba chấm một chút
-        left: pageX - 110 // Căn giữa modal với nút ba chấm
+  const handleImageLongPress = (event, id) => {
+    const { pageY, pageX } = event.nativeEvent;
+    setSelectedImageId(id);
+    setModalPosition({
+      top: pageY - 50,
+      left: pageX - 50,
     });
-    setModalVisible(!modalVisible); // Hiện/ẩn modal
+    setModalVisible(true);
+    setScreenLocked(true); // Vô hiệu hóa cuộn màn hình khi modal mở
   };
 
-  const options = [
-    { icon: "pin", action: () => console.log('Pinned') },
-    { icon: "eye-off", action: () => console.log('Hide') },
-    { icon: "arrow-up", action: () => console.log('Download') },
-    { icon: "chatbubble", action: () => console.log('Comment') },
-  ];
+  const handleModalClose = () => {
+    setModalVisible(false);
+    setSelectedImageId(null);
+    setScreenLocked(false);
+  };
+
+  const handleOptionPress = (option) => {
+    option.action();
+    handleModalClose();
+  };
+
+  const handleThreeDotsPress = (id) => {
+    setSelectedImageId(id);
+    setBottomSheetVisible(true);  // Hiển thị giao diện từ dưới lên
+  };
 
   return (
-    <ScrollView contentContainerStyle={styles.container}>
-      <TouchableOpacity activeOpacity={1} style={{ flex: 1 }} onPress={handleOutsidePress}>
+    <View style={styles.container}>
+      <ScrollView contentContainerStyle={styles.contentContainer}>
         <View style={styles.imageGrid}>
           <View style={styles.leftColumn}>
-            <TouchableOpacity
-              style={[styles.imageWrapper, { opacity: selectedImageId === null || selectedImageId === 1 ? 1 : 0.3 }]}
-              activeOpacity={1}
-              onPress={(e) => {
-                e.stopPropagation(); // Ngăn sự kiện chạm lan ra ngoài
-                handleImagePress(1);
-              }}
-            >
-              <Image style={styles.imageLarge} source={imageData[0].src} />
-              <View style={styles.likeContainer}>
-                <Text style={styles.likeText}>{imageData[0].likes}</Text>
-              </View>
-              {/* Nút ba chấm chỉ hiển thị khi hình được chọn */}
-              {selectedImageId === 1 && (
-                <TouchableOpacity style={styles.moreOptionsButton} onPress={toggleModal}>
-                  <Text style={styles.moreOptionsText}>...</Text>
-                </TouchableOpacity>
-              )}
-            </TouchableOpacity>
-
-            <TouchableOpacity
-              style={[styles.imageWrapper, { opacity: selectedImageId === null || selectedImageId === 3 ? 1 : 0.3 }]}
-              activeOpacity={1}
-              onPress={(e) => {
-                e.stopPropagation();
-                handleImagePress(3);
-              }}
-            >
-              <Image style={styles.imageLarge} source={imageData[2].src} />
-              <View style={styles.likeContainer}>
-                <Text style={styles.likeText}>{imageData[2].likes}</Text>
-              </View>
-              {/* Nút ba chấm chỉ hiển thị khi hình được chọn */}
-              {selectedImageId === 3 && (
-                <TouchableOpacity style={styles.moreOptionsButton} onPress={toggleModal}>
-                  <Text style={styles.moreOptionsText}>...</Text>
-                </TouchableOpacity>
-              )}
-            </TouchableOpacity>
-          </View>
-
-          <View style={styles.rightColumn}>
-            <TouchableOpacity
-              style={[styles.imageWrapper, { opacity: selectedImageId === null || selectedImageId === 2 ? 1 : 0.3 }]}
-              activeOpacity={1}
-              onPress={(e) => {
-                e.stopPropagation();
-                handleImagePress(2);
-              }}
-            >
-              <Image style={styles.imageSmall} source={imageData[1].src} />
-              {/* Nút ba chấm chỉ hiển thị khi hình được chọn */}
-              {selectedImageId === 2 && (
-                <TouchableOpacity style={styles.moreOptionsButton} onPress={toggleModal}>
-                  <Text style={styles.moreOptionsText}>...</Text>
-                </TouchableOpacity>
-              )}
-            </TouchableOpacity>
-
-            <TouchableOpacity
-              style={[styles.imageWrapper, { opacity: selectedImageId === null || selectedImageId === 4 ? 1 : 0.3 }]}
-              activeOpacity={1}
-              onPress={(e) => {
-                e.stopPropagation();
-                handleImagePress(4);
-              }}
-            >
-              <Image style={styles.imageLarge} source={imageData[3].src} />
-              {/* Nút ba chấm chỉ hiển thị khi hình được chọn */}
-              {selectedImageId === 4 && (
-                <TouchableOpacity style={styles.moreOptionsButton} onPress={toggleModal}>
-                  <Text style={styles.moreOptionsText}>...</Text>
-                </TouchableOpacity>
-              )}
-            </TouchableOpacity>
-          </View>
-        </View>
-
-        {/* User info */}
-        <View style={styles.userInfo}>
-          <Image style={styles.avatar} source={imageData[0].src} />
-          <Text style={styles.userName}>TonyMeccalV</Text>
-          <Text style={styles.likes}>❤️ 6.0k</Text>
-        </View>
-
-        {/* Additional images */}
-        <View style={styles.imageGrid}>
-          <View style={styles.leftColumn}>
-            <TouchableOpacity
-              style={[styles.imageWrapper, { opacity: selectedImageId === null || selectedImageId === 5 ? 1 : 0.3 }]}
-              activeOpacity={1}
-              onPress={(e) => {
-                e.stopPropagation();
-                handleImagePress(5);
-              }}
-            >
-              <Image style={styles.imageLarge} source={imageData[4].src} />
-              {/* Nút ba chấm chỉ hiển thị khi hình được chọn */}
-              {selectedImageId === 5 && (
-                <TouchableOpacity style={styles.moreOptionsButton} onPress={toggleModal}>
-                  <Text style={styles.moreOptionsText}>...</Text>
-                </TouchableOpacity>
-              )}
-            </TouchableOpacity>
-          </View>
-          <View style={styles.rightColumn}>
-            <TouchableOpacity
-              style={[styles.imageWrapper, { opacity: selectedImageId === null || selectedImageId === 6 ? 1 : 0.3 }]}
-              activeOpacity={1}
-              onPress={(e) => {
-                e.stopPropagation();
-                handleImagePress(6);
-              }}
-            >
-              <Image style={styles.imageSmall} source={imageData[5].src} />
-              {/* Nút ba chấm chỉ hiển thị khi hình được chọn */}
-              {selectedImageId === 6 && (
-                <TouchableOpacity style={styles.moreOptionsButton} onPress={toggleModal}>
-                  <Text style={styles.moreOptionsText}>...</Text>
-                </TouchableOpacity>
-              )}
-            </TouchableOpacity>
-          </View>
-        </View>
-      </TouchableOpacity>
-
-      {/* Modal Options */}
-      <Modal
-        transparent={true}
-        visible={modalVisible}
-        animationType="fade"
-      >
-        <TouchableOpacity
-          style={styles.modalContainer} 
-          onPress={toggleModal} // Bấm ra ngoài modal cũng sẽ đóng
-        >
-          <View style={styles.optionsContainer}>
-            {options.map((option, index) => {
-              const angle = (index / options.length) * Math.PI; // Tính góc cho từng nút
-              const radius = 70; // Bán kính vòng cung
-              const x = modalPosition.left - radius * Math.cos(angle); // Tọa độ x
-              const y = modalPosition.top - radius * Math.sin(angle); // Tọa độ y
-
-              return (
-                <TouchableOpacity 
-                  key={index}
-                  style={[styles.option, { position: 'absolute', left: x, top: y }]} 
-                  onPress={option.action}
+            {imageData.slice(0, 3).map((image) => (
+              <View key={image.id} style={styles.imageWrapper}>
+                <TouchableOpacity
+                  onLongPress={(e) => handleImageLongPress(e, image.id)}
+                  activeOpacity={1}
                 >
-                  <Icon name={option.icon} size={24} color="#000" />
+                  <Image style={styles.imageLarge} source={image.src} />
                 </TouchableOpacity>
-              );
-            })}
+                <TouchableOpacity
+                  style={styles.threeDots}
+                  onPress={() => handleThreeDotsPress(image.id)}
+                >
+                  <Ionicons name="ellipsis-horizontal" size={24} color="#000" />
+                </TouchableOpacity>
+              </View>
+            ))}
           </View>
+
+          <View style={styles.rightColumn}>
+            {imageData.slice(3).map((image) => (
+              <View key={image.id} style={styles.imageWrapper}>
+                <TouchableOpacity
+                  onLongPress={(e) => handleImageLongPress(e, image.id)}
+                  activeOpacity={1}
+                >
+                  <Image style={styles.imageSmall} source={image.src} />
+                </TouchableOpacity>
+                <TouchableOpacity
+                  style={styles.threeDots}
+                  onPress={() => handleThreeDotsPress(image.id)}
+                >
+                  <Ionicons name="ellipsis-horizontal" size={24} color="#000" />
+                </TouchableOpacity>
+              </View>
+            ))}
+          </View>
+        </View>
+
+        {/* Modal hiển thị 4 nút */}
+        {modalVisible && (
+          <Modal
+            transparent={true}
+            visible={modalVisible}
+            animationType="fade"
+            onRequestClose={handleModalClose}
+          >
+            <TouchableOpacity style={styles.modalOverlay} onPress={handleModalClose}>
+              <View style={styles.optionsContainer}>
+                {options.map((option, index) => {
+                  const angle = (index / (options.length - 1)) * Math.PI;
+                  const radius = 70;
+                  const x = modalPosition.left + radius * Math.cos(angle);
+                  const y = modalPosition.top - radius * Math.sin(angle);
+
+                  return (
+                    <TouchableOpacity
+                      key={index}
+                      style={[
+                        styles.optionButton,
+                        {
+                          position: 'absolute',
+                          left: x,
+                          top: y,
+                        },
+                      ]}
+                      onPress={() => handleOptionPress(option)}
+                    >
+                      <Ionicons name={option.icon} size={24} color="#000" />
+                      <Text>{option.label}</Text>
+                    </TouchableOpacity>
+                  );
+                })}
+              </View>
+            </TouchableOpacity>
+          </Modal>
+        )}
+
+        {/* Bottom sheet hiển thị khi nhấn vào nút ba chấm */}
+        <Modal
+          visible={bottomSheetVisible}
+          animationType="slide"
+          transparent={true}
+          onRequestClose={handleBottomSheetClose}
+        >
+          <View style={styles.bottomSheetContainer}>
+            <View style={styles.bottomSheet}>
+              <TouchableOpacity onPress={handleBottomSheetClose}>
+                <Ionicons name="close" size={24} color="#000" style={styles.closeIcon} />
+              </TouchableOpacity>
+              <Text style={styles.modalTitle}>Chia sẻ với</Text>
+              {/* Đây là các tùy chọn chia sẻ */}
+              <View style={styles.shareRow}>
+                <TouchableOpacity style={styles.shareOption}>
+                  <Ionicons name="paper-plane-outline" size={24} color="red" />
+                  <Text>Gửi</Text>
+                </TouchableOpacity>
+                <TouchableOpacity style={styles.shareOption}>
+                  <Ionicons name="logo-facebook" size={24} color="blue" />
+                  <Text>Facebook</Text>
+                </TouchableOpacity>
+                <TouchableOpacity style={styles.shareOption}>
+                  <Ionicons name="chatbox" size={24} color="blue" />
+                  <Text>Messenger</Text>
+                </TouchableOpacity>
+                <TouchableOpacity style={styles.shareOption}>
+                  <Ionicons name="chatbox-outline" size={24} color="blue" />
+                  <Text>Tin nhắn</Text>
+                </TouchableOpacity>
+                <TouchableOpacity style={styles.shareOption}>
+                  <Ionicons name="mail-outline" size={24} color="red" />
+                  <Text>Gmail</Text>
+                </TouchableOpacity>
+              </View>
+              <View style={styles.separator} />
+              {/* Các tùy chọn khác */}
+              <Text style={styles.optionText}>Tải ảnh xuống</Text>
+              <Text style={styles.optionText}>Ẩn ghim</Text>
+              <Text style={styles.optionText}>Báo cáo Ghim</Text>
+            </View>
+          </View>
+        </Modal>
+      </ScrollView>
+
+      {/* Footer */}
+      <View style={styles.footer}>
+        <TouchableOpacity
+          style={styles.nextButton}
+          onPress={() => console.log('Home')}
+        >
+          <Text style={styles.nextButtonText}>Next</Text>
         </TouchableOpacity>
-      </Modal>
-    </ScrollView>
+      </View>
+    </View>
   );
 };
 
-const Tab = createBottomTabNavigator();
-
-const HomeTabs = () => {
-  return (
-    <Tab.Navigator
-      initialRouteName="Home"
-      screenOptions={({ route }) => ({
-        tabBarIcon: ({ color, size }) => {
-          let iconName;
-          if (route.name === 'Home') {
-            iconName = 'home-outline';
-          } else if (route.name === 'Search') {
-            iconName = 'search-outline';
-          } else if (route.name === 'Create') {
-            iconName = 'add-circle-outline';
-          } else if (route.name === 'Notifications') {
-            iconName = 'notifications-outline';
-          } else if (route.name === 'Info') {
-            iconName = 'person-outline';
-          }
-          return <Ionicons name={iconName} size={size} color={color} />;
-        },
-      })}
-    >
-      <Tab.Screen name="Home" component={HomeScreen} />
-      <Tab.Screen name="Search" component={() => <View><Text>Search</Text></View>} />
-      <Tab.Screen name="Create" component={() => <View><Text>Create</Text></View>} />
-      <Tab.Screen name="Notifications" component={() => <View><Text>Notifications</Text></View>} />
-      <Tab.Screen name="Info" component={() => <View><Text>Info</Text></View>} />
-    </Tab.Navigator>
-  );
-};
-
-export default HomeTabs;
+export default HomeScreen;

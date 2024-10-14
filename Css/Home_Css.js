@@ -5,16 +5,16 @@ const styles = StyleSheet.create({
     flexGrow: 1,
     paddingHorizontal: 10,
     paddingVertical: 15,
-    backgroundColor: '#f5f5f5', // Màu nền nhẹ
+    backgroundColor: '#f5f5f5',
   },
   imageGrid: {
     flexDirection: 'row',
-    justifyContent: 'space-between', // Tạo khoảng cách giữa hai cột
+    justifyContent: 'space-between',
     marginBottom: 20,
   },
   leftColumn: {
     flex: 1,
-    marginRight: 5, // Khoảng cách giữa cột trái và phải
+    marginRight: 5,
   },
   rightColumn: {
     flex: 1,
@@ -22,24 +22,22 @@ const styles = StyleSheet.create({
   },
   imageWrapper: {
     position: 'relative',
-    marginBottom: 15, // Khoảng cách giữa các ảnh
-    borderRadius: 15, // Bo góc đẹp hơn
+    marginBottom: 15,
+    borderRadius: 15,
     overflow: 'hidden',
-    backgroundColor: '#ffffff', // Màu nền trắng cho cảm giác nổi bật
-    shadowColor: '#000', // Đổ bóng cho các ảnh
+    backgroundColor: '#ffffff',
+    shadowColor: '#000',
     shadowOffset: { width: 0, height: 2 },
     shadowOpacity: 0.1,
     shadowRadius: 8,
-    elevation: 5, // Đổ bóng cho Android
+    elevation: 5,
   },
   imageLarge: {
-    position:'relative',
     width: '100%',
     height: 300,
     borderRadius: 15,
   },
   imageSmall: {
-    position:'relative',
     width: '100%',
     height: 200,
     borderRadius: 15,
@@ -50,7 +48,7 @@ const styles = StyleSheet.create({
     left: 10,
     flexDirection: 'row',
     alignItems: 'center',
-    backgroundColor: 'rgba(0,0,0,0.6)', // Nền đen mờ cho like và bình luận
+    backgroundColor: 'rgba(0,0,0,0.6)',
     paddingHorizontal: 8,
     paddingVertical: 4,
     borderRadius: 15,
@@ -60,25 +58,6 @@ const styles = StyleSheet.create({
     marginRight: 5,
     fontSize: 14,
     fontWeight: '600',
-  },
-  moreOptionsButton: {
-    position: 'absolute',
-    bottom: 5,
-    right: 10,
-    backgroundColor: 'rgba(0,0,0,0.4)', // Nền đen mờ cho nút
-    height: 25, // Chiều cao cố định nhỏ hơn
-    paddingHorizontal: 10,
-    paddingVertical: 1, // Giảm padding dọc để nút thấp hơn
-    borderRadius: 13, // Bo góc cho nút
-    justifyContent: 'center', // Đảm bảo nội dung căn giữa theo chiều dọc
-    alignItems: 'center', // Đảm bảo nội dung căn giữa theo chiều ngang
-  },
-  
-  moreOptionsText: {
-    color: 'white',
-    fontSize: 18,
-    fontWeight: 'bold',
-    transform: [{ translateY: -5 }],
   },
   userInfo: {
     flexDirection: 'row',
@@ -99,57 +78,118 @@ const styles = StyleSheet.create({
     height: 50,
     borderRadius: 25,
     marginRight: 10,
-    borderWidth: 2, // Bo viền cho avatar
+    borderWidth: 2,
     borderColor: '#eeeeee',
   },
   userName: {
     fontSize: 18,
     fontWeight: 'bold',
-    color: '#333333', // Màu chữ tối cho sự rõ ràng
+    color: '#333333',
   },
   likes: {
     fontSize: 16,
     marginLeft: 5,
-    color: '#888888', // Màu chữ nhẹ hơn
+    color: '#888888',
   },
-  modalContainer: {
+  modalOverlay: {
     flex: 1,
-    justifyContent: 'flex-end', // Hiện modal từ dưới lên
+    backgroundColor: 'rgba(0, 0, 0, 0.5)',  // Đảm bảo nền mờ che phủ toàn bộ màn hình
+    justifyContent: 'center',
     alignItems: 'center',
-    backgroundColor: 'rgba(0, 0, 0, 0.5)', // Nền mờ cho modal
-    zIndex: 1000, // Đảm bảo modal hiển thị trên các thành phần khác
-},
-optionsContainer: {
+  },  
+  optionsContainer: {
     position: 'absolute',
-    top: 1,
-    width: '80%',
-    padding: 7,
-    alignItems: 'center', // Căn giữa các tùy chọn
-    marginBottom: 200, // Khoảng cách giữa modal và đáy màn hình
-    flexDirection: 'row', // Sắp xếp các nút theo hàng
-    justifyContent: 'space-around', // Tạo khoảng cách đều giữa các nút
-    zIndex: 1001, // Đảm bảo nút hiển thị trên modal
-},
-
-  option: {
-    justifyContent: 'center', // Căn giữa nội dung
-    alignItems: 'center', // Căn giữa nội dung
-    width: 50, // Chiều rộng cho nút
-    height: 50, // Chiều cao cho nút
-    borderRadius: 30, // Bo góc tròn
-    backgroundColor: '#f0f0f0', // Nền cho nút
-    flexDirection: 'column', // Sắp xếp theo chiều dọc
-    transform: [{ translateY: 90 }], // Di chuyển nút lên phía trên để tạo hiệu ứng vòng cung
-    marginBottom: 10, // Khoảng cách giữa các nút
+    left: 0,
+    right: 0,
+    bottom: 0,
+    top: 0,
+    justifyContent: 'center',
+    alignItems: 'center',
   },
-
-  optionIcon: {
-    marginBottom: 5, // Khoảng cách giữa biểu tượng và văn bản
+  optionButton: {
+    width: 50, // Kích thước nút lớn hơn
+    height: 50,
+    borderRadius: 30, // Dạng tròn hoàn chỉnh
+    justifyContent: 'center',
+    alignItems: 'center',
+    backgroundColor: '#87CEFA', // Màu xanh lá cây nhạt cho nút
+    marginBottom: 15,
+    shadowColor: '#000', // Hiệu ứng đổ bóng
+    shadowOffset: { width: 0, height: 5 },
+    shadowOpacity: 0.3,
+    shadowRadius: 4,
+  },
+  threeDots: {
+    position: 'absolute',
+    bottom: 10,  // Di chuyển nút xuống dưới
+    right: 10,   // Đặt nút về phía bên phải
+    backgroundColor: 'rgba(255, 255, 255, 0.7)',  // Màu nền cho nút ba chấm
+    padding: 5,
+    borderRadius: 15,
+  },
+  
+  bottomSheetContainer: {
+    flex: 1,
+    justifyContent: 'flex-end',
+    backgroundColor: 'rgba(0, 0, 0, 0.5)',  // Nền mờ
+  },
+  bottomSheet: {
+    backgroundColor: 'white',
+    borderTopLeftRadius: 20,
+    borderTopRightRadius: 20,
+    padding: 20,
+    paddingBottom: 40,
+    alignItems: 'center',
+  },
+  closeIcon: {
+    alignSelf: 'flex-end',
+    marginBottom: 10,
+  },
+  modalTitle: {
+    fontSize: 18,
+    fontWeight: 'bold',
+    marginBottom: 20,
+  },
+  shareRow: {
+    flexDirection: 'row',
+    justifyContent: 'space-around',
+    width: '100%',
+    marginBottom: 20,
+  },
+  shareOption: {
+    alignItems: 'center',
+  },
+  separator: {
+    height: 1,
+    backgroundColor: '#e0e0e0',
+    width: '100%',
+    marginVertical: 20,
   },
   optionText: {
-    fontSize: 12,
-    color: '#000', // Màu chữ cho rõ ràng
-    textAlign: 'center', // Căn giữa văn bản
+    fontSize: 16,
+    paddingVertical: 10,
+    textAlign: 'left',
+    width: '100%',
+  },
+  
+  footer: {
+    paddingBottom: 30, 
+    height:"20%",
+   
+    justifyContent: "center", // Canh giữa phần footer
+  },
+
+  nextButton: {
+   
+    backgroundColor: "#ff0000",
+    paddingVertical: 15,
+    borderRadius: 25,
+    alignItems: "center",
+  },
+  nextButtonText: {
+    color: "#fff",
+    fontSize: 18,
+    fontWeight: "bold",
   },
 });
 

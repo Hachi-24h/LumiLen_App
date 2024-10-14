@@ -56,7 +56,7 @@ const InfoScreen = ({ navigation }) => {
   const renderBoardItem = ({ item }) => (
     <View style={styles.boardItem}>
       <StatusBar hidden={false} />
-      <TouchableOpacity>
+      <TouchableOpacity  onPress={() => navigation.navigate("AccountSetting")}>
         <Image source={item.image} style={styles.boardImage} />
         {item.secret && (
           <Image

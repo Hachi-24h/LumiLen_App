@@ -11,7 +11,7 @@ import {
   Dimensions,
   StyleSheet,
 } from "react-native";
-import styles from "../../Css/Info_Css"; 
+import styles from "../../Css/Info_Css";
 import Footer from "../footer";
 const { width } = Dimensions.get("window");
 
@@ -56,7 +56,7 @@ const InfoScreen = ({ navigation }) => {
   const renderBoardItem = ({ item }) => (
     <View style={styles.boardItem}>
       <StatusBar hidden={false} />
-      <TouchableOpacity >
+      <TouchableOpacity  onPress={() => navigation.navigate("AccountSetting")}>
         <Image source={item.image} style={styles.boardImage} />
         {item.secret && (
           <Image
@@ -72,11 +72,11 @@ const InfoScreen = ({ navigation }) => {
 
   return (
     <View style={styles.container}>
-      
-     
       <View style={styles.header}>
         <View style={styles.headerLeft}>
-          <TouchableOpacity onPress={() => navigation.navigate("AccountSetting")}>
+          <TouchableOpacity
+            onPress={() => navigation.navigate("AccountSetting")}
+          >
             <Image
               source={require("../../Icon/mess.png")}
               style={styles.profileImage}
@@ -84,8 +84,12 @@ const InfoScreen = ({ navigation }) => {
           </TouchableOpacity>
         </View>
         <View style={styles.headerCenter}>
-          <Text style={styles.headerTitle}>Ghim</Text>
-          <Text style={[styles.headerTitle, styles.activeTab]}>Bảng</Text>
+          <TouchableOpacity onPress={() => navigation.navigate("Info_Ghim")}>
+            <Text style={styles.headerTitle}>Ghim</Text>
+          </TouchableOpacity>
+          <TouchableOpacity onPress={() => navigation.navigate("Info")}>
+            <Text style={[styles.headerTitle, styles.activeTab]}>Bảng</Text>
+          </TouchableOpacity>
         </View>
         <View style={styles.headerRight}>
           <TouchableOpacity style={styles.addButton}>
@@ -94,12 +98,10 @@ const InfoScreen = ({ navigation }) => {
         </View>
       </View>
 
-    
       <View style={styles.searchBarContainer}>
         <TextInput style={styles.searchBar} placeholder="Tìm Ghim của bạn" />
       </View>
 
-    
       <View style={styles.filterContainer}>
         <TouchableOpacity style={styles.filterButton}>
           <Image

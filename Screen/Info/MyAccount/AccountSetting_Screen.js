@@ -1,8 +1,8 @@
 import React from 'react';
 import { View, Text, TouchableOpacity, ScrollView } from 'react-native';
-import styles from '../../../../../Css/AccountSetting_Css'; // Import CSS
+import styles from '../../../Css/AccountSetting_Css'; // Import CSS
 import { Ionicons } from "@expo/vector-icons";
-import Footer from '../../../../footer';
+import Footer from '../../footer';
 
 const AccountScreen = ({ navigation }) => {
   return (
@@ -16,7 +16,9 @@ const AccountScreen = ({ navigation }) => {
       </View>
 
     
-      <TouchableOpacity style={styles.profileSection}>
+      <TouchableOpacity style={styles.profileSection}
+       onPress={() => navigation.navigate("Profile")}
+      >
         <Ionicons name="person-circle-outline" size={50} />
         <View style={styles.profileInfo}>
           <Text style={styles.profileName}>Hachi</Text>

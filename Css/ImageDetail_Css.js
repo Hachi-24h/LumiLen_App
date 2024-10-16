@@ -1,7 +1,7 @@
 // ImageDetailScreenStyles.js
 import { StyleSheet, Dimensions } from 'react-native';
 
-const { width, height } = Dimensions.get("window");
+const { width } = Dimensions.get("window");
 
 const styles = StyleSheet.create({
   container: {
@@ -79,14 +79,65 @@ const styles = StyleSheet.create({
     fontSize: 20,
     fontWeight: 'bold',
   },
-  shareIcon: {
-    position: 'absolute',
-    bottom: 20,
-    right: 20,
-    backgroundColor: 'rgba(0, 0, 0, 0.5)',
+
+  // Styles for the Modal
+  modalContainer: {
+    flex: 1,
+    justifyContent: 'flex-end',
+    backgroundColor: 'rgba(0, 0, 0, 0.5)', // Mờ nền phía sau
+  },
+  modalContent: {
+    backgroundColor: '#fff',
+    borderTopLeftRadius: 20,
+    borderTopRightRadius: 20,
+    padding: 20,
+    paddingBottom: 40,
+  },
+  modalHeader: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'space-between', // Để icon đóng và tiêu đề nằm hai phía
+    marginBottom: 20,
+  },
+  modalTitle: {
+    fontSize: 18,
+    fontWeight: 'bold',
+  },
+  modalOption: {
+    fontSize: 16,
+    paddingVertical: 10,
+  },
+  closeButton: {
+    marginTop: 20,
+    backgroundColor: '#ccc',
     padding: 10,
-    borderRadius: 50,
+    borderRadius: 10,
+    alignItems: 'center',
+  },
+  closeButtonText: {
+    fontSize: 16,
+    fontWeight: 'bold',
+  },
+
+  // Styles for the Share Modal
+  shareModalContent: {
+    backgroundColor: '#fff',
+    borderTopLeftRadius: 20,
+    borderTopRightRadius: 20,
+    padding: 20,
+    paddingBottom: 40,
+  },
+  shareRow: {
+    flexDirection: 'row',
+    justifyContent: 'space-around',
+    marginVertical: 10,
+  },
+  shareOption: {
+    alignItems: 'center',
+    justifyContent: 'center',
+    width: width * 0.2, // Kích thước cho biểu tượng
   },
 });
 
 export default styles;
+

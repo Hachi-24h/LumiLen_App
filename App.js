@@ -81,5 +81,8 @@ const App = () => {
     </NavigationContainer>
   );
 };
+
+
+//  tetststtsts
 AppRegistry.registerComponent("main", () => App);
 export default App;

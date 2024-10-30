@@ -3,7 +3,9 @@ const { width, height } = Dimensions.get("window");
 
 const styles = StyleSheet.create({
   container: {
-    flex: 1,
+    flexGrow: 1,
+    paddingHorizontal: 10,
+    paddingVertical: 15,
     backgroundColor: '#f5f5f5',
   },
   contentContainer: {
@@ -140,6 +142,12 @@ const styles = StyleSheet.create({
     shadowRadius: 3,
     elevation: 5, // Bóng cho thiết bị Android
   },
+  viewfooter:{
+    flex: 1,
+    backgroundColor: "#444444",
+    height: 30,
+    marginBottom:30,
+  }
 });
 
 export default styles;

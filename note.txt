@@ -21,7 +21,12 @@ https://ionic.io/ionicons
 
 
 ==== thư viện lịch ====
-yarn add @react-native-community/datetimepicker
+expo install expo-image-picker
+
+
+
+==== thư viện đến ảnh của điện thoại  ==========
+yarn add react-native-image-picker
 
 
 yarn add react-native-elements
@@ -48,3 +53,7 @@ expo install react-native-gesture-handler@~2.16.1 react-native-safe-area-context
 git add Css/ Icon/ Picture/ Screen/ note.txt App.json
 git commit -m "Đã làm thêm phần info " 
 git push origin main         
+
+
+
+http://localhost:5000/users

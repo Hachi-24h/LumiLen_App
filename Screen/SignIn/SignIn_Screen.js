@@ -25,7 +25,7 @@ const LoginScreen = ({ navigation }) => {
       if (password === "a") {
         // Nếu mật khẩu đúng, điều hướng tới trang Home
         setPasswordBorderColor("black"); // Giữ màu đen cho password
-        navigation.navigate("SignUp");
+        navigation.navigate("Info");
       } else {
         // Nếu mật khẩu sai, đổi màu viền của ô password thành đỏ
         setPasswordBorderColor("red");
@@ -88,7 +88,7 @@ const LoginScreen = ({ navigation }) => {
           </TouchableOpacity>
         </View>
 
-        <TouchableOpacity style={styles.loginButton} onPress={handleLogin}>
+        <TouchableOpacity style={styles.loginButton} onPress={handleLogin }>
           <Text style={styles.loginButtonText}>Login</Text>
         </TouchableOpacity>
 

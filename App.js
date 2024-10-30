@@ -35,7 +35,7 @@ const Stack = createStackNavigator();
 const App = () => {
   return (
     <NavigationContainer>
-      <Stack.Navigator initialRouteName="HomeTabs">
+      <Stack.Navigator initialRouteName="Info_Ghim">
         <Stack.Screen
           name="HomeTabs"
           component={HomeTabs}
@@ -64,7 +64,7 @@ const App = () => {
           name="AccountManagement"
           component={AccountManagement}
           options={{
-            title: "Account Management",
+title: "Account Management",
             headerShown: false, // Ẩn header
           }}
         />
@@ -185,12 +185,19 @@ const App = () => {
         <Stack.Screen
           name="Info_Ghim"
           component={Info_Ghim}
-          options={{
+options={{
             title: "Info_Ghim",
             headerShown: false, // Ẩn header
           }}
         />
-
+  <Stack.Screen
+          name="Info_Bang"
+          component={Info_Bang}
+options={{
+            title: "Info_Bang",
+            headerShown: false, // Ẩn header
+          }}
+        />
         <Stack.Screen
           name="Profile"
           component={Profile}

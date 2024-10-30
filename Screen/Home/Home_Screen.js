@@ -2,10 +2,6 @@ import React, { useState } from 'react';
 import { View, Text, ScrollView, Image, TouchableOpacity, Modal } from 'react-native';
 import Ionicons from 'react-native-vector-icons/Ionicons';
 import styles from '../../Css/Home_Css';  // Import styles từ file Home_Css.js
-import Footer from '../footer';
-import { Dimensions } from 'react-native';
-
-const { width } = Dimensions.get("window");
 
 const imageData = [
   { id: 1, src: require('../../Picture/image_1.png') },
@@ -23,7 +19,7 @@ const options = [
   { icon: 'eye-off-outline', action: () => console.log('Ẩn ghim') },  // Ẩn ghim
 ];
 
-const HomeScreen = ({ navigation }) => {
+const HomeScreen = () => {
   const [selectedImageId, setSelectedImageId] = useState(null);
   const [modalVisible, setModalVisible] = useState(false);  // Modal cho sự kiện đè vào màn hình
   const [bottomSheetVisible, setBottomSheetVisible] = useState(false);  // Modal từ dưới lên
@@ -197,9 +193,14 @@ const HomeScreen = ({ navigation }) => {
         </Modal>
       </ScrollView>
 
-      {/* Footer cố định ở cuối */}
-      <View style={styles.fixedFooter}>
-        <Footer navigation={navigation} />
+      {/* Footer */}
+      <View style={styles.footer}>
+        <TouchableOpacity
+          style={styles.nextButton}
+          onPress={() => console.log('Home')}
+        >
+          <Text style={styles.nextButtonText}>Next</Text>
+        </TouchableOpacity>
       </View>
     </View>
   );

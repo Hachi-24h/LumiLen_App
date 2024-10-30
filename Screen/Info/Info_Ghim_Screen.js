@@ -222,7 +222,7 @@ const InfoScreen = ({ navigation }) => {
           <TouchableOpacity onPress={() => navigation.navigate("Info_Ghim")}>
             <Text style={[styles.headerTitle, styles.activeTab]}>Ghim</Text>
           </TouchableOpacity>
-          <TouchableOpacity onPress={() => navigation.navigate("Info")}>
+          <TouchableOpacity onPress={() => navigation.navigate("Info_Bang")}>
             <Text style={styles.headerTitle}>Bảng</Text>
           </TouchableOpacity>
         </View>

@@ -2,7 +2,15 @@ import React from "react";
 import FlashMessage from "react-native-flash-message";
 import { NavigationContainer } from "@react-navigation/native";
 import { createStackNavigator } from "@react-navigation/stack";
+
+import { enableScreens } from "react-native-screens"; // Để tối ưu hóa màn hình
+import { AppRegistry } from "react-native";
+// Gọi enableScreens để kích hoạt tối ưu hóa
+enableScreens();
+
+
 import HomeTabs from "./Screen/Home/Home_Screen";
+import ImageDetailScreen from "./Screen/DetailScreen/ImageDetailScreen";
 import SignUp from "./Screen/Screen_SignUp/SignUp_Screen";
 import SignUp1 from "./Screen/Screen_SignUp/SignUp_01_Screen";
 import SignUp2 from "./Screen/Screen_SignUp/SignUp_02_Screen";
@@ -27,15 +35,23 @@ const Stack = createStackNavigator();
 const App = () => {
   return (
     <NavigationContainer>
-      <Stack.Navigator initialRouteName="Search">
+      <Stack.Navigator initialRouteName="HomeTabs">
         <Stack.Screen
-          name="Info"
-          component={Info_Bang}
+          name="HomeTabs"
+          component={HomeTabs}
           options={{
-            title: "Info",
-            headerShown: false, // Ẩn header
+            title: "HomeTabs",
+            headerShown: false,
           }}
         />  
+        <Stack.Screen
+          name="ImageDetailScreen"
+          component={ImageDetailScreen}
+          options={{
+            title: "ImageDetailScreen",
+            headerShown: false,
+          }}
+        />
         <Stack.Screen
           name="AccountSetting"
           component={AccountSetting}
@@ -91,6 +107,7 @@ const App = () => {
           options={{
             title: "Search",
             headerShown: false, // Ẩn header
+
           }}
         />
         <Stack.Screen
@@ -195,8 +212,4 @@ const App = () => {
     </NavigationContainer>
   );
 };
-
-
-// testt adshksja
-
 export default App;

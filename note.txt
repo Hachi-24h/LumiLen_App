@@ -29,6 +29,7 @@ yarn add react-native-elements
 === thư viện thông báo từ trên xún ===- 
 yarn add react-native-flash-message
 
+yarn add react-native-masonry-list
 
 
 

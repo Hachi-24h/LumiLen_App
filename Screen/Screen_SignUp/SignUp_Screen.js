@@ -2,8 +2,10 @@ import React from "react";
 import { View, Text, Image, TouchableOpacity, ScrollView } from "react-native";
 import { LinearGradient } from "expo-linear-gradient";
 import styles from "../../Css/SignUp_css";
-
+import useFetch  from "../../Hook/useEffetch";
 const SignUp = ({ navigation }) => {
+  const { data: dataTest   } = useFetch('http://localhost:5000/users');
+  console.log(dataTest);
   return (
     <View style={styles.signUp1}>
       <View style={styles.image}>
@@ -68,7 +70,7 @@ const SignUp = ({ navigation }) => {
               style={styles.buttonBase}
               onPress={() => navigation.navigate("SignUp1")}
             >
-              <Text style={styles.button}>Sign up</Text>
+              <Text style={styles.button}>Sign Up</Text>
             </TouchableOpacity>
           </View>
           <View style={styles.buttons1}>
@@ -101,3 +103,28 @@ const SignUp = ({ navigation }) => {
 };
 
 export default SignUp;
+
+// import React from 'react';
+// import { View, Text, ActivityIndicator, Button , StatusBar} from 'react-native';
+// import useEfetch from '../../Hook/useEffetch';
+
+// const UserList = () => {
+//   const { data: users, loading, error, refetch } = useEfetch('http://localhost:5000/users');
+
+//   if (loading) return <ActivityIndicator size="large" color="#0000ff" />;
+//   if (error) return <Text>Error fetching data: {error.message}</Text>;
+
+//   return (
+//     <View>
+//       <StatusBar hidden={false} />
+//       {users && users.length > 0 ? (
+//         users.map((user) => <Text key={user.id}>{user.name}</Text>)
+//       ) : (
+//         <Text>No users found</Text>
+//       )}
+//       <Button title="Refetch Data" onPress={refetch} />
+//     </View>
+//   );
+// };
+
+// export default UserList;

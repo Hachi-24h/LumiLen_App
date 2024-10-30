@@ -22,20 +22,15 @@ import UpdateEmail from "./Screen/Info/MyAccount/AccountManagement/AccountSettin
 import ChangePassword from "./Screen/Info/MyAccount/AccountManagement/AccountSetting/ChangePassword_Screen";
 import Profile from "./Screen/Info/MyAccount/AccountManagement/Profile/Profile_Screen";
 import ChangeAvatar from "./Screen/Info/MyAccount/AccountManagement/Profile/ChangeAvatar_Screen";
+
 const Stack = createStackNavigator();
 
 const App = () => {
   return (
     <NavigationContainer>
-      <Stack.Navigator initialRouteName="Search">
-        <Stack.Screen
-          name="Info"
-          component={Info_Bang}
-          options={{
-            title: "Info",
-            headerShown: false, // Ẩn header
-          }}
-        />  
+      <Stack.Navigator initialRouteName="Home">
+     
+      
         <Stack.Screen
           name="AccountSetting"
           component={AccountSetting}
@@ -190,6 +185,14 @@ const App = () => {
             headerShown: false, // Ẩn header
           }}
         />
+          <Stack.Screen
+          name="Info"
+          component={Info_Bang}
+          options={{
+            title: "Info",
+            headerShown: false, // Ẩn header
+          }}
+        />  
       </Stack.Navigator>
       <FlashMessage position="top" />
     </NavigationContainer>

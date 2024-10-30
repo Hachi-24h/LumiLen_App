@@ -4,7 +4,7 @@ const styles = StyleSheet.create({
   container: {
     flexGrow: 1,
     paddingHorizontal: 10,
-    paddingVertical: 15,
+    height: "100%",
     backgroundColor: '#f5f5f5',
   },
   imageGrid: {
@@ -191,6 +191,12 @@ const styles = StyleSheet.create({
     fontSize: 18,
     fontWeight: "bold",
   },
+  viewfooter:{
+    flex: 1,
+    backgroundColor: "#444444",
+    height: 30,
+    marginBottom:30,
+  }
 });
 
 export default styles;

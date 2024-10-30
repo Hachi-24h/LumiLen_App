@@ -132,7 +132,7 @@ const styles = StyleSheet.create({
     bottom: 0,
     left: 0,
     right: 0,
-    height: 87, // Chiều cao cố định của footer
+    height: '8%', // Chiều cao cố định của footer
     backgroundColor: '#F2F2F2',
     justifyContent: 'center',
     alignItems: 'center',

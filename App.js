@@ -30,21 +30,28 @@ import UpdateEmail from "./Screen/Info/MyAccount/AccountManagement/AccountSettin
 import ChangePassword from "./Screen/Info/MyAccount/AccountManagement/AccountSetting/ChangePassword_Screen";
 import Profile from "./Screen/Info/MyAccount/AccountManagement/Profile/Profile_Screen";
 import ChangeAvatar from "./Screen/Info/MyAccount/AccountManagement/Profile/ChangeAvatar_Screen";
-
 const Stack = createStackNavigator();
 
 const App = () => {
   return (
     <NavigationContainer>
-      <Stack.Navigator initialRouteName="Search">
+      <Stack.Navigator initialRouteName="Info_Ghim">
         <Stack.Screen
-          name="Info"
-          component={Info_Bang}
+          name="HomeTabs"
+          component={HomeTabs}
           options={{
-            title: "Info",
-            headerShown: false, // Ẩn header
+            title: "HomeTabs",
+            headerShown: false,
           }}
         />  
+        <Stack.Screen
+          name="ImageDetailScreen"
+          component={ImageDetailScreen}
+          options={{
+            title: "ImageDetailScreen",
+            headerShown: false,
+          }}
+        />
         <Stack.Screen
           name="AccountSetting"
           component={AccountSetting}
@@ -57,7 +64,7 @@ const App = () => {
           name="AccountManagement"
           component={AccountManagement}
           options={{
-            title: "Account Management",
+title: "Account Management",
             headerShown: false, // Ẩn header
           }}
         />
@@ -178,12 +185,19 @@ const App = () => {
         <Stack.Screen
           name="Info_Ghim"
           component={Info_Ghim}
-          options={{
+options={{
             title: "Info_Ghim",
             headerShown: false, // Ẩn header
           }}
         />
-
+  <Stack.Screen
+          name="Info_Bang"
+          component={Info_Bang}
+options={{
+            title: "Info_Bang",
+            headerShown: false, // Ẩn header
+          }}
+        />
         <Stack.Screen
           name="Profile"
           component={Profile}
@@ -200,14 +214,6 @@ const App = () => {
             headerShown: false, // Ẩn header
           }}
         />
-          <Stack.Screen
-          name="Info"
-          component={Info_Bang}
-          options={{
-            title: "Info",
-            headerShown: false, // Ẩn header
-          }}
-        />  
       </Stack.Navigator>
       <FlashMessage position="top" />
     </NavigationContainer>

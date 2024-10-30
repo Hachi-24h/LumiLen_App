@@ -1,11 +1,17 @@
-import { StyleSheet } from 'react-native';
+import { StyleSheet, Dimensions } from 'react-native';
+const { width, height } = Dimensions.get("window");
 
 const styles = StyleSheet.create({
   container: {
     flexGrow: 1,
     paddingHorizontal: 10,
-    height: "100%",
+    paddingVertical: 15,
     backgroundColor: '#f5f5f5',
+  },
+  contentContainer: {
+    flexGrow: 1, // Đảm bảo ScrollView không chiếm toàn bộ chiều cao
+    width: '100%',
+    backgroundColor: '#fff',
   },
   imageGrid: {
     flexDirection: 'row',
@@ -34,7 +40,7 @@ const styles = StyleSheet.create({
   },
   imageLarge: {
     width: '100%',
-    height: 300,
+    height: 250,
     borderRadius: 15,
   },
   imageSmall: {
@@ -42,61 +48,12 @@ const styles = StyleSheet.create({
     height: 200,
     borderRadius: 15,
   },
-  likeContainer: {
-    position: 'absolute',
-    top: 10,
-    left: 10,
-    flexDirection: 'row',
-    alignItems: 'center',
-    backgroundColor: 'rgba(0,0,0,0.6)',
-    paddingHorizontal: 8,
-    paddingVertical: 4,
-    borderRadius: 15,
-  },
-  likeText: {
-    color: 'white',
-    marginRight: 5,
-    fontSize: 14,
-    fontWeight: '600',
-  },
-  userInfo: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    paddingHorizontal: 15,
-    paddingVertical: 10,
-    backgroundColor: '#ffffff',
-    borderRadius: 10,
-    shadowColor: '#000',
-    shadowOffset: { width: 0, height: 2 },
-    shadowOpacity: 0.1,
-    shadowRadius: 8,
-    elevation: 5,
-    marginBottom: 20,
-  },
-  avatar: {
-    width: 50,
-    height: 50,
-    borderRadius: 25,
-    marginRight: 10,
-    borderWidth: 2,
-    borderColor: '#eeeeee',
-  },
-  userName: {
-    fontSize: 18,
-    fontWeight: 'bold',
-    color: '#333333',
-  },
-  likes: {
-    fontSize: 16,
-    marginLeft: 5,
-    color: '#888888',
-  },
   modalOverlay: {
     flex: 1,
-    backgroundColor: 'rgba(0, 0, 0, 0.5)',  // Đảm bảo nền mờ che phủ toàn bộ màn hình
+    backgroundColor: 'rgba(0, 0, 0, 0.5)', // Đảm bảo nền mờ che phủ toàn bộ màn hình
     justifyContent: 'center',
     alignItems: 'center',
-  },  
+  },
   optionsContainer: {
     position: 'absolute',
     left: 0,
@@ -112,7 +69,7 @@ const styles = StyleSheet.create({
     borderRadius: 30, // Dạng tròn hoàn chỉnh
     justifyContent: 'center',
     alignItems: 'center',
-    backgroundColor: '#87CEFA', // Màu xanh lá cây nhạt cho nút
+    backgroundColor: '#F2F2F2', // Màu xanh cho nút
     marginBottom: 15,
     shadowColor: '#000', // Hiệu ứng đổ bóng
     shadowOffset: { width: 0, height: 5 },
@@ -121,17 +78,16 @@ const styles = StyleSheet.create({
   },
   threeDots: {
     position: 'absolute',
-    bottom: 10,  // Di chuyển nút xuống dưới
-    right: 10,   // Đặt nút về phía bên phải
-    backgroundColor: 'rgba(255, 255, 255, 0.7)',  // Màu nền cho nút ba chấm
+    bottom: 10, // Di chuyển nút xuống dưới
+    right: 10, // Đặt nút về phía bên phải
+    backgroundColor: 'rgba(255, 255, 255, 0.7)', // Màu nền cho nút ba chấm
     padding: 5,
     borderRadius: 15,
   },
-  
   bottomSheetContainer: {
     flex: 1,
     justifyContent: 'flex-end',
-    backgroundColor: 'rgba(0, 0, 0, 0.5)',  // Nền mờ
+    backgroundColor: 'rgba(0, 0, 0, 0.5)', // Nền mờ
   },
   bottomSheet: {
     backgroundColor: 'white',
@@ -171,25 +127,20 @@ const styles = StyleSheet.create({
     textAlign: 'left',
     width: '100%',
   },
-  
-  footer: {
-    paddingBottom: 30, 
-    height:"20%",
-   
-    justifyContent: "center", // Canh giữa phần footer
-  },
-
-  nextButton: {
-   
-    backgroundColor: "#ff0000",
-    paddingVertical: 15,
-    borderRadius: 25,
-    alignItems: "center",
-  },
-  nextButtonText: {
-    color: "#fff",
-    fontSize: 18,
-    fontWeight: "bold",
+  fixedFooter: {
+    position: 'absolute',
+    bottom: 0,
+    left: 0,
+    right: 0,
+    height: 87, // Chiều cao cố định của footer
+    backgroundColor: '#F2F2F2',
+    justifyContent: 'center',
+    alignItems: 'center',
+    shadowColor: '#000', // Hiệu ứng đổ bóng
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.2,
+    shadowRadius: 3,
+    elevation: 5, // Bóng cho thiết bị Android
   },
   viewfooter:{
     flex: 1,

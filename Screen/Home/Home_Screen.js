@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import { View, Text, ScrollView, Image, TouchableOpacity, Modal } from 'react-native';
 import Ionicons from 'react-native-vector-icons/Ionicons';
 import styles from '../../Css/Home_Css';  // Import styles từ file Home_Css.js
-import Footer from '../footer';
+
 const imageData = [
   { id: 1, src: require('../../Picture/image_1.png') },
   { id: 2, src: require('../../Picture/image_1.png') },
@@ -19,7 +19,7 @@ const options = [
   { icon: 'eye-off-outline', action: () => console.log('Ẩn ghim') },  // Ẩn ghim
 ];
 
-const HomeScreen = ({navigation}) => {
+const HomeScreen = () => {
   const [selectedImageId, setSelectedImageId] = useState(null);
   const [modalVisible, setModalVisible] = useState(false);  // Modal cho sự kiện đè vào màn hình
   const [bottomSheetVisible, setBottomSheetVisible] = useState(false);  // Modal từ dưới lên
@@ -58,14 +58,20 @@ const HomeScreen = ({navigation}) => {
     setBottomSheetVisible(true);  // Hiển thị giao diện từ dưới lên
   };
 
+  const handleImagePress = (image) => {
+    // Chuyển hướng tới trang chi tiết hình ảnh
+    navigation.navigate('ImageDetailScreen', { image });
+  };
+
   return (
     <View style={styles.container}>
-      <ScrollView contentContainerStyle={styles.contentContainer}>
+      <ScrollView style={styles.contentContainer}>
         <View style={styles.imageGrid}>
           <View style={styles.leftColumn}>
             {imageData.slice(0, 3).map((image) => (
               <View key={image.id} style={styles.imageWrapper}>
                 <TouchableOpacity
+                  onPress={() => handleImagePress(image)}  // Bấm vào hình để chuyển đến chi tiết hình ảnh
                   onLongPress={(e) => handleImageLongPress(e, image.id)}
                   activeOpacity={1}
                 >
@@ -85,6 +91,7 @@ const HomeScreen = ({navigation}) => {
             {imageData.slice(3).map((image) => (
               <View key={image.id} style={styles.imageWrapper}>
                 <TouchableOpacity
+                  onPress={() => handleImagePress(image)}  // Bấm vào hình để chuyển đến chi tiết hình ảnh
                   onLongPress={(e) => handleImageLongPress(e, image.id)}
                   activeOpacity={1}
                 >
@@ -186,11 +193,15 @@ const HomeScreen = ({navigation}) => {
         </Modal>
       </ScrollView>
 
-
-      
-    
-       
-     
+      {/* Footer */}
+      <View style={styles.footer}>
+        <TouchableOpacity
+          style={styles.nextButton}
+          onPress={() => console.log('Home')}
+        >
+          <Text style={styles.nextButtonText}>Next</Text>
+        </TouchableOpacity>
+      </View>
     </View>
   );
 };

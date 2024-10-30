@@ -191,7 +191,7 @@ const HomeScreen = ({ navigation }) => {
               {/* Các tùy chọn khác */}
               <Text style={styles.optionText}>Tải ảnh xuống</Text>
               <Text style={styles.optionText}>Ẩn ghim</Text>
-              <Text style={styles.optionText}>Báo cáo Ghim</Text>
+              <Text style={styles.optionText}>Báo cáo Ghimm</Text>
             </View>
           </View>
         </Modal>

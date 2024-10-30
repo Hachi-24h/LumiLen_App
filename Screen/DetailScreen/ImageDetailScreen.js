@@ -20,12 +20,12 @@ const ImageDetailScreen = ({ route, navigation }) => {
   return (
     <View style={styles.container}>
       <TouchableOpacity onPress={() => navigation.goBack()} style={styles.backButton}>
-        <Ionicons name="arrow-back" size={24} color="#fff" />
+        <Ionicons name="arrow-back" size={45} color="#fff" />
       </TouchableOpacity>
 
       {/* Nút 3 chấm góc phải */}
       <TouchableOpacity onPress={toggleModal} style={styles.threeDotsButton}>
-        <Ionicons name="ellipsis-horizontal" size={24} color="#fff" />
+        <Ionicons name="ellipsis-horizontal" size={45} color="#fff" />
       </TouchableOpacity>
 
       {/* Nội dung chính */}

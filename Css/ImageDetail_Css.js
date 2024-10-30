@@ -32,6 +32,7 @@ const styles = StyleSheet.create({
   },
   iconContainer: {
     flexDirection: 'row',
+    backgroundColor:'#fff',
     justifyContent: 'space-between',
     alignItems: 'center',
     width: '90%',

@@ -1,4 +1,3 @@
-// models/Bang.js
 const mongoose = require('mongoose');
 
 const TableUserSchema = new mongoose.Schema({
@@ -9,15 +8,15 @@ const TableUserSchema = new mongoose.Schema({
     },
     listAnh: [{
         type: mongoose.Schema.Types.ObjectId,
-        ref: 'Picutre',
-        required: true
-    }]
+        ref: 'Picture'
+    }],
+    statusTab: {
+        type: String,
+        enum: ["unblock", "block",],
+        default: "unblock"
+    }
 }, {
     timestamps: true,
 });
-
-TableUserSchema.path('listAnh').validate(function (value) {
-    return value.length > 0;
-}, "TableUser phải có ít nhất một ảnh trong listAnh.");
 
 module.exports = mongoose.model('TableUser', TableUserSchema);

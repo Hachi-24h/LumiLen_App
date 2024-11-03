@@ -1,4 +1,3 @@
-// models/User.js
 const mongoose = require('mongoose');
 
 const userSchema = new mongoose.Schema({
@@ -6,16 +5,16 @@ const userSchema = new mongoose.Schema({
         type: String,
         required: true,
         unique: true,
-        match: /@gmail\.com$/, // Kiểm tra email phải có đuôi @gmail.com
-        trim: true // Xóa khoảng trắng đầu/cuối
+        match: /@gmail\.com$/,
+        trim: true
     },
     password: {
         type: String,
         required: true,
-        minlength: 8 // Có ít nhất 8 ký tự
+        minlength: 8
     },
     dob: {
-        type: Date, // Kiểu ngày
+        type: Date,
         required: true
     },
     avatar: {
@@ -26,23 +25,31 @@ const userSchema = new mongoose.Schema({
         type: String,
         required: true,
         trim: true,
-        match: /^[A-Za-zÀ-ỹ\s]+$/ // Không chứa ký tự đặc biệt, trừ dấu cách
+        match: /^[A-Za-zÀ-ỹ\s]+$/
     },
     lastName: {
         type: String,
         required: true,
         trim: true,
-        match: /^[A-Za-zÀ-ỹ\s]+$/ // Không chứa ký tự đặc biệt, trừ dấu cách
-    },
-    id: {
-        type: String,
-        required: true,
-        minlength: 5,
-        maxlength: 20
+        match: /^[A-Za-zÀ-ỹ\s]+$/
     },
     collectionUser: [{
         type: mongoose.Schema.Types.ObjectId,
         ref: 'TableUser'
+    }],
+    ListAnhGhim: [{
+        type: mongoose.Schema.Types.ObjectId,
+        ref: 'Picture'
+    }],
+    Notifi: [{
+        type: mongoose.Schema.Types.ObjectId,
+        ref: 'Notification'
+    }],
+    following: [{
+        type: mongoose.Schema.Types.ObjectId 
+    }],
+    followers: [{
+        type: mongoose.Schema.Types.ObjectId
     }]
 }, {
     timestamps: true,

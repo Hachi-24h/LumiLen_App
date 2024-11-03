@@ -10,7 +10,7 @@ export const UserProvider = ({ children }) => {
   // Hàm tải dữ liệu người dùng với email động
   const fetchUserData = async (email) => {
     try {
-      // Kiểm tra xem có dữ liệu người dùng đã lưu không
+ 
       const storedData = await AsyncStorage.getItem("userData");
       if (storedData) {
         setUserData(JSON.parse(storedData));

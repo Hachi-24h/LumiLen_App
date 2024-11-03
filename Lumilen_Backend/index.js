@@ -1,10 +1,10 @@
 const express = require('express');
 const mongoose = require('mongoose');
-const userRoutes = require('./src/routes/UserRoutes');
-const upLoadRoutes = require('./src/routes/Upload');
+const userRoutes = require('./src/routes/User/UserRoutes');
+const upLoadRoutes = require('./src/routes/Picturess/Upload');
 require('dotenv').config();
 const getLocalIpAddress = require("./src/config/getLocalIpv4");
-const ipRoutes = require("./src/routes/Ipv4routes");
+const ipRoutes = require("./src/routes/IP/Ipv4routes");
 
 const connectDB = async () => {
     try {
@@ -34,7 +34,6 @@ app.use("/ip", ipRoutes);
 app.use('/user', userRoutes);
 app.use('/upload', upLoadRoutes);
 
-// Lắng nghe trên cổng
 const PORT = process.env.PORT || 3000;
 const IPV4 = getLocalIpAddress() ;
 

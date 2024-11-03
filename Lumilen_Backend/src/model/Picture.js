@@ -1,7 +1,6 @@
-// models/Anh.js
 const mongoose = require('mongoose');
 
-const PicutreSchema = new mongoose.Schema({
+const PictureSchema = new mongoose.Schema({
     uri: {
         type: String,
         required: true,
@@ -9,16 +8,16 @@ const PicutreSchema = new mongoose.Schema({
     },
     title: {
         type: String,
-        required: true,
         maxlength: 200, // Không quá 200 ký tự
-        trim: true // Xóa khoảng trắng đầu/cuối
+        trim: true, // Xóa khoảng trắng đầu/cuối
+        default: null // Cho phép null hoặc để trống
     },
     id: {
         type: String,
         required: true,
         trim: true // Xóa khoảng trắng đầu/cuối
     },
-    typePicutre: {
+    typePicture: {
         type: String,
         maxlength: 200, // Không quá 200 ký tự
         default: null,
@@ -28,4 +27,4 @@ const PicutreSchema = new mongoose.Schema({
     timestamps: true,
 });
 
-module.exports = mongoose.model('Picutre', PicutreSchema);
+module.exports = mongoose.model('Picture', PictureSchema);

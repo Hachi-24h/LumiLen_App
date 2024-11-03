@@ -21,9 +21,11 @@ router.post('/addUser', async (req, res) => {
         const newUser = new User({
             email,
             password, // Lưu ý: Cần mã hóa mật khẩu trước khi lưu
-            dob,
+            dob, 
+           
             firstName,
             lastName,
+           
             collectionUser: [],
             ListAnhGhim: [],
             Notifi: [],

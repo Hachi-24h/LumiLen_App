@@ -31,6 +31,7 @@ const LoginScreen = ({ navigation }) => {
   const handleLogin = async () => {
     try {
       // Gửi yêu cầu POST tới backend để kiểm tra tài khoản
+
       const response = await axios.post("http://192.168.1.2:5000/user/login", {
         email,
         password,

@@ -21,6 +21,11 @@ const userSchema = new mongoose.Schema({
         type: String,
         default: "https://res.cloudinary.com/dflxpcdxz/image/upload/v1730394720/DataPicture/w5rbo99qj7vk04uvsblm.jpg"
     },
+    Description: {
+        type: String,
+        trim: true,
+        default: "Hello, I'm using Lumilen"
+    },
     firstName: {
         type: String,
         required: true,

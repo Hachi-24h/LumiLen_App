@@ -8,7 +8,7 @@ const Notification = require('../../model/Notification');
 const mongoose = require('mongoose');
 // Thêm một người dùng mới
 router.post('/addUser', async (req, res) => {
-    const { email, password, dob, firstName, lastName } = req.body;
+    const { email, password, dob, firstName, lastName, idUser } = req.body;
     console.log("Dữ liệu nhận được từ req.body:", req.body); // Kiểm tra dữ liệu
 
     try {
@@ -23,10 +23,9 @@ router.post('/addUser', async (req, res) => {
             email,
             password, // Lưu ý: Cần mã hóa mật khẩu trước khi lưu
             dob, 
-           
             firstName,
             lastName,
-           
+            idUser, // Thêm idUser vào dữ liệu người dùng
             collectionUser: [],
             ListAnhGhim: [],
             Notifi: [],
@@ -93,25 +92,22 @@ router.put('/updateUser/:userId', async (req, res) => {
     }
 });
 
-//Thêm một ảnh vào ListAnhGhim của người dùng
+// Thêm một ảnh vào ListAnhGhim của người dùng
 router.post('/addPictureToListAnhGhim/:userId', async (req, res) => {
     const { userId } = req.params;
     const { pictureId } = req.body;
     console.log("pictureId nhận được:", pictureId); // Kiểm tra giá trị của pictureId
-
 
     if (!mongoose.Types.ObjectId.isValid(pictureId)) {
         return res.status(400).json({ message: "pictureId không hợp lệ." });
     }
 
     try {
-        // Tìm và cập nhật user để thêm pictureId vào ListAnhGhim
         const user = await User.findById(userId);
         if (!user) {
             return res.status(404).json({ message: "Người dùng không tồn tại." });
         }
 
-        // Kiểm tra nếu ảnh đã tồn tại trong ListAnhGhim để tránh trùng lặp
         if (!user.ListAnhGhim.includes(pictureId)) {
             user.ListAnhGhim.push(pictureId);
             await user.save();
@@ -193,14 +189,12 @@ router.get('/findUserByIdUser', async (req, res) => {
     }
 
     try {
-        // Tìm người dùng theo idUser
         const user = await User.findOne({ idUser });
 
         if (!user) {
             return res.status(404).json({ message: "Người dùng không tồn tại." });
         }
 
-        // Trả về thông tin người dùng
         res.status(200).json(user);
     } catch (error) {
         res.status(500).json({ message: error.message });

@@ -29,7 +29,7 @@ const InfoScreen = ({ navigation, route }) => {
   const { selectedIcon } = route.params || {};
   const { userData } = useContext(UserContext);
   const avatar = userData ? userData.avatar : null;
-
+  console.log("userData", userData);
 
 
   const renderBoardItem = ({ item }) => (

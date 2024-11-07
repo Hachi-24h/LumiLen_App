@@ -203,27 +203,38 @@ router.get('/findUserByIdUser', async (req, res) => {
 
 
 // Route để tìm người dùng theo email
+// Route để tìm người dùng theo email
 router.get('/findUserByEmail', async (req, res) => {
-    const { email } = req.query; // Lấy email từ query params (hoặc dùng req.params nếu cần)
-
+    const { email } = req.query;
+ 
     if (!email) {
         return res.status(400).json({ message: "Email là bắt buộc." });
     }
-
+ 
     try {
-        // Tìm người dùng theo email
-        const user = await User.findOne({ email });
-        
+        // Find the user by email and populate associated collections
+        const user = await User.findOne({ email })
+            .populate({
+                path: 'collectionUser',
+                populate: {
+                    path: 'listAnh',
+                    model: 'Picture' // populates the listAnh field with Picture data
+                }
+            })
+            .populate('ListAnhGhim', 'uri title typePicture') // populates the pinned images
+            .populate('Notifi', 'mess createdAt isRead'); // populates notifications
+ 
         if (!user) {
             return res.status(404).json({ message: "Người dùng không tồn tại." });
         }
-
-        // Trả về thông tin người dùng
+ 
+        // Send the complete user data with populated information
         res.status(200).json(user);
     } catch (error) {
         res.status(500).json({ message: error.message });
     }
 });
+ 
 
 // Route để tìm người dùng theo _id
 router.get('/findUserById/:id', async (req, res) => {
@@ -282,4 +293,21 @@ router.delete('/deleteUser/:userId', async (req, res) => {
     }
 });
 
+// Check Login  
+router.post("/login", async (req, res) => {
+    const { email, password } = req.body;
+ 
+    // Logic xác thực đăng nhập
+    try {
+        const user = await User.findOne({ email });
+        if (user && user.password === password) {  // Giả định mật khẩu không mã hóa, nếu có thì dùng bcrypt
+            res.status(200).json({ success: true, message: "Login successful", user });
+        } else {
+            res.status(401).json({ success: false, message: "Invalid email or password." });
+        }
+    } catch (error) {
+        res.status(500).json({ success: false, message: "An error occurred." });
+    }
+});
+ 
 module.exports = router;

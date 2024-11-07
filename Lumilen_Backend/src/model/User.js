@@ -14,12 +14,16 @@ const userSchema = new mongoose.Schema({
         minlength: 8
     },
 
-
     idUser: {
         type: String,
         required: true,
     },
 
+    gender: {
+        type: String,
+        enum: ["Female", "Male","Other"],  
+        default: "Male"
+    },
 
     dob: {
         type: Date,

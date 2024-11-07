@@ -1,7 +1,7 @@
 const express = require('express');
 const router = express.Router();
-const User = require('./path/to/User'); // Đảm bảo đường dẫn đúng đến file User.js
-const Notification = require('./path/to/Notification'); // Đảm bảo đường dẫn đúng đến file Notification.js
+const User = require('../../model/User'); // Đảm bảo đường dẫn đúng đến file User.js
+const Notification = require('../../model/Notification'); // Đảm bảo đường dẫn đúng đến file Notification.js
 const mongoose = require('mongoose');
 
 // Route để thêm một thông báo vào danh sách Notifi của người dùng

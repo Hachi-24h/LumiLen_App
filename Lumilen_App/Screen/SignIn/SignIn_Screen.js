@@ -8,15 +8,11 @@ import {
   StatusBar,
   Alert,
 } from "react-native";
-import { Ionicons } from "@expo/vector-icons";
+import { Ionicons, FontAwesome } from "@expo/vector-icons";
 import styles from "../../Css/SignIn_css";
 import axios from "axios";
-import { UserContext } from "../../Hook/UserContext"
-
+import { UserContext } from "../../Hook/UserContext";
 import BASE_URL from "../../IpAdress";
-
-
-
 
 const LoginScreen = ({ navigation }) => {
   const [email, setEmail] = useState("nam@gmail.com");
@@ -26,30 +22,18 @@ const LoginScreen = ({ navigation }) => {
   const [passwordBorderColor, setPasswordBorderColor] = useState("black");
 
   const { fetchUserData } = useContext(UserContext); 
- 
 
-
- 
-  
   const handleLogin = async () => {
     try {
-      // Gửi yêu cầu POST tới backend để kiểm tra tài khoản
-
-
       const response = await axios.post(`${BASE_URL}/user/login`, {
         email,
         password,
       });
 
-      // Xử lý phản hồi từ backend
       if (response.data.success) {
         setEmailBorderColor("black");
         setPasswordBorderColor("black");
-
-        // Gọi hàm fetchUserData với email để lưu dữ liệu người dùng vào Context
         await fetchUserData(email);
-
-        // Điều hướng đến màn hình khác sau khi đăng nhập thành công
         navigation.navigate("Info_Bang");
       } else {
         setEmailBorderColor("red");
@@ -71,6 +55,11 @@ const LoginScreen = ({ navigation }) => {
     >
       <StatusBar hidden={false} />
       <View style={styles.overlay} />
+      <View style={styles.header}>
+        <TouchableOpacity style={styles.backButton} onPress={() => navigation.goBack()}>
+          <Ionicons name="arrow-back" size={30} color="white" />
+        </TouchableOpacity>
+      </View>
       <View style={styles.container}>
         <Text style={styles.title}>Login</Text>
 
@@ -112,6 +101,24 @@ const LoginScreen = ({ navigation }) => {
         <TouchableOpacity style={styles.loginButton} onPress={handleLogin}>
           <Text style={styles.loginButtonText}>Login</Text>
         </TouchableOpacity>
+
+        {/* Google and Facebook Login Buttons */}
+        <View style={styles.socialLoginContainer}>
+          <TouchableOpacity style={[styles.socialButton, styles.socialButtonFacebook]}>
+            <View style={styles.iconContainer}>
+              <FontAwesome name="facebook" size={20} color="#1877F2" />
+            </View>
+            <Text style={[styles.socialButtonText, styles.facebookText]}>Tiếp tục bằng Facebook</Text>
+          </TouchableOpacity>
+
+          <TouchableOpacity style={[styles.socialButton, styles.socialButtonGoogle]}>
+            <View style={styles.iconContainer}>
+              <FontAwesome name="google" size={20} color="#DB4437" />
+            </View>
+            <Text style={[styles.socialButtonText, styles.googleText]}>Tiếp tục bằng Google</Text>
+          </TouchableOpacity>
+        </View>
+
       </View>
     </ImageBackground>
   );

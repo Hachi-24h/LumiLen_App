@@ -4,7 +4,7 @@ import { LinearGradient } from "expo-linear-gradient";
 import styles from "../../Css/SignUp_css";
 import useFetch from "../../Hook/useEffetch";
 const SignUp = ({ navigation }) => {
-  const { data: dataTest } = useFetch("http://192.168.1.5:5000/User/");
+  const { data: dataTest } = useFetch("http://192.168.114.1:5000/User/");
   // console.log(dataTest);
   return (
     <View style={styles.signUp1}>
@@ -71,7 +71,7 @@ const SignUp = ({ navigation }) => {
               onPress={() => navigation.navigate("SignUp1")}
             >
               <Text style={styles.button}>
-              {dataTest && dataTest.length > 0 ? dataTest[0].name : "No data available"}
+              {dataTest && dataTest.length > 0 ? dataTest[0].name : "Sign Up"}
               </Text>
             </TouchableOpacity>
           </View>

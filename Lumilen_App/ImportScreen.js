@@ -1,10 +1,7 @@
 import HomeTabs from "./Screen/Home/Home_Screen";
 import ImageDetailScreen from "./Screen/DetailScreen/ImageDetailScreen";
-import SignUp from "./Screen/Screen_SignUp/SignUp_Screen";
-import SignUp1 from "./Screen/Screen_SignUp/SignUp_01_Screen";
-import SignUp2 from "./Screen/Screen_SignUp/SignUp_02_Screen";
-import SignUp3 from "./Screen/Screen_SignUp/SignUp_03_Screen";
-import SignUp4 from "./Screen/Screen_SignUp/SignUp_04_Screen";
+import SignUp from "./Screen/SignUp/SignUp_Screen";
+import SignUp1 from "./Screen/SignUp/SignUp_Screen_01";
 import Search from "./Screen/Search/Search_Screen";
 import SignIn from "./Screen/SignIn/SignIn_Screen";
 import Info_Bang from "./Screen/Info/Info_Bang_Screen";
@@ -26,9 +23,6 @@ export default {
   ImageDetailScreen,
   SignUp,
   SignUp1,
-  SignUp2,
-  SignUp3,
-  SignUp4,
   Search,
   SignIn,
   Info_Bang,

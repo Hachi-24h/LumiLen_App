@@ -12,6 +12,7 @@ import { Ionicons } from "@expo/vector-icons";
 import styles from "../../Css/SignIn_css";
 import axios from "axios";
 import { UserContext } from "../../Hook/UserContext"
+import BASE_URL from "../../IpAdress";
 
 
 
@@ -32,7 +33,7 @@ const LoginScreen = ({ navigation }) => {
     try {
       // Gửi yêu cầu POST tới backend để kiểm tra tài khoản
 
-      const response = await axios.post("http://192.168.1.2:5000/user/login", {
+      const response = await axios.post(`${BASE_URL}/user/login`, {
         email,
         password,
       });

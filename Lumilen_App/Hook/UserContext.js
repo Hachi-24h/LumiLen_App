@@ -1,6 +1,7 @@
 import React, { createContext, useState, useEffect } from "react";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import axios from "axios";
+import BASE_URL from "../IpAdress";
 
 export const UserContext = createContext();
 
@@ -16,7 +17,7 @@ export const UserProvider = ({ children }) => {
         setUserData(JSON.parse(storedData));
       } else {
         // Nếu không có dữ liệu lưu trữ, gọi API với email người dùng
-        const response = await axios.get(`http://192.168.1.2:5000/user/findUser?email=${email}`);
+        const response = await axios.get(`${BASE_URL}/user/findUser?email=${email}`);
         setUserData(response.data);
         await AsyncStorage.setItem("userData", JSON.stringify(response.data)); // Lưu dữ liệu vào AsyncStorage
       }

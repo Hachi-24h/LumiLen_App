@@ -1,3 +1,4 @@
+
 const express = require('express');
 const mongoose = require('mongoose');
 const userRoutes = require('./src/routes/User/UserRoutes');
@@ -8,6 +9,7 @@ const ipRoutes = require("./src/routes/IP/Ipv4routes");
 const { picture } = require('./src/config/cloudinary');
 const pictureRoute = require('./src/routes/Picturess/pictureRoute');
 const tableUserRoute = require('./src/routes/TableUser/tableUserRoute');
+const NotifiRoute = require('./src/routes/Notification/NotifiRoutes');
 const connectDB = async () => {
     try {
         await mongoose.connect(process.env.MONGO_URI);
@@ -37,10 +39,10 @@ app.use('/user', userRoutes);
 app.use('/upload', upLoadRoutes);
 app.use('/picture',pictureRoute);
 app.use('/tableUser',tableUserRoute);
+app.use('/notification',NotifiRoute);
 const PORT = process.env.PORT || 3000;
 const IPV4 = getLocalIpAddress() ;
 
 app.listen(PORT, () => {
     console.log(`Server is running on http://${IPV4}:${PORT}`);
 });
-

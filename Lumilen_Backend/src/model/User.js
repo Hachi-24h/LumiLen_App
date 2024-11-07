@@ -13,6 +13,14 @@ const userSchema = new mongoose.Schema({
         required: true,
         minlength: 8
     },
+
+
+    idUser: {
+        type: String,
+        required: true,
+    },
+
+
     dob: {
         type: Date,
         required: true

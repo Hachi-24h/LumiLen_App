@@ -34,4 +34,10 @@ viết hàm thêm 1 iduser vào followers
          - iduser
          - idPicture
 viết hàm thêm 1 notifi cho 1 user
-         - 
+         - tối đa 30 thông báo
+Viết hàm tìm kiếm 
+- theo _id
+- theo iduser
+- theo tên
+- theo email
+

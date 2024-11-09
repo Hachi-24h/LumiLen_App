@@ -11,7 +11,7 @@ export const UserProvider = ({ children }) => {
  
   // Hàm tải dữ liệu người dùng với email động
   const fetchUserData = useCallback(async (email, forceRefresh = false) => {
-    try {
+    try { 
       // Nếu cần tải mới dữ liệu, xóa dữ liệu cũ từ `AsyncStorage`
       if (forceRefresh) {
         await AsyncStorage.removeItem("userData");

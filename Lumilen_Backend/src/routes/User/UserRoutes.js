@@ -25,8 +25,8 @@ router.post("/login", async (req, res) => {
 // Thêm một người dùng mới
 router.post('/addUser', async (req, res) => {
     const { email, password, dob, firstName, lastName, idUser } = req.body;
-    console.log("Dữ liệu nhận được từ req.body:", req.body); // Kiểm tra dữ liệu
-
+    console.log("Tinh test Dữ liệu nhận được từ req.body:", req.body); // Kiểm tra dữ liệu
+    
     try {
         // Kiểm tra nếu email đã tồn tại
         const existingUser = await User.findOne({ email });

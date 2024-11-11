@@ -48,6 +48,11 @@ yarn add @react-native-async-storage/async-storage
 ----------- thư viện lấy ipv4 --------------------
 yarn add react-native-network-info
 
+
+------------ thư viện authen gg ----------
+yarn add expo-auth-session
+
+
 yarn add @react-navigation/native
 yarn add @react-navigation/stack
 yarn add react-native-screens react-native-safe-area-context

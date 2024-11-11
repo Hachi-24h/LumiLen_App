@@ -16,6 +16,39 @@ router.get('/getAllPictures', async (req, res) => {
     }
 });
 
+// lấy tất cả ảnh của 1 user dựa trên userId
+router.get('/getUserImages', async (req, res) => {
+    try {
+        const { userId } = req.query; // Lấy userId từ query
+
+        if (!userId) {
+            return res.status(400).json({ message: "UserId is required" });
+        }
+
+        // Tìm user bằng userId và populate collectionUser cùng với listAnh
+        const user = await User.findById(userId)
+            .populate({
+                path: 'collectionUser',
+                populate: {
+                    path: 'listAnh',
+                    model: 'Picture'
+                }
+            });
+
+        if (!user) {
+            return res.status(404).json({ message: "User not found" });
+        }
+
+        // Lấy tất cả ảnh từ collectionUser
+        const allImages = user.collectionUser.flatMap(tableUser => tableUser.listAnh);
+
+        // Trả về trực tiếp mảng ảnh, không có bao quanh "images"
+        res.status(200).json(allImages);
+    } catch (error) {
+        res.status(500).json({ message: error.message });
+    }
+});
+
 // Route để thêm một Picture mới
 router.post('/addPicture', async (req, res) => {
     try {

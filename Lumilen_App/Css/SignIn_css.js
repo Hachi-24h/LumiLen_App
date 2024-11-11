@@ -22,9 +22,62 @@ const styles = StyleSheet.create({
   container: {
     width: 350,
     padding: 20,
-    backgroundColor: 'rgba(255, 255, 255, 0.6)',  // Nền trắng mờ cho khung form
+    backgroundColor: 'rgba(255, 255, 255, 0.8)',  // Nền trắng mờ cho khung form
     borderRadius: 15,
     alignItems: 'center',
+  },
+  header: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    width: '100%',
+    position: 'absolute',
+    top: '6%',
+  },
+
+  socialLoginContainer: {
+    flexDirection: 'column',
+    alignItems: 'center',
+    marginTop: 4,
+    width: '100%',
+  },
+  socialButton: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    paddingVertical: 10,
+    borderRadius: 25,
+    width: '90%',
+    justifyContent: 'center',
+    marginVertical: 4,
+  },
+  socialButtonGoogle: {
+    backgroundColor: '#f1f1f1',
+  },
+  socialButtonFacebook: {
+    backgroundColor: '#1877F2',
+  },
+  socialButtonText: {
+    fontSize: 16,
+    fontWeight: 'bold',
+  },
+  googleText: {
+    color: '#000',
+  },
+  facebookText: {
+    color: '#fff',
+  },
+  iconContainer: {
+    width: 30,
+    height: 30,
+    borderRadius: 15,
+    backgroundColor: 'white',
+    justifyContent: 'center',
+    alignItems: 'center',
+    marginRight: 10,
+  },
+  
+  
+  backButton: {
+    padding: 8,
   },
   title: {
     fontSize: 30,
@@ -64,12 +117,12 @@ const styles = StyleSheet.create({
     borderBottomWidth: 1,
   },
   loginButton: {
-    width: '100%',
+    width: '90%',
     height: 50,
     backgroundColor: '#E60019',
     justifyContent: 'center',
     alignItems: 'center',
-    borderRadius: 20,
+    borderRadius: 25,
   },
   loginButtonText: {
     color: 'white',

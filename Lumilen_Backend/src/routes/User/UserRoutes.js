@@ -1,10 +1,6 @@
-// routes/userRoutes.js
 const express = require('express');
 const router = express.Router();
 const User = require('../../model/User');
-const Picutre = require('../../model/Picture');
-const TableUser = require('../../model/TableUser');
-const Notification = require('../../model/Notification');
 const mongoose = require('mongoose');
 
 

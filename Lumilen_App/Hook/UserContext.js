@@ -16,6 +16,7 @@ export const UserProvider = ({ children }) => {
       // Nếu cần tải mới dữ liệu, xóa dữ liệu cũ từ `AsyncStorage`
       if (forceRefresh) {
         await AsyncStorage.removeItem("userData");
+        console.log("Cleared user data from AsyncStorage");
       }
  
       // Kiểm tra xem dữ liệu đã lưu trong `AsyncStorage` chưa

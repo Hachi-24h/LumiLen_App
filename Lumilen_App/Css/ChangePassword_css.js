@@ -1,7 +1,6 @@
-// ChangePasswordStyles.js
 import { StyleSheet } from 'react-native';
 
-export const styles = StyleSheet.create({
+const styles = StyleSheet.create({
   container: {
     flex: 1,
     padding: 16,
@@ -13,10 +12,6 @@ export const styles = StyleSheet.create({
     alignItems: 'center',
     marginBottom: 20,
   },
-  backText: {
-    fontSize: 18,
-    color: '#000',
-  },
   headerTitle: {
     fontSize: 18,
     fontWeight: 'bold',
@@ -25,6 +20,7 @@ export const styles = StyleSheet.create({
     paddingVertical: 8,
     paddingHorizontal: 16,
     borderRadius: 5,
+    backgroundColor: '#DF0018',
   },
   doneButtonText: {
     color: '#fff',
@@ -33,20 +29,29 @@ export const styles = StyleSheet.create({
   label: {
     fontSize: 16,
     marginBottom: 8,
+    fontWeight: '500',
   },
-  input: {
+  inputContainer: {
+    flexDirection: 'row',
+    alignItems: 'center',
     borderWidth: 1,
     borderColor: '#ccc',
-    padding: 10,
     borderRadius: 5,
-    marginBottom: 16,
+    paddingHorizontal: 10,
+    marginBottom: 8,
   },
-  errorInput: {
+  input: {
+    flex: 1,
+    paddingVertical: 10,
+  },
+  errorBorder: {
     borderColor: 'red',
   },
   errorText: {
     color: 'red',
+    fontSize: 14,
     marginBottom: 8,
   },
 });
+
 export default styles;

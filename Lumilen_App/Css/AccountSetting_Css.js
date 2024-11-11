@@ -20,6 +20,17 @@ const styles = StyleSheet.create({
     flex: 1,
     textAlign: 'center',
   },
+  // Icon Ảnh đại diện
+  profileImageContainer: {
+    width: 50,
+    height: 50,
+    borderRadius: 25,
+    overflow: 'hidden',
+  },
+  profileImage: {
+    width: 50,
+    height: 50,
+  },
   profileSection: {
     flexDirection: 'row',
     alignItems: 'center',
@@ -60,17 +71,8 @@ const styles = StyleSheet.create({
     fontSize: 16,
     color: '#333',
   },
-  footer: {
-    flexDirection: 'row',
-    justifyContent: 'space-around',
-    paddingVertical: 10,
-    borderTopWidth: 1,
-    borderTopColor: '#eee',
-  },
-  footerIcon: {
-    width: 30,
-    height: 30,
-  },
+ 
+ 
 });
 
 export default styles;

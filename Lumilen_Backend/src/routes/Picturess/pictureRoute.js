@@ -16,6 +16,35 @@ router.get('/getAllPictures', async (req, res) => {
     }
 });
 
+// Route để thêm một Picture mới
+router.post('/addPicture', async (req, res) => {
+    try {
+        // Lấy dữ liệu từ req.body
+        const { uri, title, id, typePicture } = req.body;
+
+        // Kiểm tra các trường bắt buộc
+        if (!uri || !id) {
+            return res.status(400).json({ message: "uri và id là bắt buộc." });
+        }
+
+        // Tạo một Picture mới
+        const newPicture = new Picture({
+            uri,
+            title,
+            id,
+            typePicture
+        });
+
+        // Lưu Picture vào cơ sở dữ liệu
+        const savedPicture = await newPicture.save();
+
+        // Trả về kết quả
+        res.status(200).json({ message: "Picture added successfully", picture: savedPicture });
+    } catch (error) {
+        res.status(500).json({ message: error.message });
+    }
+});
+
 
 // Hàm tìm ảnh theo id
 // http://172.21.80.105:5000/picture/getPictureById/6728e2c2893cc88bd98fd342

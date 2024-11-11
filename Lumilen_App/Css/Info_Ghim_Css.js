@@ -6,6 +6,9 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     backgroundColor: "#fff",
+    padding:0,
+    width:"100%",
+    height:"100%"
   },
   header: {
     flexDirection: "row",
@@ -15,17 +18,14 @@ const styles = StyleSheet.create({
     backgroundColor: "#fff",
     borderBottomWidth: 1,
     borderBottomColor: "#eee",
+    height: "10%",
   },
   headerLeft: {
     flex: 1,
     justifyContent: "center",
     alignItems: "center",
   },
-  profileImage: {
-    width: 40,
-    height: 40,
-    borderRadius: 20,
-  },
+
   headerCenter: {
     flex: 3,
     flexDirection: "row",
@@ -63,6 +63,8 @@ const styles = StyleSheet.create({
   searchBarContainer: {
     padding: 10,
     backgroundColor: "#fff",
+    alignItems: "center",
+    height:"7%",
   },
   searchBar: {
     width: "100%",
@@ -75,19 +77,25 @@ const styles = StyleSheet.create({
     flexDirection: "row",
     padding: 10,
     justifyContent: "space-around",
+    height:"7%",
+  },
+  ListTab: {
+    flexDirection: "row",
+    justifyContent: "space-around",
+    padding: 10,
+    height:"69%",
   },
   filterButton: {
-    width: 30,
-    height: 30,
+    width: 80,
+    height: 40,
     justifyContent: "center",
     alignItems: "center",
-    backgroundColor: "#ddd",
+    backgroundColor: "white",
     borderRadius: 15,
+    borderWidth:1,
+    borderColor:"black"
   },
-  filterIcon: {
-    width: 20,
-    height: 20,
-  },
+
   filterTextButton: {
     padding: 5,
   },
@@ -103,6 +111,95 @@ const styles = StyleSheet.create({
     borderRadius: 10, // Bo góc ảnh
    
   },
+  filterContainer: {
+    flexDirection: "row",
+    padding: 10,
+    justifyContent: "space-around",
+    
+  },
+  TouchableOpacitystyle: {
+    width: 50,
+    height: 50,
+    borderRadius: 30,
+    alignItems: "center",
+    justifyContent: "center",
+    borderWidth: 2,
+    borderColor: "black",
+  },
+  profileImage: {
+    width: 40,
+    height: 40,
+    borderRadius: 20,
+    padding:1,
+  
+  },
+  emptyMessageContainer: {
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+  emptyMessageText: {
+    fontSize: 16,
+    color: 'gray',
+    textAlign: 'center',
+    padding: 20,
+  },
+
+
+  // Modal create 
+
+  modalContainer: {
+    flex: 1,
+    justifyContent: "flex-end",
+    backgroundColor: "rgba(0, 0, 0, 0.5)",
+  },
+  createModalContent: {
+    backgroundColor: "white",
+    borderTopLeftRadius: 15,
+    borderTopRightRadius: 15,
+    padding: 20,
+    alignItems: "center",
+  },
+  closeButton: {
+    alignSelf: "flex-start",
+    
+    flexDirection : "row",
+  },
+  closeButtonText: {
+    fontSize: 24,
+    color: "black",
+  },
+  createModalTitle: {
+    fontSize: 18,
+    fontWeight: "bold",
+    marginLeft:80,
+    height: 70,
+  },
+  createOptions: {
+    flexDirection: "row",
+    justifyContent: "space-around",
+    width: "100%",
+  },
+  optionButton: {
+    alignItems: "center",
+    backgroundColor: "#ddd",
+    width: 80,
+    height: 80,
+    borderRadius: 20,
+    justifyContent: "center",
+  },
+  optionIcon: {
+    width: 30,
+    height: 30,
+    
+  },
+  optionText: {
+    fontSize: 14,
+    color: "Black",
+    fontWeight: "bold",
+    marginVertical: 10,
+  },
+
 });
 
 export default styles;

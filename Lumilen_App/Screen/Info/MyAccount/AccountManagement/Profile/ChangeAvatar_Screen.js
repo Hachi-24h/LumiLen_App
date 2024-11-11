@@ -1,52 +1,86 @@
-import React, { useState } from 'react';
-import { View, Text, Image, TouchableOpacity, StatusBar, Alert } from 'react-native';
-import styles from '../../../../../Css/ChangeAvatar_Css';
+import React, { useState, useContext } from 'react';
+import { View, Text, Image, TouchableOpacity, StatusBar, Alert, Modal, ActivityIndicator } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
 import * as ImagePicker from 'expo-image-picker';
-import { showSuccessMessage } from '../../../../Other/notification';
+import axios from 'axios';
+import styles from '../../../../../Css/ChangeAvatar_Css';
+import { UserContext } from '../../../../../Hook/UserContext';
+import BASE_URL from '../../../../../IpAdress';
 
-
-const ChangeAvatarScreen = ({navigation}) => {
-  const [avatarUri, setAvatarUri] = useState(null);
+const ChangeAvatarScreen = ({ navigation }) => {
+  const DefaultAvatar = require('../../../../../Picture/defaultavatar.jpg');
+  const { userData, fetchUserData } = useContext(UserContext);
+  const userId = userData ? userData._id : null;
+  const [avatarUri, setAvatarUri] = useState(userData ? userData.avatar : DefaultAvatar);
+  const [isLoading, setIsLoading] = useState(false); // Thêm state để quản lý trạng thái loading
 
   // Hàm để yêu cầu quyền và mở thư viện ảnh
   const chooseImage = async () => {
     try {
-      // Yêu cầu quyền truy cập thư viện ảnh
       const { status } = await ImagePicker.requestMediaLibraryPermissionsAsync();
       if (status !== 'granted') {
         Alert.alert('Quyền bị từ chối', 'Ứng dụng cần quyền truy cập thư viện ảnh để tiếp tục.');
         return;
       }
 
-      // Mở thư viện ảnh và cho phép người dùng chọn, cắt ảnh
       const result = await ImagePicker.launchImageLibraryAsync({
         mediaTypes: ImagePicker.MediaTypeOptions.Images,
-        allowsEditing: true, // Cho phép cắt ảnh
-        aspect: [1, 1], // Tỷ lệ cắt ảnh vuông
+        allowsEditing: true,
+        aspect: [1, 1],
         quality: 1,
       });
 
-      console.log('Full Result:', result);
-
-      // Kiểm tra nếu có kết quả và không bị hủy
       if (!result.canceled && result.assets && result.assets.length > 0) {
-        // Lấy URI từ assets
-        const uri = result.assets[0].uri;
-        console.log('Image URI:', uri);
-
-        // Cập nhật URI của avatar sau khi người dùng cắt ảnh
-        setAvatarUri(uri);
-
-        // Thông báo cập nhật thành công
-        showSuccessMessage('Cập nhật avatar thành công.');
+        const imageUri = result.assets[0].uri;
+        // Bắt đầu hiển thị loading
+        setIsLoading(true);
+        // Gọi hàm upload ảnh và cập nhật avatar
+        await handleImageUpload(imageUri);
+        setIsLoading(false); // Tắt loading sau khi upload xong
       } else {
-        // Thông báo lỗi nếu người dùng hủy chọn ảnh
-        showSuccessMessage('Có lỗi xảy ra, vui lòng thử lại.');
+        console.error('Có lỗi xảy ra', 'Vui lòng thử lại.');
       }
     } catch (error) {
-      // Thông báo lỗi nếu xảy ra lỗi trong quá trình chọn ảnh
-      showSuccessMessage('Có lỗi xảy ra.');
+      setIsLoading(false); // Tắt loading nếu có lỗi
+      console.error("Lỗi khi chọn ảnh:", error);
+    }
+  };
+
+  // Hàm upload ảnh và cập nhật avatar
+  const handleImageUpload = async (imageUri) => {
+    try {
+      const formData = new FormData();
+      formData.append('img', {
+        uri: imageUri,
+        type: 'image/jpeg',
+        name: 'avatar.jpg',
+      });
+
+      // Gọi API upload ảnh
+      const uploadResponse = await axios.post(`${BASE_URL}/upload`, formData, {
+        headers: {
+          'Content-Type': 'multipart/form-data',
+        },
+      });
+
+      // Lấy link từ `path` trong phản hồi
+      const cloudinaryLink = uploadResponse.data.path;
+      console.error("Đường dẫn ảnh trên Cloudinary:", cloudinaryLink);
+
+      // Cập nhật avatar với link mới
+      const response = await axios.put(`${BASE_URL}/user/updateUser/${userId}`, {
+        avatar: cloudinaryLink,
+      });
+
+      if (response.status === 200) {
+        console.log("Avatar cập nhật thành công");
+        await fetchUserData(userData.email); // Lấy lại dữ liệu người dùng sau khi cập nhật
+        navigation.replace("ChangeAvatar"); // Làm mới trang
+      } else {
+        console.error("Cập nhật avatar thất bại");
+      }
+    } catch (error) {
+      console.error("Lỗi khi upload ảnh:", error);
     }
   };
 
@@ -56,7 +90,6 @@ const ChangeAvatarScreen = ({navigation}) => {
       
       {/* Nút đóng */}
       <TouchableOpacity style={styles.closeButton} onPress={() => navigation.navigate("Profile")}>
-
         <Ionicons name="close" size={30} color="black" />
       </TouchableOpacity>
 
@@ -66,37 +99,31 @@ const ChangeAvatarScreen = ({navigation}) => {
         <Text style={styles.username}>Hachi</Text>
         <View style={styles.avatarWrapper}>
           <Image
-            source={avatarUri ? { uri: avatarUri + '?' + new Date().getTime() } : require('../../../../../Picture/image_1.png')}
+            source={{ uri: avatarUri }}
             style={styles.avatar}
           />
         </View>
       </View>
 
-      {/* Phần hướng dẫn */}
-      <View style={styles.instructionSection}>
-        <Text style={styles.instructionText}>
-          1. Mở ứng dụng <Image source={require('../../../../../Icon/logo.png')} style={styles.icon} />
-        </Text>
-        <Text style={styles.instructionText}>
-          2. Chuyển đến thanh <Ionicons name="search-circle-sharp" size={26} />
-        </Text>
-        <Text style={styles.instructionText}>
-          3. Quét bằng biểu tượng <Ionicons name="camera-sharp" size={26} />
-        </Text>
-      </View>
-
       {/* Các nút */}
       <View style={styles.buttonSection}>
-        {/* Nút chọn ảnh */}
         <TouchableOpacity style={styles.changeAvatarButton} onPress={chooseImage}>
           <Text style={styles.buttonText}>Thay đổi hình ảnh hồ sơ</Text>
         </TouchableOpacity>
-
-        {/* Nút tải mã ghim */}
         <TouchableOpacity style={styles.downloadButton}>
           <Text style={[styles.buttonText, { color: 'white' }]}>Tải Mã ghim xuống</Text>
         </TouchableOpacity>
       </View>
+
+      {/* Modal hiển thị khi đang tải */}
+      {isLoading && (
+        <Modal transparent={true} animationType="fade" visible={isLoading}>
+          <View style={styles.loadingOverlay}>
+            <ActivityIndicator size="large" color="#fff" />
+            <Text style={styles.loadingText}>Đang cập nhật, vui lòng chờ...</Text>
+          </View>
+        </Modal>
+      )}
     </View>
   );
 };

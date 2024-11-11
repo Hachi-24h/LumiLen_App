@@ -1,4 +1,4 @@
-import React, { useState, useContext, useEffect } from "react";
+import React, { useState, useContext } from "react";
 import {
   View,
   Text,
@@ -11,31 +11,23 @@ import {
 import { Ionicons } from "@expo/vector-icons";
 import styles from "../../Css/SignIn_css";
 import axios from "axios";
-import { UserContext } from "../../Hook/UserContext"
-
+import { UserContext } from "../../Hook/UserContext";
 import BASE_URL from "../../IpAdress";
-
-
-
 
 const LoginScreen = ({ navigation }) => {
   const [email, setEmail] = useState("nam@gmail.com");
-  const [password, setPassword] = useState("thanhnam");
+  const [password, setPassword] = useState("Hachi@123");
   const [isPasswordVisible, setIsPasswordVisible] = useState(false);
   const [emailBorderColor, setEmailBorderColor] = useState("black");
   const [passwordBorderColor, setPasswordBorderColor] = useState("black");
 
-  const { fetchUserData } = useContext(UserContext); 
- 
+  // Lấy các hàm từ UserContext
+  const { fetchUserData, clearUserData } = useContext(UserContext);
 
-
- 
-  
+  // Hàm xử lý đăng nhập
   const handleLogin = async () => {
     try {
       // Gửi yêu cầu POST tới backend để kiểm tra tài khoản
-
-
       const response = await axios.post(`${BASE_URL}/user/login`, {
         email,
         password,
@@ -49,18 +41,18 @@ const LoginScreen = ({ navigation }) => {
         // Gọi hàm fetchUserData với email để lưu dữ liệu người dùng vào Context
         await fetchUserData(email);
 
-        // Điều hướng đến màn hình khác sau khi đăng nhập thành công
-        navigation.navigate("Info_Bang");
+      
+        navigation.navigate("Info_Ghim");
       } else {
         setEmailBorderColor("red");
         setPasswordBorderColor("red");
-        Alert.alert("Login Failed", "Invalid email or password.");
+       
       }
     } catch (error) {
-      console.error("Login error:", error);
+      // console.error("Login error:", error);
       setEmailBorderColor("red");
       setPasswordBorderColor("red");
-      Alert.alert("An error occurred. Please try again.");
+      
     }
   };
 

@@ -1,18 +1,50 @@
-import React, { useState } from 'react';
-import { View, Text, TouchableOpacity } from 'react-native';
+import React, { useState, useContext } from 'react';
+import { View, Text, TouchableOpacity, Alert } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
-import styles from '../../../../../../Css/GenderInfo_Css'; // Tạo file CSS tương tự
+import axios from 'axios';
+import styles from '../../../../../../Css/GenderInfo_Css';
+import BASE_URL from '../../../../../../IpAdress';
+import { UserContext } from '../../../../../../Hook/UserContext';
 
 const GenderInfoScreen = ({ navigation, route }) => {
-  const [selectedGender, setSelectedGender] = useState(route.params?.gender || 'Nam'); // Lấy giá trị giới tính hiện tại hoặc mặc định là Nam
+  const { userData, fetchUserData } = useContext(UserContext);
+  const userId = userData ? userData._id : null;
 
-  // Hàm để chọn giới tính
-  const handleGenderSelect = (gender) => {
+  // Ánh xạ giữa giá trị hiển thị và giá trị enum trong dữ liệu
+  const genderMap = {
+    "Nam": "Male",
+    "Nữ": "Female",
+    "Khác": "Other"
+  };
+
+  const reverseGenderMap = {
+    "Male": "Nam",
+    "Female": "Nữ",
+    "Other": "Khác"
+  };
+
+  const [selectedGender, setSelectedGender] = useState(reverseGenderMap[route.params?.gender] || 'Nam');
+
+  const handleGenderSelect = async (gender) => {
     setSelectedGender(gender);
-    navigation.navigate("PersonalInfo", {
-      selectedGender: gender,
-      showSuccessMessage: "Thêm giới tính thành công", // Nội dung thông báo
-    });
+    const mappedGender = genderMap[gender]; // Chuyển đổi giá trị hiển thị sang giá trị enum
+
+    try {
+      const response = await axios.put(`${BASE_URL}/user/updateUser/${userId}`, {
+        gender: mappedGender, // Gửi giá trị enum
+      });
+
+      if (response.status === 200) {
+        await fetchUserData(userData.email); // Làm mới dữ liệu user trong context
+        navigation.navigate("PersonalInfo", {
+          selectedGender: mappedGender,
+          showSuccessMessage: "Thêm giới tính thành công",
+        });
+      }
+    } catch (error) {
+      console.error("Lỗi khi cập nhật giới tính:", error);
+      Alert.alert("Lỗi", "Không thể cập nhật giới tính. Vui lòng thử lại sau.");
+    }
   };
 
   return (

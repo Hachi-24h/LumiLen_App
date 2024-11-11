@@ -1,23 +1,28 @@
-import React, { useState ,useEffect} from 'react';
-import { View, Text, TouchableOpacity, Switch, StatusBar } from 'react-native';
+import React, { useEffect, useState, useContext } from "react";
+import {
+  View,
+  Text,
+  Image,
+  TextInput,
+  FlatList,
+  StatusBar,
+  TouchableOpacity,
+  Dimensions,
+  Modal,
+  Switch
+} from "react-native";
 import { Ionicons } from '@expo/vector-icons';
 import styles from '../../../../Css/AccountManagement_Css'; 
 import { showSuccessMessage } from "../../../../Screen/Other/notification";
+import { UserContext } from "../../../../Hook/UserContext";
 const AccountManagementScreen = ({ navigation, route }) => {
   const [isSoundEnabled, setIsSoundEnabled] = useState(false);
-  const [email, setEmail] = useState('shinnichi987@gmail.com'); // Giá trị mặc định email
-
-  // Cập nhật email nếu nhận được từ màn hình UpdateEmailScreen
+  // const [email, setEmail] = useState('shinnichi987@gmail.com'); 
+  const {userData} = useContext(UserContext);
+  const email = userData ? userData.email : null;
   useEffect(() => {
-    if (route.params?.updatedEmail) {
-      setEmail(route.params.updatedEmail);
-      
-    }
     if (route.params?.showSuccessMessage) {
-        
-        // console.log(route.params.showSuccessMessage)
         showSuccessMessage(route.params.showSuccessMessage);
-
       }
   }, [route.params]);
 

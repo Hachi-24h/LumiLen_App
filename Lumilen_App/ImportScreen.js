@@ -19,7 +19,7 @@ import UpdateEmail from "./Screen/Info/MyAccount/AccountManagement/AccountSettin
 import ChangePassword from "./Screen/Info/MyAccount/AccountManagement/AccountSetting/ChangePassword_Screen";
 import Profile from "./Screen/Info/MyAccount/AccountManagement/Profile/Profile_Screen";
 import ChangeAvatar from "./Screen/Info/MyAccount/AccountManagement/Profile/ChangeAvatar_Screen";
-import demoFuntion from "./DemoFuntion";
+import demo from "./DemoFuntion";
 
 export default {
   HomeTabs,
@@ -43,5 +43,5 @@ export default {
   ChangePassword,
   Profile,
   ChangeAvatar,
-  demoFuntion,
+  demo,
 };

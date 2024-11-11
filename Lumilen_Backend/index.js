@@ -40,6 +40,7 @@ app.use('/upload', upLoadRoutes);
 app.use('/picture',pictureRoute);
 app.use('/tableUser',tableUserRoute);
 app.use('/notification',NotifiRoute);
+
 const PORT = process.env.PORT || 3000;
 const IPV4 = getLocalIpAddress() ;
 

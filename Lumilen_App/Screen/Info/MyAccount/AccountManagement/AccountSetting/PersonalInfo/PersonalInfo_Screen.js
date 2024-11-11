@@ -1,25 +1,24 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useContext } from "react";
 import { View, Text, TouchableOpacity } from "react-native";
 import { Ionicons } from "@expo/vector-icons";
 import FlashMessage from "react-native-flash-message";
-import { showSuccessMessage } from "../../../../../Other/notification"; // Sử dụng hàm thông báo dùng chung
+import { showSuccessMessage } from "../../../../../Other/notification";
 import styles from "../../../../../../Css/PersonalInfo_Css";
+import { UserContext } from "../../../../../../Hook/UserContext";
 
 const PersonalInfoScreen = ({ navigation, route }) => {
-  const [birthDate, setBirthDate] = useState("12 thg 3, 2004");
-  const [gender, setGender] = useState("Nam"); // Thêm biến lưu giới tính
+  const { userData } = useContext(UserContext);
+  const dob = userData ? userData.dob : null;
+  const date = new Date(dob);
+  const formattedDate = `${date.getDate().toString().padStart(2, "0")}-${(
+    date.getMonth() + 1
+  )
+    .toString()
+    .padStart(2, "0")}-${date.getFullYear()}`;
 
-  // Cập nhật ngày sinh hoặc giới tính khi quay về từ các màn hình khác
+  const gender = userData.gender === "Male" ? "Nam" : userData.gender === "Female"  ? "Nữ" : "Khác";
+  
   useEffect(() => {
-    if (route.params?.selectedDate) {
-      setBirthDate(route.params.selectedDate);
-    }
-
-    if (route.params?.selectedGender) {
-      setGender(route.params.selectedGender); // Cập nhật giới tính từ GenderScreen
-    }
-
-    // Hiển thị thông báo nếu có message từ route
     if (route.params?.showSuccessMessage) {
       showSuccessMessage(route.params.showSuccessMessage);
     }
@@ -47,13 +46,13 @@ const PersonalInfoScreen = ({ navigation, route }) => {
           onPress={() => navigation.navigate("DOBInfo")}
         >
           <Text style={styles.settingText}>Ngày sinh</Text>
-          <Text style={styles.settingDetail}>{birthDate}</Text>
+          <Text style={styles.settingDetail}>{formattedDate}</Text>
           <Ionicons name="chevron-forward-outline" size={20} color="#000" />
         </TouchableOpacity>
 
         <TouchableOpacity
           style={styles.settingItem}
-          onPress={() => navigation.navigate("GenderInfo", { gender })} // Truyền giá trị giới tính hiện tại sang màn GenderInfo
+          onPress={() => navigation.navigate("GenderInfo", { gender })}
         >
           <Text style={styles.settingText}>Giới tính</Text>
           <Text style={styles.settingDetail}>{gender}</Text>

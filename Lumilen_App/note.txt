@@ -65,4 +65,13 @@ git commit -m "Đã làm thêm phần info "
 git push origin main         
 
 
-cập nhật 11/1 
+Tính 
+- load ảnh trang home ( ảnh là từ thư viện ảnh , có hàm getAnh)
+- viết sự kiện tạo 1 tabluser, thêm 1 ảnh từ thư viện lên ( tham khảo trang đổi avt)
+- lm sự kiện thông báo , nếu có 1 ng lưu ảnh mình về thông báo về là " hachi đã lưu ảnh bạn về bộ sưu tập của bạn ấy "
+- lm sự kiện đăng kí user 
+
+Nam 
+- Chỉnh sửa hồ sơ user ( đổi avt , thông tin ...)
+- lm full trang info , bảng ghim 
+- lm trang cá nhân ( khi người khác tìm kiếm bạn)

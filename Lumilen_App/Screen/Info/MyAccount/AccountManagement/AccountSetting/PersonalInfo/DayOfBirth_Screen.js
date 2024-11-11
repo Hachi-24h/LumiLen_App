@@ -1,13 +1,29 @@
-import React, { useState } from "react";
-import { View, Text, TouchableOpacity, StatusBar } from "react-native";
+import React, { useEffect, useState, useContext } from "react";
+import {
+  View,
+  Text,
+  Image,
+  TextInput,
+  FlatList,
+  StatusBar,
+  TouchableOpacity,
+  Dimensions,
+  Modal,
+} from "react-native";
 import DateTimePicker from "@react-native-community/datetimepicker";
 import styles from "../../../../../../Css/DOB_Css";
 import { Ionicons } from "@expo/vector-icons";
+import { UserContext } from "../../../../../../Hook/UserContext";
+import BASE_URL from "../../../../../../IpAdress";
 
 const BirthdayScreen = ({ navigation }) => {
-  const [date, setDate] = useState(new Date());
+  const { userData, fetchUserData } = useContext(UserContext);
+  const userID = userData ? userData._id : null;
+  const dob = userData ? userData.dob : null;
+  const [date, setDate] = useState(new Date(dob));
   const [showPicker, setShowPicker] = useState(false);
   const [errorMessage, setErrorMessage] = useState("");
+  const [successMessage, setSuccessMessage] = useState("");
 
   const onChange = (event, selectedDate) => {
     const currentDate = selectedDate || date;
@@ -26,24 +42,46 @@ const BirthdayScreen = ({ navigation }) => {
   };
 
   const formatDate = (date) => {
-    if (!date || isNaN(date.getTime())) return "Ngày không hợp lệ"; 
+    if (!date || isNaN(date.getTime())) return "Ngày không hợp lệ";
     return `${date.getDate()} thg ${date.getMonth() + 1}, ${date.getFullYear()}`;
   };
 
-  const handleUpdate = () => {
+  const handleUpdate = async () => {
     const currentYear = new Date().getFullYear();
     const selectedYear = date.getFullYear();
     const age = currentYear - selectedYear;
-  
+
     if (age < 15) {
       setErrorMessage("Xin lỗi, bạn phải ít nhất 15 tuổi mới được dùng Pinterest");
     } else {
       setErrorMessage("");
-      const formattedDate = formatDate(date);
-      navigation.navigate("PersonalInfo", { 
-        selectedDate: formattedDate, 
-        showSuccessMessage: "Thêm ngày sinh thành công", // Nội dung thông báo 
-      });
+
+      try {
+        const formattedDate = date.toISOString();
+
+        const response = await fetch(`${BASE_URL}/user/updateUser/${userID}`, {
+          method: "PUT",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({ dob: formattedDate }),
+        });
+
+        const result = await response.json();
+
+        if (response.ok) {
+          setSuccessMessage("Ngày sinh đã được cập nhật thành công!");
+
+          // Gọi hàm fetchUserData để làm mới dữ liệu trong UserContext
+          await fetchUserData(userData.email);
+
+          navigation.navigate("PersonalInfo", { showSuccessMessage: "Thêm ngày sinh thành công" });
+        } else {
+          setErrorMessage(result.message || "Có lỗi xảy ra khi cập nhật ngày sinh.");
+        }
+      } catch (error) {
+        setErrorMessage("Lỗi kết nối. Vui lòng thử lại sau.");
+      }
     }
   };
 
@@ -78,15 +116,19 @@ const BirthdayScreen = ({ navigation }) => {
       )}
 
       {errorMessage ? (
-        <Text style={{ color: 'red', textAlign: 'center', marginBottom: 20 }}>{errorMessage}</Text>
+        <Text style={{ color: "red", textAlign: "center", marginBottom: 20 }}>{errorMessage}</Text>
+      ) : null}
+
+      {successMessage ? (
+        <Text style={{ color: "green", textAlign: "center", marginBottom: 20 }}>{successMessage}</Text>
       ) : null}
 
       <Text style={styles.subText}>
         Sử dụng ngày sinh của chính bạn, ngay cả khi đây là tài khoản doanh nghiệp.
       </Text>
 
-      <TouchableOpacity 
-        style={styles.updateButton} 
+      <TouchableOpacity
+        style={styles.updateButton}
         onPress={handleUpdate}
         disabled={!!errorMessage}
       >

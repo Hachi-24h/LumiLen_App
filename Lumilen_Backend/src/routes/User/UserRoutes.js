@@ -22,8 +22,6 @@ router.post("/login", async (req, res) => {
 });
 
 
-
-
 // Thêm một người dùng mới
 router.post('/addUser', async (req, res) => {
     const { email, password, dob, firstName, lastName, idUser } = req.body;

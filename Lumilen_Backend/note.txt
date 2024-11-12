@@ -41,3 +41,7 @@ Viết hàm tìm kiếm
 - theo tên
 - theo email
 
+pip install aiohttp
+
+
+python N:\Lumilen\Lumilen_Backend\src\routes\Picturess\app.py

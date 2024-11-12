@@ -22,35 +22,35 @@ router.post("/login", async (req, res) => {
 });
 
 
-// Thêm một người dùng mới
-router.post('/addUser', async (req, res) => {
-    const { email, password, dob, firstName, lastName, idUser } = req.body;
-    console.log("Tinh test Dữ liệu nhận được từ req.body:", req.body); // Kiểm tra dữ liệu
+// // Thêm một người dùng mới
+// router.post('/addUser', async (req, res) => {
+//     const { email, password, dob, firstName, lastName, idUser } = req.body;
+//     console.log("Tinh test Dữ liệu nhận được từ req.body:", req.body); // Kiểm tra dữ liệu
     
-        // Tạo user mới với các thông tin được cung cấp
-        const newUser = new User({
-            email,
-            password, // Lưu ý: Cần mã hóa mật khẩu trước khi lưu
-            dob, 
-            firstName,
-            lastName,
-            idUser, // Thêm idUser vào dữ liệu người dùng
-            collectionUser: [],
-            ListAnhGhim: [],
-            Notifi: [],
-            following: [],
-            followers: []
-        });
+//         // Tạo user mới với các thông tin được cung cấp
+//         const newUser = new User({
+//             email,
+//             password, // Lưu ý: Cần mã hóa mật khẩu trước khi lưu
+//             dob, 
+//             firstName,
+//             lastName,
+//             idUser, // Thêm idUser vào dữ liệu người dùng
+//             collectionUser: [],
+//             ListAnhGhim: [],
+//             Notifi: [],
+//             following: [],
+//             followers: []
+//         });
 
-        // Lưu user vào cơ sở dữ liệu
-        await newUser.save();
+//         // Lưu user vào cơ sở dữ liệu
+//         await newUser.save();
 
-        // Trả về thông tin user mới tạo
-        res.status(201).json(newUser);
-    } catch (error) {
-        res.status(500).json({ message: error.message });
-    }
-});
+//         // Trả về thông tin user mới tạo
+//         res.status(201).json(newUser);
+//     } catch (error) {
+//         res.status(500).json({ message: error.message });
+//     }
+// });
 
 // Lấy tất cả người dùng với đầy đủ thông tin liên quan
 router.get('/getAllUsers', async (req, res) => {

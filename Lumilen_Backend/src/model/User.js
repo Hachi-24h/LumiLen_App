@@ -74,7 +74,13 @@ const userSchema = new mongoose.Schema({
     }],
     followers: [{
         type: mongoose.Schema.Types.ObjectId
-    }]
+    }],
+    historyText: {
+        type: [String],
+        set: (arr) => arr.map((item) => item.trim()), 
+      
+        default: [], 
+    },
 }, {
     timestamps: true,
 });

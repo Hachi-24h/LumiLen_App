@@ -47,7 +47,7 @@ app.use('/notification',NotifiRoute);
 
 app.post('/api/search_image', async (req, res) => {
     try {
-        const response = await axios.post(`http://${IPV4}:${PORT}/api/search_image`, req.body);
+        const response = await axios.post(`http://${IPV4}:5001/api/search_image`, req.body);
         res.json(response.data);
     } catch (error) {
         console.error('Error calling Flask API:', error);

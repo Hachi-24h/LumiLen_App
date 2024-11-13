@@ -14,7 +14,7 @@ const App = () => {
   return (
     <UserProvider>
       <NavigationContainer>
-        <Stack.Navigator initialRouteName="SignUp">
+        <Stack.Navigator initialRouteName="SignIn">
          
           {Object.keys(Screens).map((screen) => (
             <Stack.Screen

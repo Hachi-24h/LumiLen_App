@@ -7,24 +7,24 @@ const styles = StyleSheet.create({
     flex: 1,
     backgroundColor: "#fff",
   },
+
+  // header
   header: {
-    paddingTop:30,
+    paddingTop: 30,
     padding: 10,
     justifyContent: "center",
     alignItems: "center",
     width: "100%",
-    height: 70,
-    backgroundColor : "#fff",
-     },
-  section: {
-    flex: 1, // Đảm bảo rằng phần nội dung sẽ lấp đầy không gian còn lại
-    width: "100%",
+    height: height * 0.1,
     backgroundColor: "#fff",
   },
 
-  footerText: {
-    color: "#fff",
-    fontWeight: "bold",
+  // body 
+ 
+  section: {
+    flex: 1,
+    width: "100%",
+    backgroundColor: "#fff",
   },
   searchBar: {
     width: "90%",
@@ -62,10 +62,10 @@ const styles = StyleSheet.create({
     alignItems: "center",
   },
   inspirationImage: {
-    width: width * 0.8, // Đảm bảo chiều rộng ảnh bằng 80% chiều rộng màn hình
+    width: width * 0.8,
     height: 200,
     borderRadius: 15,
-    marginHorizontal: 10, // Khoảng cách giữa các ảnh
+    marginHorizontal: 10,
     justifyContent: "center",
     alignItems: "center",
     overflow: "hidden",
@@ -85,7 +85,6 @@ const styles = StyleSheet.create({
     height: 200,
     borderRadius: 15,
     marginHorizontal: 10,
-    marginVertical: 10,
     justifyContent: "center",
     alignItems: "center",
     overflow: "hidden",
@@ -96,27 +95,62 @@ const styles = StyleSheet.create({
     fontWeight: "bold",
   },
   searchBarContainer: {
-
     flexDirection: "row",
     alignItems: "center",
     justifyContent: "space-between",
-  
-   
   },
-
   searchBarActive: {
-   
-    width: "80%", // Kéo ngắn thanh nhập khi đang focus
+    width: "80%",
   },
-
   cancelButton: {
     padding: 10,
-    
+  },
+  cancelText: {
+    color: "black",
+    fontWeight: "bold",
+  },
+  imageContainer: {
+    flex: 1,
+    margin: 5,
+  },
+  resultImage: {
+    width: "100%",
+    height: 150,
+    borderRadius: 10,
+    overflow: "hidden",
+  },
+  searchResultsContainer: {
+    paddingHorizontal: 10,
+    paddingVertical: 20,
+  },
+  noResultsText: {
+    fontSize: 18,
+    color: "#888",
+    textAlign: "center",
+    marginTop: 20,
   },
 
-  cancelText: {
-    color: "black", 
+  // loading
+  loadingOverlay: {
+    flex: 1,
+    backgroundColor: "rgba(0, 0, 0, 0.5)", // Màu nền mờ đen
+    justifyContent: "center",
+    alignItems: "center",
+  },
+  loadingText: {
+    color: "#fff",
+    marginTop: 10,
+    fontSize: 16,
     fontWeight: "bold",
+  },
+  // render image item
+  imageList: {
+    flex: 1, // Để MasonryList chiếm hết không gian còn lại và có thể cuộn
+  },
+  
+  imageStyle: {
+    borderRadius: 10, // Bo góc ảnh
+   
   },
 });
 

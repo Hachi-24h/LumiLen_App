@@ -41,7 +41,13 @@ Viết hàm tìm kiếm
 - theo tên
 - theo email
 
+
+npm install axios
+
 pip install aiohttp
+
+pip install googletrans==4.0.0-rc1
+
 
 
 python N:\Lumilen\Lumilen_Backend\src\routes\Picturess\app.py

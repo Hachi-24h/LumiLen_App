@@ -36,7 +36,7 @@ const LoginScreen = ({ navigation }) => {
     redirectUri: 'https://auth.expo.io/@phongnet321/Lumilen_App',
   });
   
-
+  // 
   // Cập nhật useEffect để kiểm tra lỗi trong response
   useEffect(() => {
     console.log("Response changed:", response);

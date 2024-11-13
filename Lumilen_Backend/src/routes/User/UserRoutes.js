@@ -25,8 +25,15 @@ router.post("/login", async (req, res) => {
 // Thêm một người dùng mới
 router.post('/addUser', async (req, res) => {
     const { email, password, dob, firstName, lastName, idUser } = req.body;
-    console.log("Tinh test Dữ liệu nhận được từ req.body:", req.body); // Kiểm tra dữ liệu
+    console.log("Dữ liệu nhận được từ req.body:", req.body); // Kiểm tra dữ liệu
     
+    try {
+        // Kiểm tra nếu email đã tồn tại
+        const existingUser = await User.findOne({ email });
+        if (existingUser) {
+            return res.status(400).json({ message: "Email đã tồn tại." });
+        }
+
         // Tạo user mới với các thông tin được cung cấp
         const newUser = new User({
             email,
@@ -300,6 +307,33 @@ router.delete('/deleteUser/:userId', async (req, res) => {
     }
 });
 
+// Route để xử lý Google Login
+router.post('/auth/google', async (req, res) => {
+    const { accessToken } = req.body;
 
+    try {
+        // Gửi yêu cầu đến Google API để lấy thông tin người dùng
+        const googleResponse = await axios.get(`https://www.googleapis.com/oauth2/v1/userinfo?access_token=${accessToken}`);
+        const { email, name } = googleResponse.data;
+
+        // Kiểm tra nếu người dùng đã tồn tại
+        let user = await User.findOne({ email });
+        if (!user) {
+            // Tạo người dùng mới nếu chưa tồn tại
+            user = new User({
+                email,
+                firstName: name.split(' ')[0],
+                lastName: name.split(' ').slice(1).join(' '),
+                // Các trường khác có thể điền mặc định hoặc thêm theo yêu cầu
+            });
+            await user.save();
+        }
+
+        res.status(200).json({ success: true, user });
+    } catch (error) {
+        console.error("Error during Google Login:", error);
+        res.status(500).json({ success: false, message: "An error occurred during Google login." });
+    }
+});
 
 module.exports = router;

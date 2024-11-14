@@ -22,35 +22,47 @@ router.post("/login", async (req, res) => {
 });
 
 
-// // Thêm một người dùng mới
-// router.post('/addUser', async (req, res) => {
-//     const { email, password, dob, firstName, lastName, idUser } = req.body;
-//     console.log("Tinh test Dữ liệu nhận được từ req.body:", req.body); // Kiểm tra dữ liệu
-    
-//         // Tạo user mới với các thông tin được cung cấp
-//         const newUser = new User({
-//             email,
-//             password, // Lưu ý: Cần mã hóa mật khẩu trước khi lưu
-//             dob, 
-//             firstName,
-//             lastName,
-//             idUser, // Thêm idUser vào dữ liệu người dùng
-//             collectionUser: [],
-//             ListAnhGhim: [],
-//             Notifi: [],
-//             following: [],
-//             followers: []
-//         });
+// Thêm một người dùng mới
+router.post('/addUser', async (req, res) => {
+    try {
+        const { email, password, dob, firstName, lastName, idUser, gender } = req.body;
 
-//         // Lưu user vào cơ sở dữ liệu
-//         await newUser.save();
+        console.log("Dữ liệu nhận được từ req.body:", req.body); // Kiểm tra dữ liệu đầu vào
 
-//         // Trả về thông tin user mới tạo
-//         res.status(201).json(newUser);
-//     } catch (error) {
-//         res.status(500).json({ message: error.message });
-//     }
-// });
+        // Kiểm tra xem email đã tồn tại trong hệ thống chưa
+        const existingUser = await User.findOne({ email });
+        if (existingUser) {
+            return res.status(400).json({ message: "Email đã được sử dụng" });
+        }
+
+        // Tạo người dùng mới với thông tin từ yêu cầu
+        const newUser = new User({
+            email,
+            password, // Lưu mật khẩu không mã hóa
+            dob,
+            firstName,
+            lastName,
+            idUser,
+            gender, // Đặt giới tính
+            collectionUser: [],
+            ListAnhGhim: [],
+            Notifi: [],
+            following: [],
+            followers: [],
+            historyText: []
+        });
+
+        // Lưu người dùng mới vào cơ sở dữ liệu
+        await newUser.save();
+
+        // Trả về thông tin người dùng mới tạo
+        res.status(201).json(newUser);
+    } catch (error) {
+        console.error("Lỗi khi tạo người dùng mới:", error);
+        res.status(500).json({ message: error.message });
+    }
+});
+
 
 // Lấy tất cả người dùng với đầy đủ thông tin liên quan
 router.get('/getAllUsers', async (req, res) => {

@@ -1,4 +1,4 @@
-.import React, { useState, useContext } from 'react';
+import React, { useState, useContext } from 'react';
 import { View, Text, Image, TouchableOpacity, StatusBar, Alert, Modal, ActivityIndicator } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
 import * as ImagePicker from 'expo-image-picker';

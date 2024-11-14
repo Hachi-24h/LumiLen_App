@@ -2,7 +2,7 @@
 import React, { useState } from 'react';
 import { View, Text, Image, TouchableOpacity, ScrollView, Modal } from 'react-native';
 import Ionicons from 'react-native-vector-icons/Ionicons';
-import styles from '../../Css/ImageDetail_Css'; 
+import styles from '../../Css/ImageDetail_Css';
 
 const ImageDetailScreen = ({ route, navigation }) => {
   const { image } = route.params;
@@ -30,7 +30,7 @@ const ImageDetailScreen = ({ route, navigation }) => {
 
       {/* Nội dung chính */}
       <ScrollView contentContainerStyle={styles.scrollContainer}>
-        <Image source={image.src} style={styles.image} />
+        <Image source={{ uri: image.source.uri }} style={styles.image} />
 
         <View style={styles.iconContainer}>
           <TouchableOpacity style={styles.iconButton}>

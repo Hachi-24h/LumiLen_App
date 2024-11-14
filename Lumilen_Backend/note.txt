@@ -51,3 +51,8 @@ pip install googletrans==4.0.0-rc1
 
 
 python N:\Lumilen\Lumilen_Backend\src\routes\Picturess\app.py
+
+- viết lại addUsers
+- viết lại Home 
+- viết trang chi tiết ảnh ( lấy data từ routes ) -> user
+- user

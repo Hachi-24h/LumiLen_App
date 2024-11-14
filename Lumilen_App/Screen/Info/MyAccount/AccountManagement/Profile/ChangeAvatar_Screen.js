@@ -72,10 +72,11 @@ const ChangeAvatarScreen = ({ navigation }) => {
         avatar: cloudinaryLink,
       });
 
+
       if (response.status === 200) {
         console.log("Avatar cập nhật thành công");
         await fetchUserData(userData.email); // Lấy lại dữ liệu người dùng sau khi cập nhật
-        navigation.replace("ChangeAvatar"); // Làm mới trang
+        navigation.replace("Info_Bang"); // Làm mới trang
       } else {
         console.error("Cập nhật avatar thất bại");
       }

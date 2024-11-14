@@ -13,6 +13,11 @@ import Footer from "../footer";
 import styles from "../../Css/Info_Ghim_Css";
 import { UserContext } from "../../Hook/UserContext";
 import BASE_URL from "../../IpAdress";
+import { convertDataWithSize } from "../../Hook/imageUtils";
+
+// Usage example
+// const processedImages = await convertDataWithSize(data);
+
 
 const { width } = Dimensions.get("window");
 const COLUMN_COUNT = 3;
@@ -42,40 +47,6 @@ const InfoScreen = ({ navigation, route }) => {
       console.error("Error fetching images:", error);
       return [];
     }
-  };
-
-  // Hàm chuyển đổi dữ liệu sang định dạng yêu cầu và lấy kích thước ảnh
-  const convertDataWithSize = async (data) => {
-    const imagesWithSize = await Promise.all(
-      data.map(async (item) => {
-        return new Promise((resolve) => {
-          Image.getSize(
-            item.uri,
-            (width, height) => {
-              resolve({
-                id: item._id,
-                uri: item.uri,
-                width,
-                height,
-                userId: item.id,
-                title: item.title, // Lưu `title` để sử dụng cho tìm kiếm
-              });
-            },
-            () => {
-              resolve({
-                id: item._id,
-                uri: item.uri,
-                width: 0,
-                height: 0,
-                userId: item.id,
-                title: item.title,
-              });
-            }
-          );
-        });
-      })
-    );
-    return imagesWithSize;
   };
 
   useEffect(() => {

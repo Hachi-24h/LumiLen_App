@@ -1,4 +1,4 @@
-import React, { useState, useEffect ,useContext} from "react";
+import React, { useState, useEffect, useContext } from "react";
 import {
   View,
   Text,
@@ -10,57 +10,39 @@ import {
   Dimensions,
   TouchableOpacity,
   Keyboard,
+  ActivityIndicator,
+  Modal,
 } from "react-native";
+import axios from "axios";
+import MasonryList from "react-native-masonry-list";
 import styles from "../../Css/Search_css";
 import Footer from "../footer";
 import { UserContext } from "../../Hook/UserContext";
+import { convertDataWithSize } from "../../Hook/imageUtils";
+
 const { width } = Dimensions.get("window");
+const COLUMN_COUNT = 3;
+const SPACING = 2;
+const columnWidth = (width - SPACING * (COLUMN_COUNT + 1)) / COLUMN_COUNT;
 
-const dataIdeas = [
-  { id: 1, title: "Galaxy Wallpaper" },
-  { id: 2, title: "Funny gif" },
-  { id: 3, title: "Astronomy" },
-  { id: 4, title: "Design" },
-  { id: 5, title: "Photography" },
-  { id: 6, title: "Animals" },
-];
-
-const inspirationData = [
-  { id: 1, image: require("../../Picture/image_1.png") },
-  { id: 2, image: require("../../Picture/image_2.png") },
-  { id: 3, image: require("../../Picture/image_3.png") },
-  { id: 4, image: require("../../Picture/image_4.png") },
-  { id: 5, image: require("../../Picture/image_5.png") },
-  { id: 6, image: require("../../Picture/image_6.png") },
-];
-
-const spotlightData = [
-  { id: 1, image: require("../../Picture/image_3.png") },
-  { id: 2, image: require("../../Picture/image_4.png") },
-  { id: 3, image: require("../../Picture/image_5.png") },
-  { id: 4, image: require("../../Picture/image_6.png") },
-];
-
-const Search = ({navigation,route}) => {
+const Search = ({ navigation, route }) => {
   const [isSearchActive, setIsSearchActive] = useState(false);
-  const [searchText, setSearchText] = useState(""); 
-  const [keyboardVisible, setKeyboardVisible] = useState(false); 
-  const { selectedIcon } = route.params || {}; 
+  const {textinput} = route.params || "";
+  const [searchText, setSearchText] = useState(textinput);
+  const [keyboardVisible, setKeyboardVisible] = useState(false);
+  const [images, setImages] = useState([]);
+  const [noResults, setNoResults] = useState(false);
+  const [isLoading, setIsLoading] = useState(false);
+  const { selectedIcon } = route.params || {};
   const { userData } = useContext(UserContext);
   const avatar = userData ? userData.avatar : null;
 
   useEffect(() => {
-    const keyboardDidShowListener = Keyboard.addListener(
-      "keyboardDidShow",
-      () => {
-        setKeyboardVisible(true); // Bàn phím xuất hiện
-      }
+    const keyboardDidShowListener = Keyboard.addListener("keyboardDidShow", () =>
+      setKeyboardVisible(true)
     );
-    const keyboardDidHideListener = Keyboard.addListener(
-      "keyboardDidHide",
-      () => {
-        setKeyboardVisible(false); // Bàn phím ẩn đi
-      }
+    const keyboardDidHideListener = Keyboard.addListener("keyboardDidHide", () =>
+      setKeyboardVisible(false)
     );
 
     return () => {
@@ -69,9 +51,47 @@ const Search = ({navigation,route}) => {
     };
   }, []);
 
+  const handleSearch = async () => {
+    if (!searchText.trim()) return;
+
+    setIsLoading(true); // Bắt đầu loading
+    setImages([]); // Xóa hình ảnh trước đó để đảm bảo mới mỗi lần tìm kiếm
+    setNoResults(false); // Đặt lại trạng thái kết quả không có
+
+    try {
+      const response = await axios.post("http://192.168.0.100:5001/api/search_image", {
+        keyword: searchText,
+      });
+
+      const fetchedImages = response.data.best_image_urls;
+      if (fetchedImages.length > 0) {
+        const imageUtils = await convertDataWithSize(fetchedImages);
+        console.log("imageUtils", imageUtils);
+        setImages(imageUtils);
+        setNoResults(false);
+      } else {
+        setImages([]);
+        setNoResults(true);
+      }
+    } catch (error) {
+      console.error("Error fetching images:", error);
+      setImages([]);
+      setNoResults(true);
+    } finally {
+      setIsLoading(false); // Kết thúc loading
+    }
+  };
+
+  const handleSubmitEditing = () => {
+    Keyboard.dismiss();
+    handleSearch();
+  };
+
   const handleCancel = () => {
     setIsSearchActive(false);
     setSearchText("");
+    setImages([]);
+    setNoResults(false);
     Keyboard.dismiss();
   };
 
@@ -80,102 +100,72 @@ const Search = ({navigation,route}) => {
       <StatusBar hidden={false} />
 
       {/* Search Bar */}
+      
       <View style={styles.header}>
         <View style={styles.searchBarContainer}>
           <TextInput
             style={[
               styles.searchBar,
-              isSearchActive ? styles.searchBarActive : null, 
+              isSearchActive ? styles.searchBarActive : null,
             ]}
             placeholder="Search for a project of any size"
             placeholderTextColor="#C4C4C4"
             value={searchText}
             onFocus={() => setIsSearchActive(true)}
             onChangeText={(text) => setSearchText(text)}
+            onSubmitEditing={handleSubmitEditing}
+            returnKeyType="search"
           />
           {isSearchActive && (
             <TouchableOpacity onPress={handleCancel} style={styles.cancelButton}>
-              <Text style={styles.cancelText}>Cancel</Text>
+              <Text style={styles.cancelText}>Hủy</Text>
             </TouchableOpacity>
           )}
         </View>
       </View>
 
-      {/* Sử dụng ScrollView để cuộn nội dung khi vượt quá kích thước */}
-      <ScrollView 
-        style={styles.section}
-        keyboardShouldPersistTaps="handled" // Ngăn không để bàn phím ảnh hưởng đến cuộn
-      >
-        {/* Ideas Section */}
-        <View style={styles.ideaSection}>
-          <Text style={styles.sectionTitle}>Ideas for you</Text>
-          <FlatList
-            horizontal
-            data={dataIdeas}
-            renderItem={({ item }) => (
-              <View style={styles.ideaItem}>
-                <Text style={styles.ideaText}>{item.title}</Text>
-              </View>
-            )}
-            keyExtractor={(item) => item.id.toString()}
-            showsHorizontalScrollIndicator={false}
-          />
+      {/* Hiển thị Modal loading */}
+      <Modal transparent={true} animationType="fade" visible={isLoading}>
+        <View style={styles.loadingOverlay}>
+          <ActivityIndicator size="large" color="#fff" />
+          <Text style={styles.loadingText}>Đang load ảnh, vui lòng chờ...</Text>
         </View>
+      </Modal>
 
-        {/* Inspiration Section */}
-        <View style={styles.inspirationSection}>
-          <Text style={styles.sectionTitle}>Today's Inspiration</Text>
-          <FlatList
-            horizontal
-            data={inspirationData}
-            renderItem={({ item }) => (
-              <ImageBackground
-                source={item.image}
-                style={styles.inspirationImage}
-              >
-                <Text style={styles.inspirationText}>Your go-to guide</Text>
-              </ImageBackground>
-            )}
-            keyExtractor={(item) => item.id.toString()}
-            showsHorizontalScrollIndicator={false}
-            pagingEnabled
-            snapToAlignment="center"
-            snapToInterval={width * 0.8 + 20}
-            decelerationRate="fast"
-            contentContainerStyle={{
-              paddingHorizontal: (width - width * 1) / 2,
-            }}
-          />
-        </View>
+      {/* Hiển thị kết quả tìm kiếm hoặc các component mặc định */}
+      {images.length > 0 ? (
+       <View style={styles.imageList}>
+       <MasonryList
+         key={images.length}
+         images={images.map((item) => ({
+           source: { uri: item.uri },
+           width: (item.width * columnWidth * 2) / item.width,
+           height: (item.height * columnWidth * 2) / item.width,
+         }))}
+         columns={COLUMN_COUNT}
+         spacing={SPACING}
+         imageContainerStyle={styles.imageStyle}
+         contentContainerStyle={{
+           paddingBottom: 20, // thêm khoảng trống cuối danh sách
+         }}
+       />
+     </View>
+      ) : noResults ? (
+        <Text style={styles.noResultsText}>Không có ảnh nào.</Text>
+      ) : (
+        <ScrollView style={styles.section} keyboardShouldPersistTaps="handled">
+          {/* Nội dung mặc định */}
+        </ScrollView>
+      )}
 
-        {/* Spotlight Section */}
-        <View style={styles.spotlightSection}>
-          <Text style={styles.sectionTitle}>Shopping Spotlight</Text>
-          <FlatList
-            horizontal
-            data={spotlightData}
-            renderItem={({ item }) => (
-              <ImageBackground
-                source={item.image}
-                style={styles.spotlightImage}
-              >
-                <Text style={styles.spotlightText}>Spotlight Content</Text>
-              </ImageBackground>
-            )}
-            keyExtractor={(item) => item.id.toString()}
-            showsHorizontalScrollIndicator={false}
-            pagingEnabled
-            snapToAlignment="center"
-            snapToInterval={width * 0.8 + 20}
-            decelerationRate="fast"
-            contentContainerStyle={{
-              paddingHorizontal: (width - width * 1) / 2,
-            }}
-          />
-        </View>
-      </ScrollView>
-
-      {!keyboardVisible &&     <Footer navigation={navigation}  avatar={avatar} initialSelectedIcon={selectedIcon} namePage={"Trang Tìm kiếm"}  />} 
+      {!keyboardVisible && (
+        <Footer
+          navigation={navigation}
+          avatar={avatar}
+          initialSelectedIcon={selectedIcon}
+          namePage={"Trang Tìm kiếm"}
+        />
+      )}
     </View>
   );
 };

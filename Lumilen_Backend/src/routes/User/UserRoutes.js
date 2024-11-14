@@ -25,15 +25,8 @@ router.post("/login", async (req, res) => {
 // Thêm một người dùng mới
 router.post('/addUser', async (req, res) => {
     const { email, password, dob, firstName, lastName, idUser } = req.body;
-    console.log("Dữ liệu nhận được từ req.body:", req.body); // Kiểm tra dữ liệu
+    console.log("Tinh test Dữ liệu nhận được từ req.body:", req.body); // Kiểm tra dữ liệu
     
-    try {
-        // Kiểm tra nếu email đã tồn tại
-        const existingUser = await User.findOne({ email });
-        if (existingUser) {
-            return res.status(400).json({ message: "Email đã tồn tại." });
-        }
-
         // Tạo user mới với các thông tin được cung cấp
         const newUser = new User({
             email,
@@ -49,15 +42,15 @@ router.post('/addUser', async (req, res) => {
             followers: []
         });
 
-        // Lưu user vào cơ sở dữ liệu
-        await newUser.save();
+//         // Lưu user vào cơ sở dữ liệu
+//         await newUser.save();
 
-        // Trả về thông tin user mới tạo
-        res.status(201).json(newUser);
-    } catch (error) {
-        res.status(500).json({ message: error.message });
-    }
-});
+//         // Trả về thông tin user mới tạo
+//         res.status(201).json(newUser);
+//     } catch (error) {
+//         res.status(500).json({ message: error.message });
+//     }
+// });
 
 // Lấy tất cả người dùng với đầy đủ thông tin liên quan
 router.get('/getAllUsers', async (req, res) => {

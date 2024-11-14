@@ -35,6 +35,9 @@ app.get('/', (req, res) => {
 });
 
 
+const PORT = process.env.PORT || 3000;
+const IPV4 = getLocalIpAddress() ;
+
 app.use("/ip", ipRoutes);
 app.use('/user', userRoutes);
 app.use('/upload', upLoadRoutes);
@@ -42,9 +45,17 @@ app.use('/picture',pictureRoute);
 app.use('/tableUser',tableUserRoute);
 app.use('/notification',NotifiRoute);
 
+app.post('/api/search_image', async (req, res) => {
+    try {
+        const response = await axios.post(`http://${IPV4}:5001/api/search_image`, req.body);
+        res.json(response.data);
+    } catch (error) {
+        console.error('Error calling Flask API:', error);
+        res.status(500).json({ error: 'Failed to process image search request' });
+    }
+});
 
-const PORT = process.env.PORT || 3000;
-const IPV4 = getLocalIpAddress() ;
+
 
 app.listen(PORT, () => {
     console.log(`Server is running on http://${IPV4}:${PORT}`);

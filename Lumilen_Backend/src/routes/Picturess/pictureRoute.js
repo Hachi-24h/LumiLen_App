@@ -15,6 +15,19 @@ router.get('/getAllPictures', async (req, res) => {
         res.status(500).json({ message: error.message });
     }
 });
+router.get('/getListAllPictures', async (req, res) => {
+    try {
+        // Chỉ lấy trường 'uri' của các ảnh từ collection Picture
+        const pictures = await Picture.find({}, 'uri'); // Lấy chỉ trường 'uri'
+
+        // Trích xuất danh sách các uri từ kết quả
+        const uris = pictures.map(picture => picture.uri);
+
+        res.status(200).json(uris);
+    } catch (error) {
+        res.status(500).json({ message: error.message });
+    }
+});
 
 // lấy tất cả ảnh của 1 user dựa trên userId
 router.get('/getUserImages', async (req, res) => {

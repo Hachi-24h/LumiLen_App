@@ -54,7 +54,7 @@ const LoginScreen = ({ navigation }) => {
   const handleGoogleLogin = async (accessToken) => {
     console.log("handleGoogleLogin called with accessToken:", accessToken);
     try {
-      const response = await axios.post(`${BASE_URL}/auth/google`, { accessToken });
+      const response = await axios.post(`${BASE_URL}:5000/auth/google`, { accessToken });
       if (response.data.success) {
         await fetchUserData(response.data.user.email);
         navigation.navigate("Info_Bang");
@@ -73,7 +73,7 @@ const LoginScreen = ({ navigation }) => {
 
   const handleLogin = async () => {
     try {
-      const response = await axios.post(`${BASE_URL}/user/login`, {
+      const response = await axios.post(`${BASE_URL}:5000/user/login`, {
         email,
         password,
       });

@@ -1,12 +1,18 @@
 import sys
 import os
 import requests
+import socket
 sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), '..', '..', '..', 'src')))
 
 from flask import Flask, request, jsonify
 from image_search.clip_search import find_best_matches  # Điều chỉnh tên hàm import
-
+def get_local_ipv4():
+    hostname = socket.gethostname()
+    local_ip = socket.gethostbyname(hostname)
+    print(f"Local IPv4 Address: {local_ip}")  # In địa chỉ IP ra màn hình
+    return local_ip
 app = Flask(__name__)
+
 
 @app.route('/api/search_image', methods=['POST'])
 def search_image():
@@ -18,7 +24,8 @@ def search_image():
 
     # Lấy danh sách ảnh chi tiết từ API /getAllPictures
     try:
-        response = requests.get('http://192.168.0.100:5000/picture/getAllPictures')
+        local_ip = get_local_ipv4()
+        response = requests.get(f'http://{local_ip}:5000/picture/getAllPictures')
         if response.status_code != 200:
             return jsonify({"error": "Failed to retrieve images"}), 500
         image_data = response.json()  # List chứa các đối tượng ảnh chi tiết

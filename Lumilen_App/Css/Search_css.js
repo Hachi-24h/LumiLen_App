@@ -7,147 +7,109 @@ const styles = StyleSheet.create({
     flex: 1,
     backgroundColor: "#fff",
   },
-
-  // header
   header: {
-    paddingTop: 30,
-    padding: 10,
-    justifyContent: "center",
-    alignItems: "center",
-    width: "100%",
     height: height * 0.1,
-    backgroundColor: "#fff",
-  },
-
-  // body 
- 
-  section: {
-    flex: 1,
-    width: "100%",
-    backgroundColor: "#fff",
-  },
-  searchBar: {
-    width: "90%",
-    height: 50,
-    backgroundColor: "#F2F2F2",
-    borderRadius: 20,
-    paddingLeft: 15,
-    fontSize: 16,
-  },
-  ideaSection: {
-    paddingVertical: 15,
-    alignItems: "center",
-  },
-  sectionTitle: {
-    fontSize: 30,
-    fontWeight: "bold",
-    marginHorizontal: 15,
-    marginBottom: 20,
-    color: "#030D0C",
-  },
-  ideaItem: {
-    backgroundColor: "#ECECEC",
-    padding: 15,
-    borderRadius: 10,
-    marginHorizontal: 10,
-    alignItems: "center",
-    justifyContent: "center",
-  },
-  ideaText: {
-    fontSize: 14,
-  },
-  inspirationSection: {
-    paddingVertical: 50,
-    paddingHorizontal: 15,
-    alignItems: "center",
-  },
-  inspirationImage: {
-    width: width * 0.8,
-    height: 200,
-    borderRadius: 15,
-    marginHorizontal: 10,
-    justifyContent: "center",
-    alignItems: "center",
-    overflow: "hidden",
-  },
-  inspirationText: {
-    color: "white",
-    fontSize: 18,
-    fontWeight: "bold",
-  },
-  spotlightSection: {
-    paddingVertical: 40,
-    paddingHorizontal: 15,
-    alignItems: "center",
-  },
-  spotlightImage: {
-    width: width * 0.8,
-    height: 200,
-    borderRadius: 15,
-    marginHorizontal: 10,
-    justifyContent: "center",
-    alignItems: "center",
-    overflow: "hidden",
-  },
-  spotlightText: {
-    color: "white",
-    fontSize: 16,
-    fontWeight: "bold",
-  },
-  searchBarContainer: {
     flexDirection: "row",
     alignItems: "center",
-    justifyContent: "space-between",
+    paddingHorizontal: 10,
+    borderBottomWidth: 1,
+    borderBottomColor: "#e5e5e5",
   },
-  searchBarActive: {
-    width: "80%",
+  backButton: {
+    marginRight: 10,
+  },
+  searchBar: {
+    flex: 1,
+    height: "60%",
+    backgroundColor: "#f5f5f5",
+    borderRadius: 20,
+    paddingHorizontal: 15,
+    fontSize: 16,
+    color: "#333",
   },
   cancelButton: {
-    padding: 10,
+    marginLeft: 10,
   },
   cancelText: {
     color: "black",
     fontWeight: "bold",
+    fontSize: 16,
+  },
+  body: {
+    height: height * 0.8,
+    paddingHorizontal: 10,
+  },
+  footer: {
+    height: height * 0.1,
+    justifyContent: "center",
+    alignItems: "center",
+    borderTopWidth: 1,
+    borderTopColor: "#e5e5e5",
+    backgroundColor: "#fff",
+  },
+  historyTitle: {
+    fontSize: 18,
+    fontWeight: "bold",
+    marginVertical: 10,
+    color: "#333",
+  },
+  historyRow: {
+    flexDirection: "row",
+    alignItems: "center",
+    justifyContent: "space-between",
+    marginBottom: 10,
+    paddingVertical: 10,
+    paddingHorizontal: 5,
+  },
+  historyItem: {
+    flexDirection: "row",
+    // backgroundColor: "#f5f5f5",
+    // height: 50,
+    alignItems: "center",
+    flex: 1,
+  },
+  historyText: {
+    fontSize: 20,
+    color: "#333",
+    marginLeft: 15,
+    flex: 1,
+    fontWeight: "bold",
+  },
+  deleteIcon: {
+    marginLeft: 10,
+  },
+  iconSearch: {
+    width: 20,
+    height: 20,
+    tintColor: "#333",
+  },
+  // Phần CSS bổ sung cho ảnh kết quả
+  imageList: {
+    flex: 1,
+    marginTop: 10,
   },
   imageContainer: {
-    flex: 1,
-    margin: 5,
+    flex: 1 / 3, // Hiển thị 3 ảnh trên một dòng
+    aspectRatio: 1, // Giữ tỷ lệ vuông
+    padding: 5,
   },
-  resultImage: {
+  imageStyle: {
     width: "100%",
-    height: 150,
-    borderRadius: 10,
-    overflow: "hidden",
-  },
-  searchResultsContainer: {
-    paddingHorizontal: 10,
-    paddingVertical: 20,
+    height: "100%",
+    borderRadius: 8,
+    backgroundColor: "#f0f0f0",
   },
   noResultsText: {
-    fontSize: 18,
-    color: "#888",
     textAlign: "center",
+    fontSize: 18,
+    color: "#666",
     marginTop: 20,
   },
 
-  // loading
-  loadingOverlay: {
-    flex: 1,
-    backgroundColor: "rgba(0, 0, 0, 0.5)", // Màu nền mờ đen
-    justifyContent: "center",
-    alignItems: "center",
-  },
-  loadingText: {
-    color: "#fff",
-    marginTop: 10,
-    fontSize: 16,
-    fontWeight: "bold",
-  },
-  // render image item
+  // trang 3 
   imageList: {
-    flex: 1, // Để MasonryList chiếm hết không gian còn lại và có thể cuộn
+    flex: 1,
   },
-  
   imageStyle: {
     borderRadius: 10, // Bo góc ảnh
    

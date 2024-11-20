@@ -1,4 +1,4 @@
-import React, { useState, useContext, useEffect } from "react";
+import React, { useState, useContext, useEffect, useRef } from "react";
 import {
   View,
   Text,
@@ -24,15 +24,61 @@ const COLUMN_COUNT = 2;
 const SPACING = 2;
 const columnWidth = (width - SPACING * (COLUMN_COUNT + 1)) / COLUMN_COUNT;
 const Search = ({ navigation }) => {
+  const bannerRef = useRef(null);
   const [currentView, setCurrentView] = useState("default");
   const [searchText, setSearchText] = useState("");
   const [images, setImages] = useState([]);
   const [isLoading, setIsLoading] = useState(false);
   const [noResults, setNoResults] = useState(false);
   const [listHistoryText, setListHistoryText] = useState([]);
+  const [currentBannerIndex, setCurrentBannerIndex] = useState(0);
   const { userData } = useContext(UserContext);
   const userId = userData ? userData._id : null;
   const avatar = userData ? userData.avatar : null;
+
+  const bannerImages = [
+    "https://res.cloudinary.com/dflxpcdxz/image/upload/v1730987883/DataPicture/jtj1vu4bzsb9vsv6gpy6.jpg",
+    "https://res.cloudinary.com/dflxpcdxz/image/upload/v1730987883/DataPicture/jtj1vu4bzsb9vsv6gpy6.jpg",
+    "https://res.cloudinary.com/dflxpcdxz/image/upload/v1730987883/DataPicture/jtj1vu4bzsb9vsv6gpy6.jpg",
+    "https://res.cloudinary.com/dflxpcdxz/image/upload/v1730987883/DataPicture/jtj1vu4bzsb9vsv6gpy6.jpg",
+  ];
+
+  const imageLists = [
+    {
+      title: "Lời trích về cuộc sống",
+      images: [
+        "https://res.cloudinary.com/dflxpcdxz/image/upload/v1730987883/DataPicture/jtj1vu4bzsb9vsv6gpy6.jpg",
+        "https://res.cloudinary.com/dflxpcdxz/image/upload/v1730987883/DataPicture/jtj1vu4bzsb9vsv6gpy6.jpg",
+        "https://res.cloudinary.com/dflxpcdxz/image/upload/v1730987883/DataPicture/jtj1vu4bzsb9vsv6gpy6.jpg",
+      ],
+    },
+    {
+      title: "Hình về cute",
+      images: [
+        "https://res.cloudinary.com/dflxpcdxz/image/upload/v1730987883/DataPicture/jtj1vu4bzsb9vsv6gpy6.jpg",
+
+        "https://res.cloudinary.com/dflxpcdxz/image/upload/v1730987883/DataPicture/jtj1vu4bzsb9vsv6gpy6.jpg",
+
+        "https://res.cloudinary.com/dflxpcdxz/image/upload/v1730987883/DataPicture/jtj1vu4bzsb9vsv6gpy6.jpg",
+      ],
+    },
+    {
+      title: "Avatar đôi",
+      images: [
+        "https://res.cloudinary.com/dflxpcdxz/image/upload/v1730987883/DataPicture/jtj1vu4bzsb9vsv6gpy6.jpg",
+        "https://res.cloudinary.com/dflxpcdxz/image/upload/v1730987883/DataPicture/jtj1vu4bzsb9vsv6gpy6.jpg",
+        "https://res.cloudinary.com/dflxpcdxz/image/upload/v1730987883/DataPicture/jtj1vu4bzsb9vsv6gpy6.jpg",
+      ],
+    },
+    {
+      title: "Ảnh bầu trời đêm",
+      images: [
+        "https://res.cloudinary.com/dflxpcdxz/image/upload/v1730987883/DataPicture/jtj1vu4bzsb9vsv6gpy6.jpg",
+        "https://res.cloudinary.com/dflxpcdxz/image/upload/v1730987883/DataPicture/jtj1vu4bzsb9vsv6gpy6.jpg",
+        "https://res.cloudinary.com/dflxpcdxz/image/upload/v1730987883/DataPicture/jtj1vu4bzsb9vsv6gpy6.jpg",
+      ],
+    },
+  ];
 
   // Fetch history text
   useEffect(() => {
@@ -177,6 +223,47 @@ const Search = ({ navigation }) => {
     setNoResults(false);
   };
 
+  useEffect(() => {
+    const interval = setInterval(() => {
+      if (bannerRef.current) {
+        const nextIndex = (currentBannerIndex + 1) % bannerImages.length; // Chuyển sang ảnh tiếp theo hoặc quay lại đầu
+        bannerRef.current.scrollToIndex({ index: nextIndex });
+        setCurrentBannerIndex(nextIndex);
+      }
+    }, 5000);
+  
+    return () => clearInterval(interval); // Xóa interval khi component bị hủy
+  }, [currentBannerIndex]);
+  
+
+  // Hàm xử lý khi lướt banner thủ công
+  const handleBannerScroll = (event) => {
+    if (!event.nativeEvent || !event.nativeEvent.contentOffset) {
+      console.error("Event or contentOffset is undefined");
+      return;
+    }
+  
+    const scrollPosition = event.nativeEvent.contentOffset.x;
+    const currentIndex = Math.floor(scrollPosition / width);
+  
+    // Nếu đến ảnh cuối cùng thì quay lại đầu
+    if (currentIndex === bannerImages.length - 1) {
+      setTimeout(() => {
+        bannerRef.current.scrollToIndex({ index: 0, animated: false });
+        setCurrentBannerIndex(0);
+      }, 300);
+    } else if (currentIndex === 0 && currentBannerIndex === bannerImages.length - 1) {
+      // Nếu đang từ cuối lướt ngược về đầu
+      setTimeout(() => {
+        bannerRef.current.scrollToIndex({ index: bannerImages.length - 1, animated: false });
+        setCurrentBannerIndex(bannerImages.length - 1);
+      }, 300);
+    } else {
+      setCurrentBannerIndex(currentIndex);
+    }
+  };
+  
+
   return (
     <View style={styles.container}>
       <View style={styles.header}>
@@ -207,9 +294,60 @@ const Search = ({ navigation }) => {
       <View style={styles.body}>
         {currentView === "default" && (
           <ScrollView>
-            <Text style={styles.defaultText}>
-              Đây là nội dung trang chính, hiển thị gợi ý theo yêu cầu.
-            </Text>
+            {/* Banner tự động trượt */}
+            <View style={styles.bannerContainer}>
+              <FlatList
+                data={bannerImages}
+                horizontal
+                pagingEnabled
+                showsHorizontalScrollIndicator={false}
+                renderItem={({ item }) => (
+                  <Image source={{ uri: item }} style={styles.bannerImage} />
+                )}
+                keyExtractor={(item, index) => index.toString()}
+                onMomentumScrollEnd={handleBannerScroll} // Lắng nghe sự kiện cuộn hoàn thành
+                ref={(ref) => (bannerRef.current = ref)} // Lưu tham chiếu FlatList để điều khiển cuộn
+              />
+
+              {/* Chấm tròn chỉ số banner */}
+              <View style={styles.dotContainer}>
+                {bannerImages.map((_, index) => (
+                  <View
+                    key={index}
+                    style={[
+                      styles.dot,
+                      {
+                        backgroundColor:
+                          currentBannerIndex === index ? "#333" : "#ccc",
+                      },
+                    ]}
+                  />
+                ))}
+              </View>
+            </View>
+
+            {/* Danh sách ảnh */}
+            <View>
+              {imageLists.map((list, index) => (
+                <View key={index} style={styles.listContainer}>
+                  <View style={styles.listHeader}>
+                    <Text style={styles.listTitle}>{list.title}</Text>
+                    <TouchableOpacity>
+                      <Text style={styles.seeMore}>Xem thêm</Text>
+                    </TouchableOpacity>
+                  </View>
+                  <FlatList
+                    data={list.images}
+                    horizontal
+                    showsHorizontalScrollIndicator={false}
+                    renderItem={({ item }) => (
+                      <Image source={{ uri: item }} style={styles.listImage} />
+                    )}
+                    keyExtractor={(item, idx) => `${index}-${idx}`}
+                  />
+                </View>
+              ))}
+            </View>
           </ScrollView>
         )}
         {currentView === "searching" && (

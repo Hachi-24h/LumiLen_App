@@ -438,6 +438,29 @@ router.post('/addHistoryText', async (req, res) => {
     }
 });
 
+router.post('/checkNameUser', async (req, res) => {
+    const { idUser } = req.body; // Lấy username từ yêu cầu
+
+    if (!idUser) {
+        return res.status(400).json({ message: "idUser không được để trống" });
+    }
+
+    try {
+        // Tìm kiếm người dùng với username đã cung cấp
+        const existingUser = await User.findOne({ idUser: idUser });
+
+        if (existingUser) {
+            // Nếu đã tồn tại, trả về thông báo lỗi
+            return res.status(200).json({ exists: true, message: "Tên người dùng đã tồn tại" });
+        }
+
+        // Nếu không tồn tại, trả về thông báo thành công
+        res.status(200).json({ exists: false, message: "Tên người dùng có thể sử dụng" });
+    } catch (error) {
+        // Xử lý lỗi bất ngờ
+        res.status(500).json({ message: error.message });
+    }
+});
 
 
 module.exports = router;

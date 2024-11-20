@@ -17,7 +17,7 @@ import ChangePassword from "./Screen/Info/MyAccount/AccountManagement/AccountSet
 import Profile from "./Screen/Info/MyAccount/AccountManagement/Profile/Profile_Screen";
 import ChangeAvatar from "./Screen/Info/MyAccount/AccountManagement/Profile/ChangeAvatar_Screen";
 import demo from "./DemoFuntion";
-
+import UpdateInfo from "./Screen/Info/MyAccount/AccountManagement/Profile/UpdateInfo_Screen";
 export default {
   HomeTabs,
   ImageDetailScreen,
@@ -37,5 +37,6 @@ export default {
   ChangePassword,
   Profile,
   ChangeAvatar,
+  UpdateInfo,
   demo,
 };

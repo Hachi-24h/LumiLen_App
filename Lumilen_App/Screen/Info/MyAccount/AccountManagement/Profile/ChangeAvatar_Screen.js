@@ -18,33 +18,36 @@ const ChangeAvatarScreen = ({ navigation }) => {
   const chooseImage = async () => {
     try {
       const { status } = await ImagePicker.requestMediaLibraryPermissionsAsync();
-      if (status !== 'granted') {
-        Alert.alert('Quyền bị từ chối', 'Ứng dụng cần quyền truy cập thư viện ảnh để tiếp tục.');
+      if (status !== "granted") {
+        Alert.alert("Quyền bị từ chối", "Ứng dụng cần quyền truy cập thư viện ảnh.");
         return;
       }
-
+  
       const result = await ImagePicker.launchImageLibraryAsync({
         mediaTypes: ImagePicker.MediaTypeOptions.Images,
         allowsEditing: true,
         aspect: [1, 1],
         quality: 1,
       });
-
+  
       if (!result.canceled && result.assets && result.assets.length > 0) {
         const imageUri = result.assets[0].uri;
-        // Bắt đầu hiển thị loading
+  
+        // Hiển thị loading trong khi upload ảnh
         setIsLoading(true);
-        // Gọi hàm upload ảnh và cập nhật avatar
-        await handleImageUpload(imageUri);
-        setIsLoading(false); // Tắt loading sau khi upload xong
-      } else {
-        console.error('Có lỗi xảy ra', 'Vui lòng thử lại.');
+        const uploadedAvatar = await handleImageUpload(imageUri);
+        if (uploadedAvatar) {
+          setAvatarUri(uploadedAvatar); // Lưu link URI avatar sau khi upload thành công
+        }
+        setIsLoading(false);
       }
     } catch (error) {
-      setIsLoading(false); // Tắt loading nếu có lỗi
       console.error("Lỗi khi chọn ảnh:", error);
+      setIsLoading(false);
+      Alert.alert("Lỗi", "Không thể chọn ảnh, vui lòng thử lại.");
     }
   };
+  
 
   // Hàm upload ảnh và cập nhật avatar
   const handleImageUpload = async (imageUri) => {
@@ -57,7 +60,7 @@ const ChangeAvatarScreen = ({ navigation }) => {
       });
 
       // Gọi API upload ảnh
-      const uploadResponse = await axios.post(`${BASE_URL}/upload`, formData, {
+      const uploadResponse = await axios.post(`${BASE_URL}:5000/upload`, formData, {
         headers: {
           'Content-Type': 'multipart/form-data',
         },

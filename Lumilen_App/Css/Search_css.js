@@ -37,7 +37,7 @@ const styles = StyleSheet.create({
   },
   body: {
     height: height * 0.8,
-    paddingHorizontal: 10,
+    // paddingHorizontal: 10,
   },
   footer: {
     height: height * 0.1,
@@ -113,6 +113,57 @@ const styles = StyleSheet.create({
   imageStyle: {
     borderRadius: 10, // Bo góc ảnh
    
+  },
+
+  // phần default
+  // Banner container
+  bannerContainer: {
+    height: height * 0.4,
+    marginBottom: 20,
+  },
+  bannerImage: {
+    width: width,
+    height: width * 0.7,
+    resizeMode: "cover",
+  },
+  dotContainer: {
+    flexDirection: "row",
+    justifyContent: "center",
+    marginTop: 10,
+  },
+  dot: {
+    width: 10,
+    height: 10,
+    borderRadius: 5,
+    marginHorizontal: 5,
+  },
+
+  // Danh sách ảnh
+  listContainer: {
+    marginBottom: 20,
+  },
+  listHeader: {
+    flexDirection: "row",
+    justifyContent: "space-between",
+    alignItems: "center",
+    marginBottom: 10,
+    paddingHorizontal: 15,
+  },
+  listTitle: {
+    fontSize: 16,
+    fontWeight: "bold",
+    color: "#333",
+  },
+  seeMore: {
+    fontSize: 14,
+    color: "#007AFF",
+  },
+  listImage: {
+    width: width * 0.3,
+    height: width * 0.3,
+    borderRadius: 8,
+    marginHorizontal: 10,
+    backgroundColor: "#f0f0f0",
   },
 });
 

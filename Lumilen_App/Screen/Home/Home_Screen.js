@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useContext } from 'react';
-import { View, Text, TouchableOpacity, Modal, TextInput } from 'react-native';
+import { View, Text, TouchableOpacity, Alert, Modal } from 'react-native';
 import MasonryList from "react-native-masonry-list";
 import Ionicons from 'react-native-vector-icons/Ionicons';
 import styles from '../../Css/Home_Css';
@@ -7,26 +7,19 @@ import Footer from '../..//Screen/footer';
 import { convertDataWithSize } from '../../Hook/imageUtils';
 import BASE_URL from '../../IpAdress';
 import { UserContext } from "../../Hook/UserContext";
-
-const options = [
-  { icon: 'bookmark-outline', action: () => console.log('Lưu') },
-  { icon: 'share-social-outline', action: () => console.log('Chia sẻ') },
-  { icon: 'chatbubble-outline', action: () => console.log('Bình luận') },
-  { icon: 'eye-off-outline', action: () => console.log('Ẩn ghim') },
-];
+import * as FileSystem from 'expo-file-system';
 
 const HomeScreen = ({ navigation }) => {
   const [images, setImages] = useState([]);
   const [filteredImages, setFilteredImages] = useState([]);
   const [selectedImageId, setSelectedImageId] = useState(null);
+  const [selectedImageUri, setSelectedImageUri] = useState(null);
   const [modalVisible, setModalVisible] = useState(false);
-  const [bottomSheetVisible, setBottomSheetVisible] = useState(false);
-  const [modalPosition, setModalPosition] = useState({ top: 100, left: 100 });
-  const [selectItem, setSelectItem] = useState("Tất cả");
   const { userData } = useContext(UserContext);
   const userId = userData ? userData._id : null;
+  const avatar = userData ? userData.avatar : null;
 
-  // Hàm lấy dữ liệu từ API
+  // Fetch images from API
   const fetchDataFromAPI = async () => {
     try {
       const response = await fetch(`${BASE_URL}/picture/getUserImages?userId=${userId}`);
@@ -42,47 +35,54 @@ const HomeScreen = ({ navigation }) => {
     const fetchAndConvertImages = async () => {
       const data = await fetchDataFromAPI();
       const imagesWithSize = await convertDataWithSize(data);
-
-      const filteredImages =
-        selectItem === "Tất cả"
-          ? imagesWithSize
-          : imagesWithSize.filter((img) => img.userId === userId);
-
-      setImages(filteredImages);
-      setFilteredImages(filteredImages);
+      setImages(imagesWithSize);
+      setFilteredImages(imagesWithSize);
     };
 
     fetchAndConvertImages();
-  }, [selectItem, userId]);
+  }, [userId]);
 
-  const handleImagePress = (image) => {
-    navigation.navigate('ImageDetailScreen', { image });
+  const handlePin = async () => {
+    try {
+      const response = await fetch(`${BASE_URL}/user/addPictureToListAnhGhim/${userId}`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ pictureId: selectedImageId }),
+      });
+      const data = await response.json();
+      if (data.message === "Thêm ảnh vào ListAnhGhim thành công.") {
+        Alert.alert("Thành công", "Ảnh đã được ghim!");
+      } else {
+        Alert.alert("Thất bại", data.message);
+      }
+    } catch (error) {
+      console.error("Error pinning image:", error);
+      Alert.alert("Lỗi", "Có lỗi xảy ra khi ghim ảnh!");
+    } finally {
+      setModalVisible(false);
+    }
   };
 
-  const handleImageLongPress = (event, item) => {
-    // Kiểm tra nếu pageX và pageY tồn tại, nếu không sử dụng vị trí mặc định
-    const { pageX, pageY } = event?.nativeEvent || {};
-    setSelectedImageId(item.id);
-    setModalPosition({
-      top: pageY ??150,  // Sử dụng 150 nếu pageY không tồn tại
-      left: pageX ?? 150, // Sử dụng 150 nếu pageX không tồn tại
-    });
-    setModalVisible(true);
+  const handleDownload = async () => {
+    try {
+      const filename = selectedImageUri.split('/').pop();
+      const filepath = `${FileSystem.documentDirectory}${filename}`;
+      await FileSystem.downloadAsync(selectedImageUri, filepath);
+      Alert.alert("Thành công", `Ảnh đã được tải về: ${filepath}`);
+    } catch (error) {
+      console.error("Error downloading image:", error);
+      Alert.alert("Lỗi", "Có lỗi xảy ra khi tải ảnh!");
+    } finally {
+      setModalVisible(false);
+    }
   };
 
-  const handleModalClose = () => {
-    setModalVisible(false);
-    setSelectedImageId(null);
-  };
-
-  const handleOptionPress = (option) => {
-    option.action();
-    handleModalClose();
-  };
-
-  const handleThreeDotsPress = (id) => {
+  const openOptions = (id, uri) => {
     setSelectedImageId(id);
-    setBottomSheetVisible(true);
+    setSelectedImageUri(uri);
+    setModalVisible(true); // Hiển thị modal
   };
 
   return (
@@ -97,86 +97,50 @@ const HomeScreen = ({ navigation }) => {
         columns={2}
         spacing={2}
         imageContainerStyle={styles.imageStyle}
-        onPressImage={(image) => handleImagePress(image)}
-        onLongPressImage={(e, item) => handleImageLongPress(e, item)}
+        renderIndividualHeader={(item) => (
+          <TouchableOpacity
+            style={styles.threeDotsButton}
+            onPress={() => openOptions(item.id, item.source.uri)}
+          >
+            <Ionicons name="ellipsis-vertical" size={20} color="white" />
+          </TouchableOpacity>
+        )}
       />
 
-      {/* Modal hiển thị 4 nút */}
-      {modalVisible && (
-        <Modal
-          transparent={true}
-          visible={modalVisible}
-          animationType="fade"
-          onRequestClose={handleModalClose}
-        >
-          <TouchableOpacity style={styles.modalOverlay} onPress={handleModalClose}>
-            <View style={[styles.optionsContainer, { top: modalPosition.top, left: modalPosition.left }]}>
-              {options.map((option, index) => {
-                const angle = (index / (options.length-1)) * Math.PI;
-                const radius = 55;
-                const x = radius * Math.cos(angle);
-                const y = radius * Math.sin(angle);
-
-                return (
-                  <TouchableOpacity
-                    key={index}
-                    style={[styles.optionButton, { position: 'absolute', left: x, top: y }]}
-                    onPress={() => handleOptionPress(option)}
-                  >
-                    <Ionicons name={option.icon} size={24} color="#000" />
-                  </TouchableOpacity>
-                );
-              })}
-            </View>
-          </TouchableOpacity>
-        </Modal>
-      )}
-
-      {/* Bottom sheet khi nhấn nút ba chấm */}
+      {/* Modal hiển thị 2 nút */}
       <Modal
-        visible={bottomSheetVisible}
         animationType="slide"
         transparent={true}
-        onRequestClose={() => setBottomSheetVisible(false)}
+        visible={modalVisible}
+        onRequestClose={() => setModalVisible(false)} // Đóng modal khi bấm nút back trên Android
       >
-        <View style={styles.bottomSheetContainer}>
-          <View style={styles.bottomSheet}>
-            <TouchableOpacity onPress={() => setBottomSheetVisible(false)}>
-              <Ionicons name="close" size={24} color="#000" style={styles.closeIcon} />
+        <TouchableOpacity
+          style={styles.modalOverlay}
+          activeOpacity={1} // Đảm bảo không gây hiệu ứng mờ khi chạm
+          onPress={() => setModalVisible(false)} // Đóng modal khi chạm ra ngoài
+        >
+          <View style={styles.modalContent}>
+            <TouchableOpacity style={styles.modalOption} onPress={handlePin}>
+              <Text style={styles.optionText}>Ghim ảnh</Text>
             </TouchableOpacity>
-            <Text style={styles.modalTitle}>Chia sẻ với</Text>
-            <View style={styles.shareRow}>
-              <TouchableOpacity style={styles.shareOption}>
-                <Ionicons name="paper-plane-outline" size={24} color="red" />
-                <Text>Gửi</Text>
-              </TouchableOpacity>
-              <TouchableOpacity style={styles.shareOption}>
-                <Ionicons name="logo-facebook" size={24} color="blue" />
-                <Text>Facebook</Text>
-              </TouchableOpacity>
-              <TouchableOpacity style={styles.shareOption}>
-                <Ionicons name="chatbox" size={24} color="blue" />
-                <Text>Messenger</Text>
-              </TouchableOpacity>
-              <TouchableOpacity style={styles.shareOption}>
-                <Ionicons name="chatbox-outline" size={24} color="blue" />
-                <Text>Tin nhắn</Text>
-              </TouchableOpacity>
-              <TouchableOpacity style={styles.shareOption}>
-                <Ionicons name="mail-outline" size={24} color="red" />
-                <Text>Gmail</Text>
-              </TouchableOpacity>
-            </View>
-            <View style={styles.separator} />
-            <Text style={styles.optionText}>Tải ảnh xuống</Text>
-            <Text style={styles.optionText}>Ẩn ghim</Text>
-            <Text style={styles.optionText}>Báo cáo Ghimm</Text>
+            <TouchableOpacity style={styles.modalOption} onPress={handleDownload}>
+              <Text style={styles.optionText}>Tải ảnh xuống</Text>
+            </TouchableOpacity>
+            <TouchableOpacity style={styles.modalClose} onPress={() => setModalVisible(false)}>
+              <Text>Đóng</Text>
+            </TouchableOpacity>
           </View>
-        </View>
+        </TouchableOpacity>
       </Modal>
 
+
       <View style={styles.fixedFooter}>
-        <Footer navigation={navigation} />
+        <Footer
+          navigation={navigation}
+          avatar={avatar}
+          initialSelectedIcon={"account"}
+          namePage={"Trang Home"}
+        />
       </View>
     </View>
   );

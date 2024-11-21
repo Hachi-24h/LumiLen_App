@@ -18,6 +18,7 @@ import Profile from "./Screen/Info/MyAccount/AccountManagement/Profile/Profile_S
 import ChangeAvatar from "./Screen/Info/MyAccount/AccountManagement/Profile/ChangeAvatar_Screen";
 import demo from "./DemoFuntion";
 
+
 export default {
   HomeTabs,
   ImageDetailScreen,
@@ -38,4 +39,5 @@ export default {
   Profile,
   ChangeAvatar,
   demo,
+
 };

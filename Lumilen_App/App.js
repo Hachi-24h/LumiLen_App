@@ -1,3 +1,4 @@
+import 'react-native-gesture-handler';
 import React from "react";
 import FlashMessage from "react-native-flash-message";
 import { NavigationContainer } from "@react-navigation/native";

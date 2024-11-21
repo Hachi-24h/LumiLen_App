@@ -10,7 +10,7 @@ const useFetch = (url) => {
     try {
       setLoading(true);
       const response = await axios.get(url);
-      console.log('API Data:', response.data); // Kiểm tra dữ liệu trả về từ API
+      // console.log('API Data:', response.data); 
       setData(response.data);
     } catch (err) {
       setError(err);

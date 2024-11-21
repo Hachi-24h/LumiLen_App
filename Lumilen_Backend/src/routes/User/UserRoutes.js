@@ -341,4 +341,126 @@ router.post('/auth/google', async (req, res) => {
     }
 });
 
+// Lấy danh sách historyText của một user
+router.get('/getUserHistory/:id', async (req, res) => {
+    try {
+        const { id } = req.params; // Lấy id từ params
+
+        // Tìm user theo id và chỉ lấy trường historyText
+        const user = await User.findById(id).select('historyText');
+
+        if (!user) {
+            return res.status(404).json({ message: 'User not found' });
+        }
+
+        res.status(200).json({
+           
+            historyText: user.historyText
+        });
+    } catch (error) {
+        res.status(500).json({ message: error.message });
+    }
+});
+
+// Xóa một historyText của user
+router.delete('/deleteHistoryText', async (req, res) => {
+    try {
+        const { id, text } = req.body; // Lấy id và text từ request body
+
+        // Kiểm tra nếu text không hợp lệ
+        if (!text || text.trim() === "") {
+            return res.status(400).json({ message: "Text is required and cannot be empty" });
+        }
+
+        // Tìm user theo id và xóa text khỏi historyText
+        const user = await User.findByIdAndUpdate(
+            id,
+            { $pull: { historyText: text.trim() } }, // Xóa text khớp với giá trị được cung cấp
+            { new: true } // Trả về user sau khi cập nhật
+        );
+
+        if (!user) {
+            return res.status(404).json({ message: "User not found" });
+        }
+
+        res.status(200).json({
+            message: "HistoryText deleted successfully",
+            historyText: user.historyText,
+        });
+    } catch (error) {
+        res.status(500).json({ message: error.message });
+    }
+});
+
+
+// Thêm một historyText cho user với kiểm tra trùng lặp và giới hạn 10 phần tử
+router.post('/addHistoryText', async (req, res) => {
+    try {
+        const { id, text } = req.body; // Lấy id và text từ request body
+
+        // Kiểm tra nếu text không hợp lệ
+        if (!text || text.trim() === "") {
+            return res.status(400).json({ message: "Text is required and cannot be empty" });
+        }
+
+        // Tìm user theo id
+        const user = await User.findById(id);
+
+        if (!user) {
+            return res.status(404).json({ message: "User not found" });
+        }
+
+        // Kiểm tra nếu text đã tồn tại trong historyText
+        if (user.historyText.includes(text.trim())) {
+            return res.status(200).json({
+                message: "Text already exists in history",
+                historyText: user.historyText,
+            });
+        }
+
+        // Kiểm tra nếu mảng đã đủ 10 phần tử
+        if (user.historyText.length >= 15) {
+            user.historyText.shift(); // Xóa phần tử đầu tiên trong mảng
+        }
+
+        // Thêm phần tử mới vào mảng
+        user.historyText.push(text.trim());
+
+        // Lưu user sau khi cập nhật
+        await user.save();
+
+        res.status(200).json({
+            message: "HistoryText added successfully",
+            historyText: user.historyText,
+        });
+    } catch (error) {
+        res.status(500).json({ message: error.message });
+    }
+});
+
+router.post('/checkNameUser', async (req, res) => {
+    const { idUser } = req.body; // Lấy username từ yêu cầu
+
+    if (!idUser) {
+        return res.status(400).json({ message: "idUser không được để trống" });
+    }
+
+    try {
+        // Tìm kiếm người dùng với username đã cung cấp
+        const existingUser = await User.findOne({ idUser: idUser });
+
+        if (existingUser) {
+            // Nếu đã tồn tại, trả về thông báo lỗi
+            return res.status(200).json({ exists: true, message: "Tên người dùng đã tồn tại" });
+        }
+
+        // Nếu không tồn tại, trả về thông báo thành công
+        res.status(200).json({ exists: false, message: "Tên người dùng có thể sử dụng" });
+    } catch (error) {
+        // Xử lý lỗi bất ngờ
+        res.status(500).json({ message: error.message });
+    }
+});
+
+
 module.exports = router;

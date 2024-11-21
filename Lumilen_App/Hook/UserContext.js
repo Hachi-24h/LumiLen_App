@@ -12,37 +12,31 @@ export const UserProvider = ({ children }) => {
   // Hàm tải dữ liệu người dùng với email động
   const fetchUserData = useCallback(async (email, forceRefresh = false) => {
     try {
-      setLoading(true); // Bắt đầu tải dữ liệu, đặt loading thành true
+      setLoading(true); // Bắt đầu tải dữ liệu
+  
       // Nếu cần tải mới dữ liệu, xóa dữ liệu cũ từ `AsyncStorage`
       if (forceRefresh) {
         await AsyncStorage.removeItem("userData");
-        console.log("Cleared user data from AsyncStorage");
       }
-
-      // Kiểm tra xem dữ liệu đã lưu trong `AsyncStorage` chưa
-      const storedData = await AsyncStorage.getItem("userData");
-
-      if (storedData && !forceRefresh) {
-        // Nếu có dữ liệu trong `AsyncStorage` và không cần tải lại, dùng dữ liệu từ `AsyncStorage`
-        setUserData(JSON.parse(storedData));
+  
+      // Gọi API lấy dữ liệu người dùng
+      const response = await axios.get(`${BASE_URL}:5000/user/findUserByEmail`, {
+        params: { email },
+      });
+  
+      if (response.data) {
+        // Cập nhật trạng thái `userData`
+        setUserData(response.data);
+  
+        // Lưu dữ liệu mới vào `AsyncStorage`
+        await AsyncStorage.setItem("userData", JSON.stringify(response.data));
       } else {
-        // Nếu không có dữ liệu hoặc cần tải lại, gọi API với email để lấy dữ liệu mới
-        const response = await axios.get(`${BASE_URL}/user/findUserByEmail`, {
-          params: { email },
-        });
-
-        // Kiểm tra dữ liệu trả về có hợp lệ không
-        if (response.data) {
-          setUserData(response.data);
-          await AsyncStorage.setItem("userData", JSON.stringify(response.data)); // Lưu vào `AsyncStorage`
-        } else {
-          console.error("No user data returned from API.");
-        }
+        console.error("No user data returned from API.");
       }
     } catch (error) {
       console.error("Failed to fetch user data:", error);
     } finally {
-      setLoading(false); // Kết thúc tải dữ liệu, đặt loading thành false
+      setLoading(false); // Kết thúc tải dữ liệu
     }
   }, []);
 

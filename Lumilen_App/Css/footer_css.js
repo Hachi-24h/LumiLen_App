@@ -5,7 +5,7 @@ const styles = StyleSheet.create({
     position: 'absolute',      // Giữ footer cố định ở vị trí dưới cùng
     bottom: 0,                 // Đặt footer ở cuối màn hình
     width: "100%",             // Chiều rộng 100% để phủ toàn bộ dưới cùng của màn hình
-    height: height * 0.07,      // Chiều cao 10% m
+    height: height * 0.1,      // Chiều cao 10% m
     paddingHorizontal: 25,
     backgroundColor: "#D3D3D3",
     justifyContent: "space-between",

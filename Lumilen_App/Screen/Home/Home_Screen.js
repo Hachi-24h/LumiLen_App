@@ -3,7 +3,7 @@ import { View, Text, TouchableOpacity, Alert, Modal } from 'react-native';
 import MasonryList from "react-native-masonry-list";
 import Ionicons from 'react-native-vector-icons/Ionicons';
 import styles from '../../Css/Home_Css';
-import Footer from '../..//Screen/footer';
+import Footer from '../footer';
 import { convertDataWithSize } from '../../Hook/imageUtils';
 import BASE_URL from '../../IpAdress';
 import { UserContext } from "../../Hook/UserContext";

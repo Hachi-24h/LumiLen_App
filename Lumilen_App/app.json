@@ -6,6 +6,7 @@
     "version": "1.0.0",
     "orientation": "portrait",
     "icon": "",
+    "newArchEnabled": true,
     "userInterfaceStyle": "light",
     "splash": {
       "image": "./assets/splash.png",
@@ -25,6 +26,9 @@
     "web": {
       "favicon": "./assets/favicon.png"
     },
-    "scheme": "lumilen"
+    "scheme": "lumilen",
+    "plugins": [
+      "expo-asset"
+    ]
   }
 }

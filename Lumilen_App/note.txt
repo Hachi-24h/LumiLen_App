@@ -80,3 +80,6 @@ Nam
 - Chỉnh sửa hồ sơ user ( đổi avt , thông tin ...)
 - lm full trang info , bảng ghim 
 - lm trang cá nhân ( khi người khác tìm kiếm bạn)
+
+
+yarn add react-native

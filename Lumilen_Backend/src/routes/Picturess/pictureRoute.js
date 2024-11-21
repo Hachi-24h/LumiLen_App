@@ -4,7 +4,12 @@ const Picture = require('../../model/Picture');
 const User = require('../../model/User');
 const mongoose = require('mongoose');
 const TableUser = require('../../model/TableUser');
-// Hàm lấy tất cả các ảnh từ Picture
+
+
+const axios = require('axios'); 
+
+
+
 router.get('/getAllPictures', async (req, res) => {
     try {
         // Lấy tất cả các ảnh từ collection Picture
@@ -238,5 +243,65 @@ router.delete('/remPicFroTab', async (req, res) => {
         res.status(500).json({ message: error.message });
     }
 });
+
+// router.post('/classify-images', async (req, res) => {
+//     try {
+//         console.log('Step 1: Gọi API nội bộ');
+//         const allPicturesResponse = await axios.get('http://localhost:5000/picture/getAllPictures');
+//         console.log('Step 2: Dữ liệu trả về:', allPicturesResponse.data);
+
+//         const pictures = allPicturesResponse.data;
+//         if (!pictures || !Array.isArray(pictures) || pictures.length === 0) {
+//             return res.status(400).json({ error: 'No images found in the system' });
+//         }
+
+//         const imageUris = pictures.map(picture => picture.uri);
+//         console.log('Step 3: URI ảnh:', imageUris);
+
+//         const prompt = `Group these image URIs into categories: ${imageUris.join(', ')}`;
+
+
+//         console.log('Step 4: Gọi OpenAI API với prompt:', prompt);
+//         const response = await axios.post(
+//             'https://api.openai.com/v1/chat/completions', // Đường dẫn mới cho mô hình GPT-4 hoặc GPT-3.5
+//             {
+//                 model: 'gpt-3.5-turbo', // Hoặc 'gpt-3.5-turbo'
+//                 messages: [
+//                     {
+//                         role: 'system',
+//                         content: 'You are an assistant that helps classify and group images based on their content.',
+//                     },
+//                     {
+//                         role: 'user',
+//                         content: `
+//                             I have the following images with these URIs: ${imageUris.join(', ')}.
+//                             Please group these images into categories based on their content (e.g., animals, objects, people) and generate a title for each group.
+//                             Respond in JSON format with "groups" containing image URIs and "titles" containing the title for each group.
+//                         `,
+//                     },
+//                 ],
+//                 max_tokens: 100,
+//                 temperature: 0.7,
+//             },
+//             {
+//                 headers: {
+//                     'Content-Type': 'application/json',
+//                     Authorization: `Bearer ${OPENAI_API_KEY}`,
+//                 },
+//             }
+//         );
+//         console.log('Step 5: Kết quả từ OpenAI:', response.data);
+//         const data = response.data.choices[0].text.trim();
+//         res.status(200).json({ success: true, result: JSON.parse(data) });
+//     } catch (error) {
+//         console.error('Error:', error.message);
+//         if (error.response) {
+//             console.error('Error response:', error.response.data);
+//         }
+//         res.status(500).json({ error: 'Failed to classify images', details: error.message });
+//     }
+// });
+
+
 
 module.exports = router;

@@ -13,7 +13,8 @@ const PictureSchema = new mongoose.Schema({
         default: null // Cho phép null hoặc để trống
     },
     id: {
-        type: String,
+        type: mongoose.Schema.Types.ObjectId, // Thay đổi từ String sang ObjectId
+        ref: 'User', // Tham chiếu đến User
         required: true,
         trim: true // Xóa khoảng trắng đầu/cuối
     },

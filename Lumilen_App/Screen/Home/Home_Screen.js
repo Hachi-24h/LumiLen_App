@@ -1,28 +1,39 @@
-import React, { useState, useEffect, useContext } from 'react';
-import { View, Text, TouchableOpacity, Alert, Modal } from 'react-native';
-import MasonryList from "react-native-masonry-list";
-import Ionicons from 'react-native-vector-icons/Ionicons';
-import styles from '../../Css/Home_Css';
-import Footer from '../footer';
-import { convertDataWithSize } from '../../Hook/imageUtils';
-import BASE_URL from '../../IpAdress';
+import React, { useEffect, useState, useContext } from "react";
+import {
+  View,
+  Text,
+  Image,
+  FlatList,
+  TouchableOpacity,
+  Dimensions,
+  TextInput,
+  StatusBar,
+} from "react-native";
+import Footer from "../footer";
+import styles from "../../Css/Home_Css";
 import { UserContext } from "../../Hook/UserContext";
-import * as FileSystem from 'expo-file-system';
+import BASE_URL from "../../IpAdress";
+import { convertDataWithSize } from "../../Hook/imageUtils";
 
-const HomeScreen = ({ navigation }) => {
-  const [images, setImages] = useState([]);
-  const [filteredImages, setFilteredImages] = useState([]);
-  const [selectedImageId, setSelectedImageId] = useState(null);
-  const [selectedImageUri, setSelectedImageUri] = useState(null);
-  const [modalVisible, setModalVisible] = useState(false);
+const { width, height } = Dimensions.get("window");
+const COLUMN_COUNT = 2; // Số cột
+const SPACING = 10; // Khoảng cách giữa các cột
+const columnWidth = (width - (COLUMN_COUNT + 1) * SPACING) / COLUMN_COUNT;
+
+const HomeTabs = ({ navigation }) => {
   const { userData } = useContext(UserContext);
-  const userId = userData ? userData._id : null;
   const avatar = userData ? userData.avatar : null;
 
-  // Fetch images from API
+  const [images, setImages] = useState([]);
+  const [filteredImages, setFilteredImages] = useState([]);
+  const [searchQuery, setSearchQuery] = useState("");
+
+  const userId = userData ? userData._id : null;
+
+  // Hàm lấy dữ liệu từ API
   const fetchDataFromAPI = async () => {
     try {
-      const response = await fetch(`${BASE_URL}/picture/getUserImages?userId=${userId}`);
+      const response = await fetch(`${BASE_URL}:5000/picture/getAllPictures`);
       const data = await response.json();
       return data;
     } catch (error) {
@@ -36,114 +47,112 @@ const HomeScreen = ({ navigation }) => {
       const data = await fetchDataFromAPI();
       const imagesWithSize = await convertDataWithSize(data);
       setImages(imagesWithSize);
-      setFilteredImages(imagesWithSize);
+      setFilteredImages(imagesWithSize); // Khởi tạo `filteredImages` với toàn bộ ảnh ban đầu
     };
 
     fetchAndConvertImages();
   }, [userId]);
 
-  const handlePin = async () => {
-    try {
-      const response = await fetch(`${BASE_URL}/user/addPictureToListAnhGhim/${userId}`, {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({ pictureId: selectedImageId }),
-      });
-      const data = await response.json();
-      if (data.message === "Thêm ảnh vào ListAnhGhim thành công.") {
-        Alert.alert("Thành công", "Ảnh đã được ghim!");
-      } else {
-        Alert.alert("Thất bại", data.message);
-      }
-    } catch (error) {
-      console.error("Error pinning image:", error);
-      Alert.alert("Lỗi", "Có lỗi xảy ra khi ghim ảnh!");
-    } finally {
-      setModalVisible(false);
-    }
+  // Tạo dữ liệu từng cột để tạo hiệu ứng masonry
+  const generateColumns = (data) => {
+    const columns = Array.from({ length: COLUMN_COUNT }, () => []);
+    data.forEach((item, index) => {
+      const columnIndex = index % COLUMN_COUNT; // Xác định ảnh thuộc cột nào
+      columns[columnIndex].push(item);
+    });
+    return columns;
   };
 
-  const handleDownload = async () => {
-    try {
-      const filename = selectedImageUri.split('/').pop();
-      const filepath = `${FileSystem.documentDirectory}${filename}`;
-      await FileSystem.downloadAsync(selectedImageUri, filepath);
-      Alert.alert("Thành công", `Ảnh đã được tải về: ${filepath}`);
-    } catch (error) {
-      console.error("Error downloading image:", error);
-      Alert.alert("Lỗi", "Có lỗi xảy ra khi tải ảnh!");
-    } finally {
-      setModalVisible(false);
-    }
-  };
+  // Hàm render từng cột
+  const renderColumn = (columnData, columnIndex) => {
+    return (
+      <View
+        key={`column-${columnIndex}`}
+        style={{ flex: 1, marginHorizontal: SPACING / 2 }}
+      >
+        {columnData.map((item, index) => {
+          const imageHeight = (item.height / item.width) * columnWidth;
 
-  const openOptions = (id, uri) => {
-    setSelectedImageId(id);
-    setSelectedImageUri(uri);
-    setModalVisible(true); // Hiển thị modal
+          // Lấy thông tin user và tiêu đề
+          const user = item.id || {
+            avatar: "",
+            firstName: "Unknown",
+            lastName: "",
+          };
+          const title = item.title || `${user.firstName} ${user.lastName}`;
+
+          return (
+            <View
+              key={`${item._id || "undefined"}-${index}`}
+              style={styles.imageContainer}
+            >
+              <TouchableOpacity
+                onPress={() =>
+                  navigation.navigate("ImageDetailScreen", {
+                    image: {
+                      uri: item.uri,
+                      title: item.title,
+                      user: {
+                        avatar:
+                          item.user?.avatar ||
+                          "https://via.placeholder.com/150",
+                        firstName: item.user?.firstName || "Unknown",
+                        lastName: item.user?.lastName || "User",
+                      },
+                    },
+                  })
+                }
+              >
+                <Image
+                  source={{ uri: item.uri }}
+                  style={{
+                    width: columnWidth,
+                    height: imageHeight,
+                    borderRadius: 15,
+                    resizeMode: "cover",
+                  }}
+                />
+              </TouchableOpacity>
+
+              {/* Footer bên dưới ảnh */}
+              <View style={styles.footerContainer}>
+                <Image
+                  source={{
+                    uri: user.avatar || "https://via.placeholder.com/150",
+                  }}
+                  style={styles.footerIcon}
+                />
+                <Text style={styles.footerText}>{title}</Text>
+              </View>
+            </View>
+          );
+        })}
+      </View>
+    );
   };
 
   return (
     <View style={styles.container}>
-      <MasonryList
-        images={filteredImages.map((item) => ({
-          source: { uri: item.uri },
-          width: item.width,
-          height: item.height,
-          id: item.id,
-        }))}
-        columns={2}
-        spacing={2}
-        imageContainerStyle={styles.imageStyle}
-        renderIndividualHeader={(item) => (
-          <TouchableOpacity
-            style={styles.threeDotsButton}
-            onPress={() => openOptions(item.id, item.source.uri)}
-          >
-            <Ionicons name="ellipsis-vertical" size={20} color="white" />
-          </TouchableOpacity>
-        )}
-      />
-
-      {/* Modal hiển thị 2 nút */}
-      <Modal
-        animationType="slide"
-        transparent={true}
-        visible={modalVisible}
-        onRequestClose={() => setModalVisible(false)} // Đóng modal khi bấm nút back trên Android
-      >
-        <TouchableOpacity
-          style={styles.modalOverlay}
-          activeOpacity={1} // Đảm bảo không gây hiệu ứng mờ khi chạm
-          onPress={() => setModalVisible(false)} // Đóng modal khi chạm ra ngoài
-        >
-          <View style={styles.modalContent}>
-            <TouchableOpacity style={styles.modalOption} onPress={handlePin}>
-              <Text style={styles.optionText}>Ghim ảnh</Text>
-            </TouchableOpacity>
-            <TouchableOpacity style={styles.modalOption} onPress={handleDownload}>
-              <Text style={styles.optionText}>Tải ảnh xuống</Text>
-            </TouchableOpacity>
-            <TouchableOpacity style={styles.modalClose} onPress={() => setModalVisible(false)}>
-              <Text>Đóng</Text>
-            </TouchableOpacity>
-          </View>
-        </TouchableOpacity>
-      </Modal>
-
-
-      <View style={styles.fixedFooter}>
-        <Footer
-          navigation={navigation}
-          avatar={avatar}
-          initialSelectedIcon={"account"}
-          namePage={"Trang Home"}
+      <StatusBar hidden={false} />
+      <View style={styles.body}>
+        <FlatList
+          data={generateColumns(filteredImages)} // Danh sách cột
+          renderItem={({ item, index }) => renderColumn(item, index)} // Render từng cột
+          keyExtractor={(item, index) => `column-${index}`} // Key của mỗi cột
+          horizontal={false} // Cuộn dọc
+          numColumns={COLUMN_COUNT} // Đặt số cột
+          contentContainerStyle={{
+            padding: SPACING,
+            paddingBottom: 20,
+            // height :height*0.8,
+          }}
+          showsVerticalScrollIndicator={false} // Ẩn thanh cuộn
         />
       </View>
+      {/* Footer */}
+      <Footer navigation={navigation} avatar={avatar} namePage={"Trang Ghim"} />
     </View>
   );
 };
 
-export default HomeScreen;
+export default HomeTabs;

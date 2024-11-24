@@ -2,7 +2,7 @@ import React, { useState, useEffect, useContext } from "react";
 import { View, Text, TouchableOpacity } from "react-native";
 import { Ionicons } from "@expo/vector-icons";
 import FlashMessage from "react-native-flash-message";
-import { showSuccessMessage } from "../../../../../Other/notification";
+import { showSuccessMessage } from "../../../../../../Other/notification";
 import styles from "../../../../../../Css/PersonalInfo_Css";
 import { UserContext } from "../../../../../../Hook/UserContext";
 

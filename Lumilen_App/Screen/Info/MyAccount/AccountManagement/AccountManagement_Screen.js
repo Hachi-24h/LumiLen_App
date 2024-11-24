@@ -13,7 +13,7 @@ import {
 } from "react-native";
 import { Ionicons } from '@expo/vector-icons';
 import styles from '../../../../Css/AccountManagement_Css'; 
-import { showSuccessMessage } from "../../../../Screen/Other/notification";
+import { showSuccessMessage } from "../../../../Other/notification";
 import { UserContext } from "../../../../Hook/UserContext";
 const AccountManagementScreen = ({ navigation, route }) => {
   const [isSoundEnabled, setIsSoundEnabled] = useState(false);

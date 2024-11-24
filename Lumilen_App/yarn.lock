@@ -36,7 +36,7 @@
   resolved "https://registry.yarnpkg.com/@babel/compat-data/-/compat-data-7.26.2.tgz#278b6b13664557de95b8f35b90d96785850bb56e"
   integrity sha512-Z0WgzSEa+aUcdiJuCIqgujCshpMWgUpgOxXotrYPSA53hA3qopNaqcJpyr0hVb1FeWdnqFA35/fUtXgBK8srQg==
 
-"@babel/core@^7.11.6", "@babel/core@^7.12.3", "@babel/core@^7.13.16", "@babel/core@^7.20.0", "@babel/core@^7.25.2":
+"@babel/core@^7.11.6", "@babel/core@^7.12.3", "@babel/core@^7.13.16", "@babel/core@^7.20.0", "@babel/core@^7.25.2", "@babel/core@^7.26.0":
   version "7.26.0"
   resolved "https://registry.yarnpkg.com/@babel/core/-/core-7.26.0.tgz#d78b6023cc8f3114ccf049eb219613f74a747b40"
   integrity sha512-i1SLeK+DzNnQ3LL/CswPCa/E5u4lh1k6IAEphON8F+cXt0t9euTshDru0q7/IqMa1PMPz5RnHuHscF8/ZJsStg==
@@ -1352,6 +1352,11 @@
   dependencies:
     invariant "^2.2.4"
 
+"@react-native-community/viewpager@*":
+  version "5.0.11"
+  resolved "https://registry.yarnpkg.com/@react-native-community/viewpager/-/viewpager-5.0.11.tgz#dbeb2d1b2452607926407c99e4de59c7db9e3019"
+  integrity sha512-eboJwbDQjP1qJP3LFzVspgh88IGNF07S2qpU296j+4kL0inVuL+HXs81SuczMGtJmDZ4u19RNEBVq79of/h+jQ==
+
 "@react-native-google-signin/google-signin@^13.1.0":
   version "13.1.0"
   resolved "https://registry.yarnpkg.com/@react-native-google-signin/google-signin/-/google-signin-13.1.0.tgz#6482b89acf2ac88a6c68bc1304a265d5b7c3bb3a"
@@ -2077,6 +2082,21 @@ babel-preset-current-node-syntax@^1.0.0:
     "@babel/plugin-syntax-optional-chaining" "^7.8.3"
     "@babel/plugin-syntax-private-property-in-object" "^7.14.5"
     "@babel/plugin-syntax-top-level-await" "^7.14.5"
+
+babel-preset-expo@^12.0.1:
+  version "12.0.1"
+  resolved "https://registry.yarnpkg.com/babel-preset-expo/-/babel-preset-expo-12.0.1.tgz#933b6fc00e2634977e6e270f6b2c775b98c64099"
+  integrity sha512-9T2o+aeKnHOtQhk/undQbibJv02bdCgfs68ZwgAdueljDBcs2oVfq41qG9XThYwa6Dn7CdfnoEUsIyFqBwjcVw==
+  dependencies:
+    "@babel/plugin-proposal-decorators" "^7.12.9"
+    "@babel/plugin-transform-export-namespace-from" "^7.22.11"
+    "@babel/plugin-transform-object-rest-spread" "^7.12.13"
+    "@babel/plugin-transform-parameters" "^7.22.15"
+    "@babel/preset-react" "^7.22.15"
+    "@babel/preset-typescript" "^7.23.0"
+    "@react-native/babel-preset" "0.76.2"
+    babel-plugin-react-native-web "~0.19.13"
+    react-refresh "^0.14.2"
 
 babel-preset-expo@~12.0.0:
   version "12.0.0"
@@ -4919,6 +4939,22 @@ react-is@^18.0.0, react-is@^18.2.0:
   resolved "https://registry.yarnpkg.com/react-is/-/react-is-18.3.1.tgz#e83557dc12eae63a99e003a46388b1dcbb44db7e"
   integrity sha512-/LLMVyas0ljjAtoYiPqYiL8VWXzUUdThrmU5+n20DZv+a+ClRoevUzw5JxU+Ieh5/c87ytoTBV9G1FiKfNJdmg==
 
+react-native-easy-guesture-responder@^1.1.2, react-native-easy-guesture-responder@^1.1.3:
+  version "1.1.3"
+  resolved "https://registry.yarnpkg.com/react-native-easy-guesture-responder/-/react-native-easy-guesture-responder-1.1.3.tgz#0a9c0e8eb68b9b43b4f86e4689786ba7525cc1b9"
+  integrity sha512-/1yHMRcslMWQJc1iRNCSjJ32npPrY3Atme0lzKxmhYJg67E7Douowq2FalGEegdid8yeZVnPKk+BkyIGyx2dCw==
+  dependencies:
+    prop-types "^15.6.2"
+
+react-native-easy-view-transformer@^1.2.1:
+  version "1.2.1"
+  resolved "https://registry.yarnpkg.com/react-native-easy-view-transformer/-/react-native-easy-view-transformer-1.2.1.tgz#8a07eda88a902ad9326c8b4f652f57fb79c06355"
+  integrity sha512-ODkEqwaYzli+dG8Cc2SWBg6fThk/0u8yx2NvqO1BYKVwbFR6MZtMZJOIydX2SoytoMkutp/RShc+YqaZuJAWGA==
+  dependencies:
+    prop-types "^15.6.2"
+    react-native-easy-guesture-responder "^1.1.2"
+    react-native-scrolling "^1.0.2"
+
 react-native-fbsdk-next@^13.1.4:
   version "13.1.4"
   resolved "https://registry.yarnpkg.com/react-native-fbsdk-next/-/react-native-fbsdk-next-13.1.4.tgz#80c56f4cb4e66caa6537ceb524413627ea3a90fc"
@@ -4931,6 +4967,16 @@ react-native-flash-message@^0.4.2:
   dependencies:
     prop-types "^15.8.1"
     react-native-iphone-screen-helper "^2.0.2"
+
+react-native-gallery-swiper@^1.25.1:
+  version "1.26.5"
+  resolved "https://registry.yarnpkg.com/react-native-gallery-swiper/-/react-native-gallery-swiper-1.26.5.tgz#a17eece2c1909b512a7779876a22f8086318b484"
+  integrity sha512-x0ePGZyCSbIiVjo6PW1IWSDvUfNOUZV94ne3JiAJGTo6gN0QBNto2jtdjXacowACxiOckY7vatp1YiaZYjJrXQ==
+  dependencies:
+    prop-types "^15.6.2"
+    react-native-easy-guesture-responder "^1.1.3"
+    react-native-image-transformer "^1.5.2"
+    react-native-page-list "^1.1.4"
 
 react-native-gesture-handler@^2.21.0:
   version "2.21.0"
@@ -4948,6 +4994,24 @@ react-native-get-random-values@^1.11.0:
   integrity sha512-4BTbDbRmS7iPdhYLRcz3PGFIpFJBwNZg9g42iwa2P6FOv9vZj/xJc678RZXnLNZzd0qd7Q3CCF6Yd+CU2eoXKQ==
   dependencies:
     fast-base64-decode "^1.0.0"
+
+react-native-image-layout@^5.9.1:
+  version "5.9.1"
+  resolved "https://registry.yarnpkg.com/react-native-image-layout/-/react-native-image-layout-5.9.1.tgz#eeb2120a2b63be64037baebe36f16ce1cb2c7950"
+  integrity sha512-RHHOiQx7oRhbQGTSX5BuMSAE0xf4ujpcIDFRphWGZY8KMErB5qKPWCcTmNzquiSp0qj1r+4a2WOdqUgcp8SG4g==
+  dependencies:
+    prop-types "^15.6.2"
+    react-native-gallery-swiper "^1.25.1"
+    react-native-masonry-list "^2.16.1"
+    react-native-smart-gallery "^1.2.0"
+
+react-native-image-transformer@^1.5.2, react-native-image-transformer@^1.5.3:
+  version "1.5.3"
+  resolved "https://registry.yarnpkg.com/react-native-image-transformer/-/react-native-image-transformer-1.5.3.tgz#5a77b59c60e0c8b0b8ded433599e460e1d53ff5c"
+  integrity sha512-4eq04BDtZcMiFiie7hT5ybW46rINwlNdBxLCkP9f0+bwvLzZh17t+ursNrCwWMCfZ7su5X0gRv+Wxza/LBYbGw==
+  dependencies:
+    prop-types "^15.6.2"
+    react-native-easy-view-transformer "^1.2.1"
 
 react-native-iphone-screen-helper@^2.0.2:
   version "2.1.2"
@@ -4967,7 +5031,7 @@ react-native-keyboard-aware-scroll-view@^0.9.5:
     prop-types "^15.6.2"
     react-native-iphone-x-helper "^1.0.3"
 
-react-native-masonry-list@^2.16.2:
+react-native-masonry-list@^2.16.1, react-native-masonry-list@^2.16.2:
   version "2.16.2"
   resolved "https://registry.yarnpkg.com/react-native-masonry-list/-/react-native-masonry-list-2.16.2.tgz#7f860b878cb3df3591954913ae64e188e32acdd9"
   integrity sha512-n/660aX+6iMKJMHgEgn4K/VQRH8Fv59OdlYtLoj2zmLwHTz6+IZql81Wq8WVBdidF5i5ZXm2lWKn/qLlRpVUVg==
@@ -4978,6 +5042,15 @@ react-native-network-info@^5.2.1:
   version "5.2.1"
   resolved "https://registry.yarnpkg.com/react-native-network-info/-/react-native-network-info-5.2.1.tgz#b701f10d4ed1aeadcfe77b197328d1ae846f6d3a"
   integrity sha512-iam74xXtrSqqZurCl1/bSjZ9jXcsJY84g7brx1/4uVGCY26c6m+4CArHNSHOsz5ATg2NQT+81sjNy0KlCPyK4g==
+
+react-native-page-list@^1.1.4:
+  version "1.1.4"
+  resolved "https://registry.yarnpkg.com/react-native-page-list/-/react-native-page-list-1.1.4.tgz#7a1f799e884b55a1c603ce6d8247c41b27da1530"
+  integrity sha512-jo6bPtJwSANrc5W5u/1Ls/QpM6YY4mTFdIkkFygZ8ex7qmMIB2Q1Sf9JTAXUWizM45hrFMrF+mjwq5UW6/Y46g==
+  dependencies:
+    prop-types "^15.6.2"
+    react-native-easy-guesture-responder "^1.1.2"
+    react-native-scrolling "^1.0.2"
 
 react-native-reanimated@^3.16.1:
   version "3.16.1"
@@ -5008,6 +5081,42 @@ react-native-screens@^4.1.0:
   dependencies:
     react-freeze "^1.0.0"
     warn-once "^0.1.0"
+
+react-native-scrolling@^1.0.2:
+  version "1.0.3"
+  resolved "https://registry.yarnpkg.com/react-native-scrolling/-/react-native-scrolling-1.0.3.tgz#ad3e964070d6a8c713f1bd703171ab26d83ab5d5"
+  integrity sha512-V8ORRnRA4sdOREJlDHxnPfM/7IK6rj/HZejgTaym1ACjKr9a3Pej4ZDOQA9qnBgNac8kMVhDup40HgJxYG//EA==
+  dependencies:
+    prop-types "^15.6.2"
+
+react-native-smart-gallery@^1.2.0:
+  version "1.2.3"
+  resolved "https://registry.yarnpkg.com/react-native-smart-gallery/-/react-native-smart-gallery-1.2.3.tgz#d6987f456322e45eb4fb488081729fc48768f9f5"
+  integrity sha512-hAt5Ah05QrXsgmUAYR/VtxTgsnGECNqIMm6v8HTFwsMpHBhNf/SG0U6jcD3NojloK68bj7ES89ayYM9uPnfSUw==
+  dependencies:
+    prop-types "^15.6.2"
+    react-native-easy-guesture-responder "^1.1.2"
+    react-native-image-transformer "^1.5.3"
+    react-native-smart-page "^1.1.3"
+
+react-native-smart-page@^1.1.3:
+  version "1.1.3"
+  resolved "https://registry.yarnpkg.com/react-native-smart-page/-/react-native-smart-page-1.1.3.tgz#5c88bc95b9ccf6fb1393a35d9717c8d0f22dc25f"
+  integrity sha512-qf56RLjWCx2CAIngUTdrR6VXe9+6qIJib5vJnvYiOPzUXuncEIccDNQCL+SQeKSq30KFL+0NKBX5s9F6e5amsQ==
+  dependencies:
+    prop-types "^15.6.2"
+    react-native-easy-guesture-responder "^1.1.2"
+    react-native-scrolling "^1.0.2"
+    react-native-swipe-render "^3.0.2"
+
+react-native-swipe-render@^3.0.2:
+  version "3.1.1"
+  resolved "https://registry.yarnpkg.com/react-native-swipe-render/-/react-native-swipe-render-3.1.1.tgz#e6682c7cd06bb52bdcb220de6aa38bdc50bbbc94"
+  integrity sha512-1V5uCPF5wrqItdjaz27pgzkcLH958rmHyVXDkbhnRJaobIKmc/lGi1U1+GyIRxv4TM9k/eltJ1mx8ZCydOB4cg==
+  dependencies:
+    prop-types "^15.6.2"
+  optionalDependencies:
+    "@react-native-community/viewpager" "*"
 
 react-native-vector-icons@^10.2.0:
   version "10.2.0"

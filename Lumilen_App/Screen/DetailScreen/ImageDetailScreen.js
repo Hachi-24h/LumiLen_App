@@ -1,157 +1,264 @@
-// ImageDetailScreen.js
-import React, { useState } from 'react';
-import { View, Text, Image, TouchableOpacity, ScrollView, Modal } from 'react-native';
-import Ionicons from 'react-native-vector-icons/Ionicons';
-import styles from '../../Css/ImageDetail_Css';
+import React, { useState, useEffect } from "react";
+import {
+  View,
+  Text,
+  Image,
+  TouchableOpacity,
+  Animated,
+  FlatList,
+  Dimensions,
+} from "react-native";
+import Ionicons from "react-native-vector-icons/Ionicons";
+import styles from "../../Css/ImageDetail_Css";
+import BASE_URL from "../../IpAdress";
+import { convertDataWithSize } from "../../Hook/imageUtils";
+const { width, height } = Dimensions.get("window");
 
 const ImageDetailScreen = ({ route, navigation }) => {
-  const { image } = route.params;
-  const [isModalVisible, setModalVisible] = useState(false); // Trạng thái cho modal tùy chọn
-  const [isShareModalVisible, setShareModalVisible] = useState(false); // Trạng thái cho modal chia sẻ
+  const { image } = route.params || {};
 
-  const toggleModal = () => {
-    setModalVisible(!isModalVisible);
-  };
+  if (!image) {
+    console.error("Image data is undefined.");
+    return (
+      <View style={styles.container}>
+        <Text style={{ color: "red", fontSize: 16 }}>
+          Error: No image data provided.
+        </Text>
+        <TouchableOpacity
+          onPress={() => navigation.goBack()}
+          style={styles.backButton}
+        >
+          <Text style={{ fontSize: 16, color: "blue" }}>Go Back</Text>
+        </TouchableOpacity>
+      </View>
+    );
+  }
 
-  const toggleShareModal = () => {
-    setShareModalVisible(!isShareModalVisible);
+  const { uri, title, user } = image;
+  const userAvatar = user?.avatar || "https://via.placeholder.com/150";
+  const userName = user ? `${user.firstName} ${user.lastName}` : "Unknown User";
+
+  const [scrollY] = useState(new Animated.Value(0));
+  const [relatedImages, setRelatedImages] = useState([]);
+
+  useEffect(() => {
+    const fetchRelatedImages = async () => {
+      try {
+        const response = await fetch(`${BASE_URL}:5000/picture/getAllPictures`);
+        const data = await response.json();
+        const imagesWithSize = await convertDataWithSize(data);
+        setRelatedImages(imagesWithSize);
+      } catch (error) {
+        console.error("Error fetching related images:", error);
+      }
+    };
+
+    fetchRelatedImages();
+  }, []);
+
+  const headerOpacity = scrollY.interpolate({
+    inputRange: [0, 50],
+    outputRange: [1, 0],
+    extrapolate: "clamp",
+  });
+
+  const userInfoTranslateY = scrollY.interpolate({
+    inputRange: [0, 50, 150],
+    outputRange: [100, 60, -30], // Avatar xuất hiện hợp lý hơn, không quá cao.
+    extrapolate: "clamp",
+  });
+
+  const userInfoOpacity = scrollY.interpolate({
+    inputRange: [0, 50, 150],
+    outputRange: [0, 1, 0],
+    extrapolate: "clamp",
+  });
+
+  const actionContainerTranslateY = scrollY.interpolate({
+    inputRange: [0, 50, 150],
+    outputRange: [0, 50, -30], // Nút chức năng di chuyển phù hợp với avatar.
+    extrapolate: "clamp",
+  });
+
+  const { height: screenHeight } = Dimensions.get("window");
+
+  const imageHeight = scrollY.interpolate({
+    inputRange: [0, 200],
+    outputRange: [screenHeight * 0.89, screenHeight * 0.3],
+    extrapolate: "clamp",
+  });
+
+  const renderRelatedImage = ({ item }) => {
+    const columnWidth = Dimensions.get("window").width / 2 - 15;
+    const imageHeight = (item.height / item.width) * columnWidth;
+
+    return (
+      <TouchableOpacity
+        style={{ marginBottom: 10 }}
+        onPress={() =>
+          navigation.navigate("ImageDetailScreen", {
+            image: {
+              uri: item.uri,
+              title: item.title,
+              user: {
+                avatar: item.user?.avatar || "https://via.placeholder.com/150",
+                firstName: item.user?.firstName || "Unknown",
+                lastName: item.user?.lastName || "User",
+              },
+            },
+          })
+        }
+      >
+        <Image
+          source={{ uri: item.uri }}
+          style={{
+            width: columnWidth,
+            height: imageHeight,
+            borderRadius: 15,
+            resizeMode: "cover",
+          }}
+        />
+      </TouchableOpacity>
+    );
   };
 
   return (
     <View style={styles.container}>
-      <TouchableOpacity onPress={() => navigation.goBack()} style={styles.backButton}>
-        <Ionicons name="arrow-back" size={45} color="#fff" />
-      </TouchableOpacity>
+      {/* Header */}
+      <Animated.View style={[styles.header, { opacity: headerOpacity }]}>
+        <TouchableOpacity
+          onPress={() => navigation.goBack()}
+          style={styles.backButton}
+        >
+          <Ionicons name="arrow-back" size={30} color="#fff" />
+        </TouchableOpacity>
+        <TouchableOpacity style={styles.threeDotsButton}>
+          <Ionicons name="ellipsis-horizontal" size={30} color="#fff" />
+        </TouchableOpacity>
+      </Animated.View>
 
-      {/* Nút 3 chấm góc phải */}
-      <TouchableOpacity onPress={toggleModal} style={styles.threeDotsButton}>
-        <Ionicons name="ellipsis-horizontal" size={45} color="#fff" />
-      </TouchableOpacity>
-
-      {/* Nội dung chính */}
-      <ScrollView contentContainerStyle={styles.scrollContainer}>
-        <Image source={{ uri: image.source.uri }} style={styles.image} />
-
-        <View style={styles.iconContainer}>
-          <TouchableOpacity style={styles.iconButton}>
-            <Ionicons name="heart-outline" size={24} color="#fff" />
-            <Text style={styles.iconText}>365</Text>
-          </TouchableOpacity>
-
-          {/* Nút "Xem" và "Lưu" */}
-          <View style={styles.buttonGroup}>
-            <TouchableOpacity style={styles.viewButton}>
-              <Text style={styles.buttonText}>Xem</Text>
-            </TouchableOpacity>
-            <TouchableOpacity style={styles.saveButton}>
-              <Text style={styles.buttonTextSave}>Lưu</Text>
-            </TouchableOpacity>
-          </View>
-
-          {/* Nút "Chia sẻ" */}
-          <TouchableOpacity style={styles.iconButton} onPress={toggleShareModal}>
-            <Ionicons name="share-social" size={24} color="#fff" />
+      {/* Avatar và thông tin người dùng */}
+      <Animated.View
+        style={[
+          styles.userInfo,
+          {
+            transform: [{ translateY: userInfoTranslateY }],
+            opacity: userInfoOpacity,
+            position: "absolute",
+            top: 100,
+            zIndex: 2,
+          },
+        ]}
+      >
+        <Image source={{ uri: userAvatar }} style={styles.avatar} />
+        <View>
+          <Text style={styles.userName}>{userName}</Text>
+          <TouchableOpacity style={styles.followButton}>
+            <Text style={styles.followButtonText}>Theo dõi</Text>
           </TouchableOpacity>
         </View>
-      </ScrollView>
+      </Animated.View>
 
-      {/* Modal Tùy chọn */}
-      <Modal
-        transparent={true}
-        visible={isModalVisible}
-        animationType="slide"
-        onRequestClose={toggleModal}
+      {/* Nội dung cuộn */}
+      <Animated.ScrollView
+        style={{ flex: 1 }}
+        contentContainerStyle={{ flexGrow: 1, paddingBottom: 100 }}
+        onScroll={Animated.event(
+          [{ nativeEvent: { contentOffset: { y: scrollY } } }],
+          { useNativeDriver: false }
+        )}
+        scrollEventThrottle={16}
       >
-        <TouchableOpacity style={styles.modalContainer} activeOpacity={1} onPress={toggleModal}>
-          <View style={styles.modalContent}>
-            <View style={styles.modalHeader}>
-              <TouchableOpacity onPress={toggleModal}>
-                <Ionicons name="close-outline" size={30} color="#000" />
-              </TouchableOpacity>
-              <Text style={styles.modalTitle}>Tùy chọn</Text>
-            </View>
+        {/* Hình ảnh chính */}
+        <Animated.Image
+          source={{ uri }}
+          style={[styles.image, { height: imageHeight }]}
+        />
 
-            <TouchableOpacity>
-              <Text style={styles.modalOption}>Theo dõi melitarai</Text>
-            </TouchableOpacity>
-            <TouchableOpacity>
-              <Text style={styles.modalOption}>Chia sẻ Ghim này</Text>
-            </TouchableOpacity>
-            <TouchableOpacity>
-              <Text style={styles.modalOption}>Sao chép liên kết</Text>
-            </TouchableOpacity>
-            <TouchableOpacity>
-              <Text style={styles.modalOption}>Tải ảnh xuống</Text>
-            </TouchableOpacity>
-            <TouchableOpacity>
-              <Text style={styles.modalOption}>Báo cáo Ghim</Text>
-            </TouchableOpacity>
-            <TouchableOpacity>
-              <Text style={styles.modalOption}>Ẩn Ghim</Text>
-            </TouchableOpacity>
-            <TouchableOpacity style={styles.closeButton} onPress={toggleModal}>
-              <Text style={styles.closeButtonText}>Đóng</Text>
-            </TouchableOpacity>
-          </View>
-        </TouchableOpacity>
-      </Modal>
+        {/* Các nút chức năng */}
+        <Animated.View
+          style={[
+            styles.actionContainer,
+            { transform: [{ translateY: actionContainerTranslateY }] },
+          ]}
+        >
+          <TouchableOpacity style={styles.saveButton}>
+            <Text style={styles.buttonTextSave}>Lưu</Text>
+          </TouchableOpacity>
+          <TouchableOpacity style={styles.viewButton}>
+            <Text style={styles.buttonText}>Xem</Text>
+          </TouchableOpacity>
+          <TouchableOpacity style={styles.iconButton}>
+            <Ionicons name="heart-outline" size={24} color="#000" />
+            <Text style={styles.iconText}>365</Text>
+          </TouchableOpacity>
+        </Animated.View>
 
-      {/* Modal Chia sẻ */}
-      <Modal
-        transparent={true}
-        visible={isShareModalVisible}
-        animationType="slide"
-        onRequestClose={toggleShareModal}
-      >
-        <TouchableOpacity style={styles.modalContainer} activeOpacity={1} onPress={toggleShareModal}>
-          <View style={styles.shareModalContent}>
-            <View style={styles.modalHeader}>
-              <TouchableOpacity onPress={toggleShareModal}>
-                <Ionicons name="close-outline" size={30} color="#000" />
-              </TouchableOpacity>
-              <Text style={styles.modalTitle}>Chia sẻ</Text>
-            </View>
+        {/* Danh sách ảnh liên quan */}
+        <View style={styles.relatedImagesContainer}>
+          <FlatList
+            data={relatedImages}
+            numColumns={2}
+            columnWrapperStyle={{
+              justifyContent: "space-between",
+              marginBottom: 10, // Khoảng cách giữa các hàng
+            }}
+            keyExtractor={(item) => item.id}
+            renderItem={({ item }) => {
+              const imageWidth = width / 2 - 20; // Chia thành 2 cột
+              const imageHeight =
+                item.height && item.width
+                  ? (item.height / item.width) * imageWidth
+                  : 200; // Fallback nếu không có kích thước
 
-            {/* Biểu tượng chia sẻ */}
-            <View style={styles.shareRow}>
-              <TouchableOpacity style={styles.shareOption}>
-                <Ionicons name="logo-facebook" size={40} color="#4267B2" />
-                <Text>Facebook</Text>
-              </TouchableOpacity>
-              <TouchableOpacity style={styles.shareOption}>
-                <Ionicons name="chatbox-ellipses" size={40} color="#0084FF" />
-                <Text>Messenger</Text>
-              </TouchableOpacity>
-              <TouchableOpacity style={styles.shareOption}>
-                <Ionicons name="chatbox-ellipses-outline" size={40} color="#000" />
-                <Text>Tin nhắn</Text>
-              </TouchableOpacity>
-              <TouchableOpacity style={styles.shareOption}>
-                <Ionicons name="mail-outline" size={40} color="#DB4437" />
-                <Text>Gmail</Text>
-              </TouchableOpacity>
-            </View>
-            <View style={styles.shareRow}>
-              <TouchableOpacity style={styles.shareOption}>
-                <Ionicons name="paper-plane-outline" size={40} color="#0088CC" />
-                <Text>Telegram</Text>
-              </TouchableOpacity>
-              <TouchableOpacity style={styles.shareOption}>
-                <Ionicons name="link-outline" size={40} color="#000" />
-                <Text>Sao chép liên kết</Text>
-              </TouchableOpacity>
-              <TouchableOpacity style={styles.shareOption}>
-                <Ionicons name="logo-pinterest" size={40} color="#E60023" />
-                <Text>Pinterest</Text>
-              </TouchableOpacity>
-              <TouchableOpacity style={styles.shareOption}>
-                <Ionicons name="ellipsis-horizontal" size={40} color="#000" />
-                <Text>Khác</Text>
-              </TouchableOpacity>
-            </View>
-          </View>
-        </TouchableOpacity>
-      </Modal>
+              return (
+                <View style={styles.imageWrapper}>
+                  <TouchableOpacity
+                    onPress={() =>
+                      navigation.navigate("ImageDetailScreen", {
+                        image: {
+                          uri: item.uri,
+                          title: item.title,
+                          user: {
+                            avatar:
+                              item.user?.avatar ||
+                              "https://via.placeholder.com/150",
+                            firstName: item.user?.firstName || "Unknown",
+                            lastName: item.user?.lastName || "User",
+                          },
+                        },
+                      })
+                    }
+                  >
+                    <Image
+                      source={{ uri: item.uri }}
+                      style={{
+                        width: imageWidth,
+                        height: imageHeight,
+                        borderRadius: 10,
+                        resizeMode: "cover",
+                      }}
+                    />
+                  </TouchableOpacity>
+                  <View style={styles.footerContainer}>
+                    <Image
+                      source={{
+                        uri:
+                          item.user?.avatar ||
+                          "https://via.placeholder.com/150",
+                      }}
+                      style={styles.footerIcon}
+                    />
+                    <Text style={styles.footerText} numberOfLines={1}>
+                      {item.title || "Không có tiêu đề"}
+                    </Text>
+                  </View>
+                </View>
+              );
+            }}
+          />
+        </View>
+      </Animated.ScrollView>
     </View>
   );
 };

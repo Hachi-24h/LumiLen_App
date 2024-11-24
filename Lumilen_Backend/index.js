@@ -21,8 +21,8 @@ const connectDB = async () => {
     }
 };
 
-const app = express();
 
+const app = express();
 // Kết nối MongoDB
 connectDB();
 

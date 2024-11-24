@@ -10,16 +10,26 @@ const axios = require('axios');
 
 
 
+// router.get('/getAllPictures', async (req, res) => {
+//     try {
+//         // Lấy tất cả các ảnh từ collection Picture
+//         const pictures = await Picture.find();
+
+//         res.status(200).json(pictures);
+//     } catch (error) {
+//         res.status(500).json({ message: error.message });
+//     }
+// });
+
 router.get('/getAllPictures', async (req, res) => {
     try {
-        // Lấy tất cả các ảnh từ collection Picture
-        const pictures = await Picture.find();
-
+        const pictures = await Picture.find().populate('id', 'avatar firstName lastName'); // Lấy thông tin user
         res.status(200).json(pictures);
     } catch (error) {
         res.status(500).json({ message: error.message });
     }
 });
+
 router.get('/getListAllPictures', async (req, res) => {
     try {
         // Chỉ lấy trường 'uri' của các ảnh từ collection Picture

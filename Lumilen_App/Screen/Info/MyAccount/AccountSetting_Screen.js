@@ -105,10 +105,15 @@ const AccountScreen = ({ navigation, route }) => {
 
           <Text style={styles.sectionTitle}>Hỗ trợ</Text>
 
-          <TouchableOpacity style={styles.settingItem}>
+          <TouchableOpacity
+            style={styles.settingItem}
+            onPress={() => navigation.navigate("ChatBoxAI")}
+          >
             <Text style={styles.settingText}>Trung tâm Trợ giúp</Text>
             <Ionicons name="chevron-forward-outline" size={20} />
           </TouchableOpacity>
+
+
 
           <TouchableOpacity style={styles.settingItem}>
             <Text style={styles.settingText}>Điều khoản dịch vụ</Text>

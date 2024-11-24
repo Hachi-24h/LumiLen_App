@@ -18,6 +18,7 @@ import Profile from "./Screen/Info/MyAccount/AccountManagement/Profile/Profile_S
 import ChangeAvatar from "./Screen/Info/MyAccount/AccountManagement/Profile/ChangeAvatar_Screen";
 import demo from "./DemoFuntion";
 import UpdateInfo from "./Screen/Info/MyAccount/AccountManagement/Profile/UpdateInfo_Screen";
+import addGhim from "./Screen/Info/addGhim_Screen";
 export default {
   HomeTabs,
   ImageDetailScreen,
@@ -39,5 +40,5 @@ export default {
   ChangeAvatar,
   UpdateInfo,
   demo,
-
+  addGhim,
 };

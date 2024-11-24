@@ -22,7 +22,7 @@ const ChangePasswordScreen = ({ navigation }) => {
   const [isCurrentPasswordVisible, setCurrentPasswordVisible] = useState(false);
   const [isNewPasswordVisible, setNewPasswordVisible] = useState(false);
   const [isConfirmPasswordVisible, setConfirmPasswordVisible] = useState(false);
-
+  
   // Kiểm tra định dạng mật khẩu mới
   const validatePassword = (password) => {
     const regex = /^(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$/;
@@ -72,7 +72,7 @@ const ChangePasswordScreen = ({ navigation }) => {
     // Nếu tất cả hợp lệ, gọi API để cập nhật mật khẩu
     if (isValid) {
       try {
-        const response = await axios.put(`${BASE_URL}/user/updateUser/${userId}`, {
+        const response = await axios.put(`${BASE_URL}:5000/user/updateUser/${userId}`, {
           password: newPassword,
         });
         if (response.status === 200) {

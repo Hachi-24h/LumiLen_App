@@ -34,7 +34,7 @@ const ProfileScreen = ({ navigation, route }) => {
         <Text style={styles.username}>Hachi</Text>
         <Text style={styles.userID}>@hachi</Text>
         <Text style={styles.followInfo}>3 người theo dõi · 62 đang theo dõi</Text>
-        <TouchableOpacity style={styles.editProfileButton}>
+        <TouchableOpacity style={styles.editProfileButton} onPress={() => navigation.navigate("UpdateInfo")}  >
           <Text style={styles.editProfileText}>Chỉnh sửa hồ sơ</Text>
         </TouchableOpacity>
       </View>

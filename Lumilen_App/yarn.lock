@@ -4967,6 +4967,11 @@ react-native-keyboard-aware-scroll-view@^0.9.5:
     prop-types "^15.6.2"
     react-native-iphone-x-helper "^1.0.3"
 
+react-native-masonry-layout@^1.0.6:
+  version "1.0.6"
+  resolved "https://registry.yarnpkg.com/react-native-masonry-layout/-/react-native-masonry-layout-1.0.6.tgz#b0ac509fb22a07b1df91e91b7c56374251aa68e2"
+  integrity sha512-oQRuSqU+yInfLdWHkfyhDnFJzH+4To/i8shyWJ/3GI8bzYv7jm0m3vsTK+DB+W9YB/tsQ0D+WCFXV0OO3yRgXA==
+
 react-native-masonry-list@^2.16.2:
   version "2.16.2"
   resolved "https://registry.yarnpkg.com/react-native-masonry-list/-/react-native-masonry-list-2.16.2.tgz#7f860b878cb3df3591954913ae64e188e32acdd9"

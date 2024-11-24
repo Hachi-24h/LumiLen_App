@@ -39,7 +39,7 @@ const InfoScreen = ({ navigation, route }) => {
   const fetchDataFromAPI = async () => {
     try {
       const response = await fetch(
-        `${BASE_URL}/picture/getUserImages?userId=${userId}`
+        `${BASE_URL}:5000/picture/getUserImages?userId=${userId}`
       );
       const data = await response.json();
       return data;

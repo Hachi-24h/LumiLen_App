@@ -15,7 +15,7 @@ const PictureSchema = new mongoose.Schema({
     id: {
         type: String,
         required: true,
-        trim: true // Xóa khoảng trắng đầu/cuối
+        trim: true 
     },
     typePicture: {
         type: String,

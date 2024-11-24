@@ -21,7 +21,7 @@ WebBrowser.maybeCompleteAuthSession();
 
 const LoginScreen = ({ navigation }) => {
   const [email, setEmail] = useState("nam@gmail.com");
-  const [password, setPassword] = useState("thanhnam");
+  const [password, setPassword] = useState("Thanhnam2303@");
   const [isPasswordVisible, setIsPasswordVisible] = useState(false);
   const [emailBorderColor, setEmailBorderColor] = useState("black");
   const [passwordBorderColor, setPasswordBorderColor] = useState("black");
@@ -82,7 +82,7 @@ const LoginScreen = ({ navigation }) => {
         setEmailBorderColor("black");
         setPasswordBorderColor("black");
         await fetchUserData(email);
-        navigation.navigate("UpdateInfo");
+        navigation.navigate("AddGhim");
       } else {
         setEmailBorderColor("red");
         setPasswordBorderColor("red");

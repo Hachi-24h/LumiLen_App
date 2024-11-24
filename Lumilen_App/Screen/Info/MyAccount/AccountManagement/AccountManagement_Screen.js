@@ -13,7 +13,7 @@ import {
 } from "react-native";
 import { Ionicons } from '@expo/vector-icons';
 import styles from '../../../../Css/AccountManagement_Css'; 
-import { showSuccessMessage } from "../../../../Screen/Other/notification";
+import { showSuccessMessage } from "../../../../Other/notification";
 import { UserContext } from "../../../../Hook/UserContext";
 const AccountManagementScreen = ({ navigation, route }) => {
   const [isSoundEnabled, setIsSoundEnabled] = useState(false);
@@ -22,7 +22,7 @@ const AccountManagementScreen = ({ navigation, route }) => {
   const email = userData ? userData.email : null;
   useEffect(() => {
     if (route.params?.showSuccessMessage) {
-        showSuccessMessage(route.params.showSuccessMessage);
+        showSuccessMessage(route.params.showSuccessMessage,"email");
       }
   }, [route.params]);
 

@@ -22,11 +22,11 @@ const columnWidth = (width - (COLUMN_COUNT + 1) * SPACING) / COLUMN_COUNT;
 
 const HomeTabs = ({ navigation }) => {
   const { userData } = useContext(UserContext);
-  const avatar = userData ? userData.avatar : null;
-
-  const [images, setImages] = useState([]);
-  const [filteredImages, setFilteredImages] = useState([]);
-  const [searchQuery, setSearchQuery] = useState("");
+  const [avatar, setAvatar] = useState(null); // Avatar của user
+  
+  const [images, setImages] = useState([]); // Danh sách ảnh đầy đủ
+  const [filteredImages, setFilteredImages] = useState([]); // Danh sách ảnh được lọc
+  const [searchQuery, setSearchQuery] = useState(""); // Query tìm kiếm
 
   const userId = userData ? userData._id : null;
 
@@ -46,6 +46,7 @@ const HomeTabs = ({ navigation }) => {
     const fetchAndConvertImages = async () => {
       const data = await fetchDataFromAPI();
       const imagesWithSize = await convertDataWithSize(data);
+      console.log("Images with size:", imagesWithSize[0]);
       setImages(imagesWithSize);
       setFilteredImages(imagesWithSize); // Khởi tạo `filteredImages` với toàn bộ ảnh ban đầu
     };
@@ -53,9 +54,32 @@ const HomeTabs = ({ navigation }) => {
     fetchAndConvertImages();
   }, [userId]);
 
+  // Hàm lấy thông tin user dựa trên userID
+  const fetchUser = async (userID) => {
+    try {
+      const response = await fetch(`${BASE_URL}:5000/user/findUserById/${userID}`);
+      if (response.ok) {
+        const userData = await response.json();
+        return userData.avatar; // Lấy avatar từ thông tin user
+      } else {
+        console.error("Error fetching user:", response.status);
+        return null;
+      }
+    } catch (error) {
+      console.error("Error fetching user data:", error.message);
+      return null;
+    }
+  };
+
+  useEffect(() => {
+    if (userId) {
+      fetchUser(userId).then((avatar) => setAvatar(avatar));
+    }
+  }, [userId]);
+
   // Tạo dữ liệu từng cột để tạo hiệu ứng masonry
   const generateColumns = (data) => {
-    const columns = Array.from({ length: COLUMN_COUNT }, () => []);
+    const columns = Array.from({ length: COLUMN_COUNT }, () => []); // Tạo mảng số cột
     data.forEach((item, index) => {
       const columnIndex = index % COLUMN_COUNT; // Xác định ảnh thuộc cột nào
       columns[columnIndex].push(item);
@@ -73,14 +97,6 @@ const HomeTabs = ({ navigation }) => {
         {columnData.map((item, index) => {
           const imageHeight = (item.height / item.width) * columnWidth;
 
-          // Lấy thông tin user và tiêu đề
-          const user = item.id || {
-            avatar: "",
-            firstName: "Unknown",
-            lastName: "",
-          };
-          const title = item.title || `${user.firstName} ${user.lastName}`;
-
           return (
             <View
               key={`${item._id || "undefined"}-${index}`}
@@ -89,20 +105,11 @@ const HomeTabs = ({ navigation }) => {
               <TouchableOpacity
                 onPress={() =>
                   navigation.navigate("ImageDetailScreen", {
-                    image: {
-                      uri: item.uri,
-                      title: item.title,
-                      user: {
-                        avatar:
-                          item.user?.avatar ||
-                          "https://via.placeholder.com/150",
-                        firstName: item.user?.firstName || "Unknown",
-                        lastName: item.user?.lastName || "User",
-                      },
-                    },
+                    dataAnh: item,
                   })
                 }
               >
+                {/* Ảnh */}
                 <Image
                   source={{ uri: item.uri }}
                   style={{
@@ -116,13 +123,17 @@ const HomeTabs = ({ navigation }) => {
 
               {/* Footer bên dưới ảnh */}
               <View style={styles.footerContainer}>
+                {/* Avatar */}
                 <Image
                   source={{
-                    uri: user.avatar || "https://via.placeholder.com/150",
+                    uri: avatar || "https://via.placeholder.com/150", // Avatar mặc định nếu không có
                   }}
                   style={styles.footerIcon}
                 />
-                <Text style={styles.footerText}>{title}</Text>
+                {/* Tiêu đề */}
+                <Text style={styles.footerText} numberOfLines={1}>
+                  {item.title || "Không có tiêu đề"}
+                </Text>
               </View>
             </View>
           );
@@ -144,7 +155,6 @@ const HomeTabs = ({ navigation }) => {
           contentContainerStyle={{
             padding: SPACING,
             paddingBottom: 20,
-            // height :height*0.8,
           }}
           showsVerticalScrollIndicator={false} // Ẩn thanh cuộn
         />

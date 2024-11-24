@@ -188,14 +188,18 @@ router.post('/addFollower/:userId', async (req, res) => {
             return res.status(404).json({ message: "Người dùng không tồn tại." });
         }
 
-        // Kiểm tra nếu `followerId` đã có trong danh sách `followers` để tránh trùng lặp
-        if (!user.followers.includes(followerId)) {
-            user.followers.push(followerId);
-            await user.save();
-            return res.status(200).json({ message: "Đã thêm vào danh sách followers.", user });
+        // Kiểm tra nếu đã theo dõi thì xóa
+        if (user.followers.includes(followerId)) {
+            user.followers = user.followers.filter((id) => id !== followerId);
         } else {
-            return res.status(400).json({ message: "Người dùng đã tồn tại trong danh sách followers." });
+            // Nếu chưa theo dõi thì thêm vào
+            user.followers.push(followerId);
         }
+
+        // Lưu người dùng sau khi cập nhật
+        await user.save();
+
+        res.status(200).json({ message: "Cập nhật danh sách followers thành công.", followers: user.followers });
     } catch (error) {
         res.status(500).json({ message: error.message });
     }

@@ -38,27 +38,42 @@ const styles = StyleSheet.create({
     alignItems: "center",
     zIndex: 5,
   },
+  userInfoContainer: {
+    flexDirection: "row", // Hiển thị các thành phần theo hàng ngang
+    justifyContent: "space-between", // Đẩy các thành phần sang 2 phía
+    alignItems: "center", // Căn giữa theo chiều dọc
+    marginTop: 10,
+    paddingHorizontal: 10,
+  },
   avatar: {
-    width: 50,
-    height: 50,
-    borderRadius: 25,
-    marginRight: 10,
+    width: 60,
+    height: 60,
+    borderRadius: 35,
+    marginRight: 15, // Khoảng cách giữa avatar và tên người dùng
   },
   userName: {
-    fontSize: 16,
+    fontSize: 20,
     fontWeight: "bold",
   },
   followButton: {
-    marginTop: 5,
     backgroundColor: "#E60023",
-    borderRadius: 20,
-    paddingHorizontal: 15,
-    paddingVertical: 5,
+    borderRadius: 30,
+    paddingHorizontal: 25,
+    paddingVertical: 20,
+    marginRight: 20, // Đẩy nút sang trái
   },
+  
   followButtonText: {
     color: "#fff",
     fontWeight: "bold",
   },
+
+  followerCount: {
+    fontSize: 14,
+    color: "#666",
+    marginTop: 5,
+  },  
+  
   scrollContainer: {
     flexGrow: 1,
     paddingTop: 10,
@@ -70,15 +85,14 @@ const styles = StyleSheet.create({
     alignItems: "center",
     marginTop: 15,
     paddingVertical: 10,
-    backgroundColor: "#fff",
     zIndex: 5, // Đảm bảo nằm trên các thành phần khác
   },
 
   saveButton: {
     backgroundColor: "#E60023",
-    paddingVertical: 10,
-    paddingHorizontal: 20,
-    borderRadius: 25,
+    paddingVertical: 20,
+    paddingHorizontal: 25,
+    borderRadius: 30,
   },
 
   buttonTextSave: {
@@ -89,9 +103,9 @@ const styles = StyleSheet.create({
 
   viewButton: {
     backgroundColor: "#f0f0f0",
-    paddingVertical: 10,
-    paddingHorizontal: 20,
-    borderRadius: 25,
+    paddingVertical: 20,
+    paddingHorizontal: 25,
+    borderRadius: 30,
   },
 
   iconButton: {

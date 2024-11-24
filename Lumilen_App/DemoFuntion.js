@@ -1,103 +1,90 @@
-import React, { useState } from 'react';
-import { View, Text, TextInput, Button, FlatList, Image, StyleSheet } from 'react-native';
-import axios from 'axios';
+import React, { useState, useEffect } from "react";
+import { View, Text, Image, ActivityIndicator, StyleSheet } from "react-native";
+import BASE_URL from "./IpAdress";
 
-export default function SearchImageScreen() {
-  const [searchTerm, setSearchTerm] = useState('');
-  const [images, setImages] = useState([]);
-  const [noResults, setNoResults] = useState(false);
+const UserDetailScreen = ({ route }) => {
+  const userId = "672cd1f6ea6637803a6b8424"; 
+  const [user, setUser] = useState(null); // Trạng thái lưu thông tin người dùng
+  const [loading, setLoading] = useState(true); // Trạng thái tải dữ liệu
 
-  // Hàm gọi API tìm kiếm ảnh
-  const handleSearch = async () => {
-    try {
-      const response = await axios.post('http://192.168.0.100:5001/api/search_image', {
-        keyword: searchTerm,
-      });
-
-      const fetchedImages = response.data.best_image_urls;
-      if (fetchedImages.length > 0) {
-        setImages(fetchedImages);
-        setNoResults(false);
-      } else {
-        setImages([]);
-        setNoResults(true);
+  useEffect(() => {
+    const fetchUser = async () => {
+      try {
+        // Gọi API để lấy thông tin người dùng
+        const response = await fetch(`${BASE_URL}:5000/user/findUserById/${userId}`);
+        const data = await response.json();
+        console.log("Data:", data);
+        if (response.ok) {
+          setUser(data); // Lưu thông tin người dùng vào state
+        } else {
+          console.error("Error fetching user:", data.message);
+        }
+      } catch (error) {
+        console.error("Error:", error.message);
+      } finally {
+        setLoading(false); // Tắt trạng thái tải
       }
-    } catch (error) {
-      console.error('Error fetching images:', error);
-      setImages([]);
-      setNoResults(true);
-    }
-  };
+    };
 
-  const renderImageItem = ({ item }) => (
-    <View style={styles.imageContainer}>
-      <Image source={{ uri: item.url }} style={styles.image} />
-    </View>
-  );
+    fetchUser();
+  }, [userId]);
+
+  if (loading) {
+    return (
+      <View style={styles.container}>
+        <ActivityIndicator size="large" color="#0000ff" />
+        <Text>Đang tải thông tin người dùng...</Text>
+      </View>
+    );
+  }
+
+  if (!user) {
+    return (
+      <View style={styles.container}>
+        <Text style={styles.errorText}>Không tìm thấy người dùng</Text>
+      </View>
+    );
+  }
 
   return (
     <View style={styles.container}>
-      <Text style={styles.title}>Tìm kiếm ảnh</Text>
-      <TextInput
-        style={styles.input}
-        placeholder="Nhập từ khóa tìm kiếm..."
-        value={searchTerm}
-        onChangeText={setSearchTerm}
+      <Image
+        source={{ uri: user.avatar || "https://via.placeholder.com/150" }}
+        style={styles.avatar}
       />
-      <Button title="Tìm kiếm" onPress={handleSearch} />
-
-      {noResults ? (
-        <Text style={styles.noResultsText}>Không có ảnh nào.</Text>
-      ) : (
-        <FlatList
-          data={images}
-          keyExtractor={(item, index) => index.toString()}
-          renderItem={renderImageItem}
-          numColumns={2}
-          contentContainerStyle={styles.imageList}
-        />
-      )}
+      <Text style={styles.name}>{`${user.firstName} ${user.lastName}`}</Text>
+      <Text style={styles.email}>{user.email}</Text>
     </View>
   );
-}
+};
 
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    padding: 20,
-    backgroundColor: '#fff',
+    alignItems: "center",
+    justifyContent: "center",
+    padding: 16,
+    backgroundColor: "#fff",
   },
-  title: {
-    fontSize: 24,
-    fontWeight: 'bold',
-    marginBottom: 20,
-    textAlign: 'center',
+  avatar: {
+    width: 100,
+    height: 100,
+    borderRadius: 50,
+    marginBottom: 16,
   },
-  input: {
-    height: 40,
-    borderColor: '#ccc',
-    borderWidth: 1,
-    paddingHorizontal: 10,
-    marginBottom: 10,
-    borderRadius: 5,
+  name: {
+    fontSize: 20,
+    fontWeight: "bold",
+    marginBottom: 8,
   },
-  noResultsText: {
-    fontSize: 18,
-    color: '#888',
-    textAlign: 'center',
-    marginTop: 20,
+  email: {
+    fontSize: 16,
+    color: "#555",
   },
-  imageList: {
-    marginTop: 20,
-  },
-  imageContainer: {
-    flex: 1,
-    alignItems: 'center',
-    margin: 5,
-  },
-  image: {
-    width: '100%',
-    height: 150,
-    borderRadius: 10,
+  errorText: {
+    color: "red",
+    fontSize: 16,
   },
 });
+
+export default UserDetailScreen;

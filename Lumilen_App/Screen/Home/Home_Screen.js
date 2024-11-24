@@ -1,35 +1,39 @@
-import React, { useState, useEffect, useContext } from 'react';
-import { View, Text, TouchableOpacity, Modal, TextInput } from 'react-native';
-import MasonryList from "react-native-masonry-list";
-import Ionicons from 'react-native-vector-icons/Ionicons';
-import styles from '../../Css/Home_Css';
-import Footer from '../footer';
-import { convertDataWithSize } from '../../Hook/imageUtils';
-import BASE_URL from '../../IpAdress';
+import React, { useEffect, useState, useContext } from "react";
+import {
+  View,
+  Text,
+  Image,
+  FlatList,
+  TouchableOpacity,
+  Dimensions,
+  TextInput,
+  StatusBar,
+} from "react-native";
+import Footer from "../footer";
+import styles from "../../Css/Home_Css";
 import { UserContext } from "../../Hook/UserContext";
+import BASE_URL from "../../IpAdress";
+import { convertDataWithSize } from "../../Hook/imageUtils";
 
-const options = [
-  { icon: 'bookmark-outline', action: () => console.log('Lưu') },
-  { icon: 'share-social-outline', action: () => console.log('Chia sẻ') },
-  { icon: 'chatbubble-outline', action: () => console.log('Bình luận') },
-  { icon: 'eye-off-outline', action: () => console.log('Ẩn ghim') },
-];
+const { width, height } = Dimensions.get("window");
+const COLUMN_COUNT = 2; // Số cột
+const SPACING = 10; // Khoảng cách giữa các cột
+const columnWidth = (width - (COLUMN_COUNT + 1) * SPACING) / COLUMN_COUNT;
 
-const HomeScreen = ({ navigation }) => {
-  const [images, setImages] = useState([]);
-  const [filteredImages, setFilteredImages] = useState([]);
-  const [selectedImageId, setSelectedImageId] = useState(null);
-  const [modalVisible, setModalVisible] = useState(false);
-  const [bottomSheetVisible, setBottomSheetVisible] = useState(false);
-  const [modalPosition, setModalPosition] = useState({ top: 100, left: 100 });
-  const [selectItem, setSelectItem] = useState("Tất cả");
+const HomeTabs = ({ navigation }) => {
   const { userData } = useContext(UserContext);
+  const [avatar, setAvatar] = useState(null); // Avatar của user
+  
+  const [images, setImages] = useState([]); // Danh sách ảnh đầy đủ
+  const [filteredImages, setFilteredImages] = useState([]); // Danh sách ảnh được lọc
+  const [searchQuery, setSearchQuery] = useState(""); // Query tìm kiếm
+
   const userId = userData ? userData._id : null;
 
   // Hàm lấy dữ liệu từ API
   const fetchDataFromAPI = async () => {
     try {
-      const response = await fetch(`${BASE_URL}/picture/getUserImages?userId=${userId}`);
+      const response = await fetch(`${BASE_URL}:5000/picture/getAllPictures`);
       const data = await response.json();
       return data;
     } catch (error) {
@@ -42,144 +46,123 @@ const HomeScreen = ({ navigation }) => {
     const fetchAndConvertImages = async () => {
       const data = await fetchDataFromAPI();
       const imagesWithSize = await convertDataWithSize(data);
-
-      const filteredImages =
-        selectItem === "Tất cả"
-          ? imagesWithSize
-          : imagesWithSize.filter((img) => img.userId === userId);
-
-      setImages(filteredImages);
-      setFilteredImages(filteredImages);
+      console.log("Images with size:", imagesWithSize[0]);
+      setImages(imagesWithSize);
+      setFilteredImages(imagesWithSize); // Khởi tạo `filteredImages` với toàn bộ ảnh ban đầu
     };
 
     fetchAndConvertImages();
-  }, [selectItem, userId]);
+  }, [userId]);
 
-  const handleImagePress = (image) => {
-    navigation.navigate('ImageDetailScreen', { image });
+  // Hàm lấy thông tin user dựa trên userID
+  const fetchUser = async (userID) => {
+    try {
+      const response = await fetch(`${BASE_URL}:5000/user/findUserById/${userID}`);
+      if (response.ok) {
+        const userData = await response.json();
+        return userData.avatar; // Lấy avatar từ thông tin user
+      } else {
+        console.error("Error fetching user:", response.status);
+        return null;
+      }
+    } catch (error) {
+      console.error("Error fetching user data:", error.message);
+      return null;
+    }
   };
 
-  const handleImageLongPress = (event, item) => {
-    // Kiểm tra nếu pageX và pageY tồn tại, nếu không sử dụng vị trí mặc định
-    const { pageX, pageY } = event?.nativeEvent || {};
-    setSelectedImageId(item.id);
-    setModalPosition({
-      top: pageY ??150,  // Sử dụng 150 nếu pageY không tồn tại
-      left: pageX ?? 150, // Sử dụng 150 nếu pageX không tồn tại
+  useEffect(() => {
+    if (userId) {
+      fetchUser(userId).then((avatar) => setAvatar(avatar));
+    }
+  }, [userId]);
+
+  // Tạo dữ liệu từng cột để tạo hiệu ứng masonry
+  const generateColumns = (data) => {
+    const columns = Array.from({ length: COLUMN_COUNT }, () => []); // Tạo mảng số cột
+    data.forEach((item, index) => {
+      const columnIndex = index % COLUMN_COUNT; // Xác định ảnh thuộc cột nào
+      columns[columnIndex].push(item);
     });
-    setModalVisible(true);
+    return columns;
   };
 
-  const handleModalClose = () => {
-    setModalVisible(false);
-    setSelectedImageId(null);
-  };
+  // Hàm render từng cột
+  const renderColumn = (columnData, columnIndex) => {
+    return (
+      <View
+        key={`column-${columnIndex}`}
+        style={{ flex: 1, marginHorizontal: SPACING / 2 }}
+      >
+        {columnData.map((item, index) => {
+          const imageHeight = (item.height / item.width) * columnWidth;
 
-  const handleOptionPress = (option) => {
-    option.action();
-    handleModalClose();
-  };
+          return (
+            <View
+              key={`${item._id || "undefined"}-${index}`}
+              style={styles.imageContainer}
+            >
+              <TouchableOpacity
+                onPress={() =>
+                  navigation.navigate("ImageDetailScreen", {
+                    dataAnh: item,
+                  })
+                }
+              >
+                {/* Ảnh */}
+                <Image
+                  source={{ uri: item.uri }}
+                  style={{
+                    width: columnWidth,
+                    height: imageHeight,
+                    borderRadius: 15,
+                    resizeMode: "cover",
+                  }}
+                />
+              </TouchableOpacity>
 
-  const handleThreeDotsPress = (id) => {
-    setSelectedImageId(id);
-    setBottomSheetVisible(true);
+              {/* Footer bên dưới ảnh */}
+              <View style={styles.footerContainer}>
+                {/* Avatar */}
+                <Image
+                  source={{
+                    uri: avatar || "https://via.placeholder.com/150", // Avatar mặc định nếu không có
+                  }}
+                  style={styles.footerIcon}
+                />
+                {/* Tiêu đề */}
+                <Text style={styles.footerText} numberOfLines={1}>
+                  {item.title || "Không có tiêu đề"}
+                </Text>
+              </View>
+            </View>
+          );
+        })}
+      </View>
+    );
   };
 
   return (
     <View style={styles.container}>
-      <MasonryList
-        images={filteredImages.map((item) => ({
-          source: { uri: item.uri },
-          width: item.width,
-          height: item.height,
-          id: item.id,
-        }))}
-        columns={2}
-        spacing={2}
-        imageContainerStyle={styles.imageStyle}
-        onPressImage={(image) => handleImagePress(image)}
-        onLongPressImage={(e, item) => handleImageLongPress(e, item)}
-      />
-
-      {/* Modal hiển thị 4 nút */}
-      {modalVisible && (
-        <Modal
-          transparent={true}
-          visible={modalVisible}
-          animationType="fade"
-          onRequestClose={handleModalClose}
-        >
-          <TouchableOpacity style={styles.modalOverlay} onPress={handleModalClose}>
-            <View style={[styles.optionsContainer, { top: modalPosition.top, left: modalPosition.left }]}>
-              {options.map((option, index) => {
-                const angle = (index / (options.length-1)) * Math.PI;
-                const radius = 55;
-                const x = radius * Math.cos(angle);
-                const y = radius * Math.sin(angle);
-
-                return (
-                  <TouchableOpacity
-                    key={index}
-                    style={[styles.optionButton, { position: 'absolute', left: x, top: y }]}
-                    onPress={() => handleOptionPress(option)}
-                  >
-                    <Ionicons name={option.icon} size={24} color="#000" />
-                  </TouchableOpacity>
-                );
-              })}
-            </View>
-          </TouchableOpacity>
-        </Modal>
-      )}
-
-      {/* Bottom sheet khi nhấn nút ba chấm */}
-      <Modal
-        visible={bottomSheetVisible}
-        animationType="slide"
-        transparent={true}
-        onRequestClose={() => setBottomSheetVisible(false)}
-      >
-        <View style={styles.bottomSheetContainer}>
-          <View style={styles.bottomSheet}>
-            <TouchableOpacity onPress={() => setBottomSheetVisible(false)}>
-              <Ionicons name="close" size={24} color="#000" style={styles.closeIcon} />
-            </TouchableOpacity>
-            <Text style={styles.modalTitle}>Chia sẻ với</Text>
-            <View style={styles.shareRow}>
-              <TouchableOpacity style={styles.shareOption}>
-                <Ionicons name="paper-plane-outline" size={24} color="red" />
-                <Text>Gửi</Text>
-              </TouchableOpacity>
-              <TouchableOpacity style={styles.shareOption}>
-                <Ionicons name="logo-facebook" size={24} color="blue" />
-                <Text>Facebook</Text>
-              </TouchableOpacity>
-              <TouchableOpacity style={styles.shareOption}>
-                <Ionicons name="chatbox" size={24} color="blue" />
-                <Text>Messenger</Text>
-              </TouchableOpacity>
-              <TouchableOpacity style={styles.shareOption}>
-                <Ionicons name="chatbox-outline" size={24} color="blue" />
-                <Text>Tin nhắn</Text>
-              </TouchableOpacity>
-              <TouchableOpacity style={styles.shareOption}>
-                <Ionicons name="mail-outline" size={24} color="red" />
-                <Text>Gmail</Text>
-              </TouchableOpacity>
-            </View>
-            <View style={styles.separator} />
-            <Text style={styles.optionText}>Tải ảnh xuống</Text>
-            <Text style={styles.optionText}>Ẩn ghim</Text>
-            <Text style={styles.optionText}>Báo cáo Ghimm</Text>
-          </View>
-        </View>
-      </Modal>
-
-      <View style={styles.fixedFooter}>
-        <Footer navigation={navigation} />
+      <StatusBar hidden={false} />
+      <View style={styles.body}>
+        <FlatList
+          data={generateColumns(filteredImages)} // Danh sách cột
+          renderItem={({ item, index }) => renderColumn(item, index)} // Render từng cột
+          keyExtractor={(item, index) => `column-${index}`} // Key của mỗi cột
+          horizontal={false} // Cuộn dọc
+          numColumns={COLUMN_COUNT} // Đặt số cột
+          contentContainerStyle={{
+            padding: SPACING,
+            paddingBottom: 20,
+          }}
+          showsVerticalScrollIndicator={false} // Ẩn thanh cuộn
+        />
       </View>
+      {/* Footer */}
+      <Footer navigation={navigation} avatar={avatar} namePage={"Trang Ghim"} />
     </View>
   );
 };
 
-export default HomeScreen;
+export default HomeTabs;

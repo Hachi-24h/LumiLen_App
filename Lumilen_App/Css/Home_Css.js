@@ -1,153 +1,46 @@
-import { StyleSheet, Dimensions } from 'react-native';
-const { width, height } = Dimensions.get("window");
+import { StyleSheet, Dimensions } from "react-native";
+
+const { width,height } = Dimensions.get("window");
 
 const styles = StyleSheet.create({
   container: {
-    flexGrow: 1,
-    paddingHorizontal: 10,
-    paddingVertical: 15,
-    backgroundColor: '#f5f5f5',
-  },
-  contentContainer: {
-    flexGrow: 1, // Đảm bảo ScrollView không chiếm toàn bộ chiều cao
-    width: '100%',
-    backgroundColor: '#fff',
-  },
-  imageGrid: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    marginBottom: 20,
-  },
-  leftColumn: {
     flex: 1,
-    marginRight: 5,
+    backgroundColor: "#fff",
   },
-  rightColumn: {
-    flex: 1,
-    marginLeft: 5,
+  body: {
+    height: height * 0.9,
   },
-  imageWrapper: {
-    position: 'relative',
-    marginBottom: 15,
-    borderRadius: 15,
-    overflow: 'hidden',
-    backgroundColor: '#ffffff',
-    shadowColor: '#000',
-    shadowOffset: { width: 0, height: 2 },
-    shadowOpacity: 0.1,
-    shadowRadius: 8,
-    elevation: 5,
+  profileImage: {
+    width: 40,
+    height: 40,
+    borderRadius: 20,
   },
-  imageLarge: {
-    width: '100%',
-    height: 250,
-    borderRadius: 15,
+  imageContainer: {
+    marginBottom: 15, // Khoảng cách giữa các ảnh
+    alignItems: "center", // Canh giữa nội dung
   },
-  imageSmall: {
-    width: '100%',
-    height: 200,
-    borderRadius: 15,
+  footerContainer: {
+    flexDirection: "row", // Đặt icon và chữ nằm ngang nhau
+    alignItems: "center", // Căn giữa theo trục dọc
+    justifyContent: "flex-start", // Đặt icon và chữ về bên trái
+    paddingHorizontal: 2, // Thêm padding ngang
+    marginTop: 2, // Khoảng cách với ảnh
+    // backgroundColor: "#f2f2f2", // Màu nền của footer
+    height: 50, // Đặt chiều cao cố định
+    width: "100%",
+    borderRadius: 5, // Tạo bo góc
   },
-  modalOverlay: {
-    flex: 1,
-    backgroundColor: 'rgba(0, 0, 0, 0.5)', // Đảm bảo nền mờ che phủ toàn bộ màn hình
-    justifyContent: 'center',
-    alignItems: 'center',
+  footerIcon: {
+    width: 40,
+    height: 40,
+    marginRight: 10, // Khoảng cách giữa icon và chữ
+    borderRadius: 20, // Bo góc icon
   },
-  optionsContainer: {
-    position: 'absolute',
-    left: 0,
-    right: 0,
-    bottom: 0,
-    top: 0,
-    justifyContent: 'center',
-    alignItems: 'center',
+  footerText: {
+    fontSize: 14,
+    color: "#333",
   },
-  optionButton: {
-    width: 50, // Kích thước nút lớn hơn
-    height: 50,
-    borderRadius: 30, // Dạng tròn hoàn chỉnh
-    justifyContent: 'center',
-    alignItems: 'center',
-    backgroundColor: '#F2F2F2', // Màu xanh cho nút
-    marginBottom: 15,
-    shadowColor: '#000', // Hiệu ứng đổ bóng
-    shadowOffset: { width: 0, height: 5 },
-    shadowOpacity: 0.3,
-    shadowRadius: 4,
-  },
-  threeDots: {
-    position: 'absolute',
-    bottom: 10, // Di chuyển nút xuống dưới
-    right: 10, // Đặt nút về phía bên phải
-    backgroundColor: 'rgba(255, 255, 255, 0.7)', // Màu nền cho nút ba chấm
-    padding: 5,
-    borderRadius: 15,
-  },
-  bottomSheetContainer: {
-    flex: 1,
-    justifyContent: 'flex-end',
-    backgroundColor: 'rgba(0, 0, 0, 0.5)', // Nền mờ
-  },
-  bottomSheet: {
-    backgroundColor: 'white',
-    borderTopLeftRadius: 20,
-    borderTopRightRadius: 20,
-    padding: 20,
-    paddingBottom: 40,
-    alignItems: 'center',
-  },
-  closeIcon: {
-    alignSelf: 'flex-end',
-    marginBottom: 10,
-  },
-  modalTitle: {
-    fontSize: 18,
-    fontWeight: 'bold',
-    marginBottom: 20,
-  },
-  shareRow: {
-    flexDirection: 'row',
-    justifyContent: 'space-around',
-    width: '100%',
-    marginBottom: 20,
-  },
-  shareOption: {
-    alignItems: 'center',
-  },
-  separator: {
-    height: 1,
-    backgroundColor: '#e0e0e0',
-    width: '100%',
-    marginVertical: 20,
-  },
-  optionText: {
-    fontSize: 16,
-    paddingVertical: 10,
-    textAlign: 'left',
-    width: '100%',
-  },
-  fixedFooter: {
-    position: 'absolute',
-    bottom: 0,
-    left: 0,
-    right: 0,
-    height: '8%', // Chiều cao cố định của footer
-    backgroundColor: '#F2F2F2',
-    justifyContent: 'center',
-    alignItems: 'center',
-    shadowColor: '#000', // Hiệu ứng đổ bóng
-    shadowOffset: { width: 0, height: 2 },
-    shadowOpacity: 0.2,
-    shadowRadius: 3,
-    elevation: 5, // Bóng cho thiết bị Android
-  },
-  viewfooter:{
-    flex: 1,
-    backgroundColor: "#444444",
-    height: 30,
-    marginBottom:30,
-  }
 });
+
 
 export default styles;

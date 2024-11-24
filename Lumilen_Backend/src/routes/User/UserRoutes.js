@@ -188,14 +188,18 @@ router.post('/addFollower/:userId', async (req, res) => {
             return res.status(404).json({ message: "Người dùng không tồn tại." });
         }
 
-        // Kiểm tra nếu `followerId` đã có trong danh sách `followers` để tránh trùng lặp
-        if (!user.followers.includes(followerId)) {
-            user.followers.push(followerId);
-            await user.save();
-            return res.status(200).json({ message: "Đã thêm vào danh sách followers.", user });
+        // Kiểm tra nếu đã theo dõi thì xóa
+        if (user.followers.includes(followerId)) {
+            user.followers = user.followers.filter((id) => id !== followerId);
         } else {
-            return res.status(400).json({ message: "Người dùng đã tồn tại trong danh sách followers." });
+            // Nếu chưa theo dõi thì thêm vào
+            user.followers.push(followerId);
         }
+
+        // Lưu người dùng sau khi cập nhật
+        await user.save();
+
+        res.status(200).json({ message: "Cập nhật danh sách followers thành công.", followers: user.followers });
     } catch (error) {
         res.status(500).json({ message: error.message });
     }
@@ -458,6 +462,60 @@ router.post('/checkNameUser', async (req, res) => {
         res.status(200).json({ exists: false, message: "Tên người dùng có thể sử dụng" });
     } catch (error) {
         // Xử lý lỗi bất ngờ
+        res.status(500).json({ message: error.message });
+    }
+});
+
+router.get('/getUserImages', async (req, res) => {
+    try {
+        const { userId } = req.query;
+
+        if (!userId) {
+            return res.status(400).json({ message: "UserId is required" });
+        }
+
+        const user = await User.findById(userId).populate('ListAnhGhim'); // Populate danh sách ảnh
+
+        if (!user) {
+            return res.status(404).json({ message: "User not found" });
+        }
+
+        const images = user.ListAnhGhim.map((picture) => ({
+            ...picture.toObject(), // Copy dữ liệu ảnh
+            user: {
+                avatar: user.avatar, // Gắn avatar của user vào mỗi ảnh
+                firstName: user.firstName,
+                lastName: user.lastName,
+            },
+        }));
+
+        res.status(200).json(images);
+    } catch (error) {
+        res.status(500).json({ message: error.message });
+    }
+});
+
+router.get('/getAllPicturesWithAvatar', async (req, res) => {
+    try {
+        const pictures = await Picture.find(); // Lấy tất cả ảnh
+
+        // Lấy danh sách tất cả `userId` liên quan đến ảnh (giả sử userId được lưu ở đâu đó)
+        const userIds = pictures.map((picture) => picture.idUser); // Thay idUser bằng logic phù hợp
+
+        // Lấy thông tin người dùng từ danh sách userIds
+        const users = await User.find({ _id: { $in: userIds } });
+
+        // Kết hợp thông tin avatar vào từng ảnh
+        const result = pictures.map((picture) => {
+            const user = users.find((u) => u._id.toString() === picture.idUser); // Tìm user tương ứng
+            return {
+                ...picture.toObject(),
+                user: user ? { avatar: user.avatar, firstName: user.firstName, lastName: user.lastName } : null,
+            };
+        });
+
+        res.status(200).json(result);
+    } catch (error) {
         res.status(500).json({ message: error.message });
     }
 });

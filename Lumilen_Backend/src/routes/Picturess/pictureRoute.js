@@ -20,6 +20,8 @@ router.get('/getAllPictures', async (req, res) => {
         res.status(500).json({ message: error.message });
     }
 });
+
+
 router.get('/getListAllPictures', async (req, res) => {
     try {
         // Chỉ lấy trường 'uri' của các ảnh từ collection Picture

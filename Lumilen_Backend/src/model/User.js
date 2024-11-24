@@ -73,7 +73,8 @@ const userSchema = new mongoose.Schema({
         type: mongoose.Schema.Types.ObjectId 
     }],
     followers: [{
-        type: mongoose.Schema.Types.ObjectId
+        type: mongoose.Schema.Types.ObjectId,
+        default: [],    // Khởi tạo mặc định là mảng rỗng
     }],
     historyText: {
         type: [String],

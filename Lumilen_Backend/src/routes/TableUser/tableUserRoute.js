@@ -175,6 +175,37 @@ router.get('/getTableUsers/:userId', async (req, res) => {
         res.status(500).json({ message: error.message });
     }
 });
+router.get('/getTableUserbyUser/:userId/:tableUserId', async (req, res) => {
+    try {
+        const { userId, tableUserId } = req.params;
+
+        // Tìm user theo ID và populate collectionUser cùng listAnh
+        const user = await User.findById(userId).populate({
+            path: 'collectionUser',
+            populate: {
+                path: 'listAnh', // Populate danh sách listAnh
+            },
+        });
+
+        if (!user) {
+            return res.status(404).json({ message: "User not found" });
+        }
+
+        // Tìm TableUser theo tableUserId
+        const tableUser = user.collectionUser.find(
+            table => table._id.toString() === tableUserId
+        );
+
+        if (!tableUser) {
+            return res.status(404).json({ message: "TableUser not found" });
+        }
+
+        // Trả về toàn bộ thông tin TableUser (bao gồm danh sách ảnh đầy đủ)
+        res.status(200).json(tableUser);
+    } catch (error) {
+        res.status(500).json({ message: error.message });
+    }
+});
 
 
 

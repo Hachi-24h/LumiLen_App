@@ -41,7 +41,7 @@ const PinCreationScreen = ({navigation, route}) => {
   const { userdata } = useContext(UserContext);
 
   
-  console.log("Id người dùng:", userId);
+  // console.log("Id người dùng:", userId);
   // Gọi API lấy danh sách bảng
   useEffect(() => {
     const fetchBoards = async () => {

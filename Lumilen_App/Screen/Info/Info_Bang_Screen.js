@@ -9,7 +9,6 @@ import {
   TouchableOpacity,
   Dimensions,
   Modal,
-  
 } from "react-native";
 import styles from "../../Css/Info_Css";
 import Footer from "../footer";
@@ -103,8 +102,14 @@ const InfoScreen = ({ navigation, route }) => {
     return (
       <View style={styles.boardItem}>
         <StatusBar hidden={false} />
+        {/* {console.log("item._id", item._id, "\nuserId", userId)} */}
         <TouchableOpacity
-          onPress={() => navigation.navigate("AccountSetting")}
+          onPress={() =>
+            navigation.navigate("TableDetail", {
+              tableId: item._id,
+              userId: userId,
+            })
+          }
           style={styles.boardImage}
         >
           <View style={styles.boardImage}>
@@ -309,7 +314,16 @@ const InfoScreen = ({ navigation, route }) => {
 
             <View style={styles.createOptions}>
               <View style={{ marginBottom: 20, alignItems: "center" }}>
-                <TouchableOpacity style={styles.optionButton}    onPress={() => navigation.navigate("AddGhim", { userId })} > 
+                <TouchableOpacity
+                  style={styles.optionButton}
+                  onPress={() =>
+                    navigation.navigate(
+                      "AddGhim",
+                      { userId },
+                      setCreateModalVisible(false)
+                    )
+                  }
+                >
                   <Image
                     source={require("../../Icon/upload.png")}
                     style={styles.optionIcon}

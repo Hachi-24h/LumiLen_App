@@ -15,15 +15,16 @@ import { convertDataWithSize } from "../../Hook/imageUtils";
 const { width, height } = Dimensions.get("window");
 
 const ImageDetailScreen = ({ route, navigation }) => {
-  const dataAnh = {
-    height: 500,
-    id: "672cca496f8ff39a0e729048",
-    title: "Một ngày trong xanh",
-    uri: "https://res.cloudinary.com/dflxpcdxz/image/upload/v1730987883/DataPicture/jtj1vu4bzsb9vsv6gpy6.jpg",
-    userId: "672cd1f6ea6637803a6b8424",
-    width: 500,
-  };
+  // const dataAnh = {
+  //   height: 500,
+  //   id: "672cca496f8ff39a0e729048",
+  //   title: "Một ngày trong xanh",
+  //   uri: "https://res.cloudinary.com/dflxpcdxz/image/upload/v1730987883/DataPicture/jtj1vu4bzsb9vsv6gpy6.jpg",
+  //   userId: "672cd1f6ea6637803a6b8424",
+  //   width: 500,
+  // };
 
+  const dataAnh = route.params.dataAnh; 
   const userID = dataAnh.userId; // Lấy userID từ dữ liệu ảnh
   const [user, setUser] = useState(null); // Lưu thông tin người dùng
   const [relatedImages, setRelatedImages] = useState([]); // Lưu danh sách ảnh liên quan
@@ -36,7 +37,7 @@ const ImageDetailScreen = ({ route, navigation }) => {
         // Gọi API để lấy thông tin người dùng
         const response = await fetch(`${BASE_URL}:5000/user/findUserById/${userID}`);
         const userData = await response.json();
-        console.log("User data:", userData);
+        // console.log("User data:", userData);
 
         if (response.ok) {
           setUser(userData); // Lưu thông tin người dùng vào state
@@ -56,7 +57,7 @@ const ImageDetailScreen = ({ route, navigation }) => {
       try {
         const response = await fetch(`${BASE_URL}:5000/picture/getAllPictures`);
         const data = await response.json();
-        console.log("Related Images Data:", data);
+        // console.log("Related Images Data:", data);
 
         const imagesWithSize = await convertDataWithSize(data);
         setRelatedImages(imagesWithSize);
@@ -140,7 +141,8 @@ const ImageDetailScreen = ({ route, navigation }) => {
             style={{
               width: columnWidth,
               height: imageHeight,
-              borderRadius: 10,
+              borderRadius: width * 0.05,
+            
               resizeMode: "contain",
             }}
           />
@@ -166,16 +168,19 @@ const ImageDetailScreen = ({ route, navigation }) => {
       renderItem={({ item }) => {
         if (item.key === "mainContent") {
           return (
-            <View>
-              {/* Hình ảnh chính */}
+            <View style= {{}}>
+              <View style={styles.imageContainer}>
               <Image
                 source={{ uri: uriImage }}
                 style={{
-                  width: width,
-                  height: height * 0.5,
-                  resizeMode: "cover",
+                  width:  width ,
+                  height: height * 0.8,
+                  resizeMode: "contain",
+                  marginBottom: height * 0.02,
+                  borderRadius:height * 0.1,
                 }}
               />
+              </View>
 
               {/* Avatar và thông tin người dùng */}
               <View style={styles.userInfoContainer}>

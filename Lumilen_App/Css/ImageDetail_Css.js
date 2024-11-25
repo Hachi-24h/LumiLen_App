@@ -156,6 +156,12 @@ const styles = StyleSheet.create({
     color: "#333",
     flex: 1,
   },
+  imageContainer:{
+    marginBottom: 20,
+    borderRadius: 10,
+    overflow: "hidden",
+    backgroundColor: "yellow",
+  }
 
 });
 

@@ -68,10 +68,9 @@ const ChangeAvatarScreen = ({ navigation }) => {
 
       // Lấy link từ `path` trong phản hồi
       const cloudinaryLink = uploadResponse.data.path;
-      console.error("Đường dẫn ảnh trên Cloudinary:", cloudinaryLink);
 
       // Cập nhật avatar với link mới
-      const response = await axios.put(`${BASE_URL}/user/updateUser/${userId}`, {
+      const response = await axios.put(`${BASE_URL}:5000/user/updateUser/${userId}`, {
         avatar: cloudinaryLink,
       });
 

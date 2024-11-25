@@ -1,27 +1,51 @@
-import React, { useEffect, useState, useContext } from "react";
+import React, { useContext } from "react";
 import {
   View,
   Text,
   Image,
-  TextInput,
-  FlatList,
-  StatusBar,
-  TouchableOpacity,
-  Dimensions,
-  Modal,
   ScrollView,
+  TouchableOpacity,
+  Alert,
 } from "react-native";
-import styles from "../../../Css/AccountSetting_Css"; // Import CSS
+import AsyncStorage from "@react-native-async-storage/async-storage"; // Import AsyncStorage
 import { Ionicons } from "@expo/vector-icons";
 import Footer from "../../footer";
 import { UserContext } from "../../../Hook/UserContext";
+import styles from "../../../Css/AccountSetting_Css"; // Import CSS
 
-const AccountScreen = ({ navigation, route }) => {
+const AccountScreen = ({ navigation }) => {
   const DefaultAvatar = require("../../../Icon/acount_check.png");
-  const { userData } = useContext(UserContext);
+  const { userData, setUserData } = useContext(UserContext); // Sử dụng UserContext
   const avatar = userData ? userData.avatar : DefaultAvatar;
-  const name = userData ? userData.lastName + " "+ userData.firstName : "Chưa cập nhật";
- 
+  const name = userData
+    ? userData.lastName + " " + userData.firstName
+    : "Chưa cập nhật";
+
+  // Hàm xử lý đăng xuất
+  const handleLogout = async () => {
+    try {
+      Alert.alert(
+        "Xác nhận đăng xuất",
+        "Bạn có chắc chắn muốn đăng xuất không?",
+        [
+          { text: "Hủy", style: "cancel" },
+          {
+            text: "Đồng ý",
+            onPress: async () => {
+              console.log("Navigating to SignUp"); // Log để kiểm tra
+              await AsyncStorage.removeItem("token");
+              await AsyncStorage.removeItem("userData");
+              setUserData(null);
+              navigation.navigate("SignUp");
+            },
+          },
+        ]
+      );
+    } catch (error) {
+      console.error("Error during logout:", error.message);
+    }
+  };  
+  
   return (
     <View style={styles.container}>
       <View style={styles.header}>
@@ -98,9 +122,10 @@ const AccountScreen = ({ navigation, route }) => {
             <Ionicons name="chevron-forward-outline" size={20} />
           </TouchableOpacity>
 
-          <TouchableOpacity style={styles.settingItem}>
+          {/* Nút Đăng xuất */}
+          <TouchableOpacity style={styles.settingItem} onPress={handleLogout}>
             <Text style={styles.settingText}>Đăng xuất</Text>
-            <Ionicons name="chevron-forward-outline" size={20} />
+            <Ionicons name="log-out-outline" size={20} />
           </TouchableOpacity>
 
           <Text style={styles.sectionTitle}>Hỗ trợ</Text>
@@ -112,8 +137,6 @@ const AccountScreen = ({ navigation, route }) => {
             <Text style={styles.settingText}>Trung tâm Trợ giúp</Text>
             <Ionicons name="chevron-forward-outline" size={20} />
           </TouchableOpacity>
-
-
 
           <TouchableOpacity style={styles.settingItem}>
             <Text style={styles.settingText}>Điều khoản dịch vụ</Text>

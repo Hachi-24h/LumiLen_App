@@ -16,7 +16,7 @@ const styles = StyleSheet.create({
     borderRadius: 20,
   },
   imageContainer: {
-    marginBottom: 15, // Khoảng cách giữa các ảnh
+    marginBottom: 5, // Khoảng cách giữa các ảnh
     alignItems: "center", // Canh giữa nội dung
   },
   footerContainer: {
@@ -39,6 +39,44 @@ const styles = StyleSheet.create({
   footerText: {
     fontSize: 14,
     color: "#333",
+  },
+  moreButton: {
+    position: "absolute",
+    right: 10,
+    top: 5,
+    padding: 5,
+  },
+  modalContainer: {
+    position: "absolute",
+    bottom: 0,
+    left: 0,
+    right: 0,
+    backgroundColor: "#fff",
+    borderTopLeftRadius: 20,
+    borderTopRightRadius: 20,
+    padding: 20,
+    elevation: 10,
+  },
+  modalButton: {
+    flexDirection: "row",
+    alignItems: "center",
+    padding: 15,
+    borderBottomWidth: 1,
+    borderBottomColor: "#ddd",
+  },
+  modalButtonText: {
+    marginLeft: 10,
+    fontSize: 16,
+    fontWeight: "bold",
+  },
+  cancelButton: {
+    padding: 15,
+    alignItems: "center",
+  },
+  cancelButtonText: {
+    fontSize: 16,
+    fontWeight: "bold",
+    color: "red",
   },
 });
 

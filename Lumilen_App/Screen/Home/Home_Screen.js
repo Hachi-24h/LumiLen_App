@@ -8,27 +8,28 @@ import {
   Dimensions,
   TextInput,
   StatusBar,
+  Platform
 } from "react-native";
 import Footer from "../footer";
 import styles from "../../Css/Home_Css";
 import { UserContext } from "../../Hook/UserContext";
 import BASE_URL from "../../IpAdress";
 import { convertDataWithSize } from "../../Hook/imageUtils";
+import * as FileSystem from "expo-file-system";
+import { Ionicons } from "@expo/vector-icons";
+import { Alert } from "react-native";
+import * as MediaLibrary from "expo-media-library";
 
-const { width, height } = Dimensions.get("window");
+const { width } = Dimensions.get("window");
 const COLUMN_COUNT = 2; // Số cột
-const SPACING = 10; // Khoảng cách giữa các cột
+const SPACING = 15; // Khoảng cách giữa các cột
 const columnWidth = (width - (COLUMN_COUNT + 1) * SPACING) / COLUMN_COUNT;
 
 const HomeTabs = ({ navigation }) => {
   const { userData } = useContext(UserContext);
-  const [avatar, setAvatar] = useState(null); // Avatar của user
-  
+  const avatar = userData ? userData.avatar : null;
   const [images, setImages] = useState([]); // Danh sách ảnh đầy đủ
   const [filteredImages, setFilteredImages] = useState([]); // Danh sách ảnh được lọc
-  const [searchQuery, setSearchQuery] = useState(""); // Query tìm kiếm
-
-  const userId = userData ? userData._id : null;
 
   // Hàm lấy dữ liệu từ API
   const fetchDataFromAPI = async () => {
@@ -42,40 +43,45 @@ const HomeTabs = ({ navigation }) => {
     }
   };
 
+  // Hàm lấy thông tin user dựa trên userID
+  const fetchUser = async (userID) => {
+    try {
+      const response = await fetch(
+        `${BASE_URL}:5000/user/findUserById/${userID}`
+      );
+      if (response.ok) {
+        const userData = await response.json();
+        return userData.avatar || "https://via.placeholder.com/150";
+      } else if (response.status === 404) {
+        return "https://via.placeholder.com/150"; // Avatar mặc định nếu user không tồn tại
+      } else {
+        return "https://via.placeholder.com/150"; // Avatar mặc định khi có lỗi khác
+      }
+    } catch (error) {
+      return "https://via.placeholder.com/150"; // Avatar mặc định khi có lỗi khác
+    }
+  };
+
+  // Lấy danh sách ảnh và thêm avatar của user
   useEffect(() => {
     const fetchAndConvertImages = async () => {
       const data = await fetchDataFromAPI();
       const imagesWithSize = await convertDataWithSize(data);
-      console.log("Images with size:", imagesWithSize[0]);
-      setImages(imagesWithSize);
-      setFilteredImages(imagesWithSize); // Khởi tạo `filteredImages` với toàn bộ ảnh ban đầu
+
+      // Lấy avatar cho từng ảnh
+      const imagesWithAvatars = await Promise.all(
+        imagesWithSize.map(async (image) => {
+          const avatar = await fetchUser(image.userId); // Lấy avatar dựa trên userId
+          return { ...image, avatar }; // Gắn avatar vào dữ liệu ảnh
+        })
+      );
+
+      setImages(imagesWithAvatars);
+      setFilteredImages(imagesWithAvatars); // Khởi tạo `filteredImages` với toàn bộ ảnh ban đầu
     };
 
     fetchAndConvertImages();
-  }, [userId]);
-
-  // Hàm lấy thông tin user dựa trên userID
-  const fetchUser = async (userID) => {
-    try {
-      const response = await fetch(`${BASE_URL}:5000/user/findUserById/${userID}`);
-      if (response.ok) {
-        const userData = await response.json();
-        return userData.avatar; // Lấy avatar từ thông tin user
-      } else {
-        console.error("Error fetching user:", response.status);
-        return null;
-      }
-    } catch (error) {
-      console.error("Error fetching user data:", error.message);
-      return null;
-    }
-  };
-
-  useEffect(() => {
-    if (userId) {
-      fetchUser(userId).then((avatar) => setAvatar(avatar));
-    }
-  }, [userId]);
+  }, []);
 
   // Tạo dữ liệu từng cột để tạo hiệu ứng masonry
   const generateColumns = (data) => {
@@ -86,6 +92,74 @@ const HomeTabs = ({ navigation }) => {
     });
     return columns;
   };
+
+  const handleMoreOptions = (item) => {
+    Alert.alert(
+      "Chọn hành động",
+      null,
+      [
+        { text: "Tải xuống", onPress: () => handleDownload(item) },
+        { text: "Ghim", onPress: () => handlePin(item) },
+        { text: "Hủy", style: "cancel" },
+      ],
+      { cancelable: true }
+    );
+  };
+
+  const handleDownload = async (item) => {
+    try {
+      // Kiểm tra quyền truy cập MediaLibrary
+      const { status } = await MediaLibrary.requestPermissionsAsync();
+      if (status !== "granted") {
+        Alert.alert("Lỗi!", "Bạn cần cấp quyền truy cập thư viện để tải ảnh.");
+        return;
+      }
+  
+      // Tải ảnh về thư mục tạm
+      const fileUri =
+        FileSystem.cacheDirectory + `${item.title.replace(/\s+/g, "_")}.jpg`;
+  
+      const downloadResumable = FileSystem.createDownloadResumable(
+        item.uri,
+        fileUri
+      );
+      const { uri } = await downloadResumable.downloadAsync();
+  
+      // Lưu ảnh vào thư mục `Download`
+      const asset = await MediaLibrary.createAssetAsync(uri);
+      const album = await MediaLibrary.getAlbumAsync("Download");
+      if (album == null) {
+        await MediaLibrary.createAlbumAsync("Download", asset, false);
+      } else {
+        await MediaLibrary.addAssetsToAlbumAsync([asset], album, false);
+      }
+  
+      Alert.alert("Tải xuống thành công!", `Ảnh đã lưu vào thư mục Download.`);
+    } catch (error) {
+      Alert.alert("Tải xuống thất bại!", error.message);
+      console.error(error);
+    }
+  };
+  
+
+  const handlePin = async (item) => {
+    try {
+      const response = await fetch(`${BASE_URL}:5000/user/addPictureToListAnhGhim/${userData._id}`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ pictureId: item._id }),
+      });
+  
+      if (response.ok) {
+        Alert.alert("Thành công!", "Ảnh đã được ghim.");
+      } else {
+        const errorData = await response.json();
+        Alert.alert("Lỗi!", errorData.message || "Không thể ghim ảnh.");
+      }
+    } catch (error) {
+      Alert.alert("Lỗi!", error.message);
+    }
+  };  
 
   // Hàm render từng cột
   const renderColumn = (columnData, columnIndex) => {
@@ -126,7 +200,7 @@ const HomeTabs = ({ navigation }) => {
                 {/* Avatar */}
                 <Image
                   source={{
-                    uri: avatar || "https://via.placeholder.com/150", // Avatar mặc định nếu không có
+                    uri: item.avatar || "https://via.placeholder.com/150", // Avatar của người đăng ảnh
                   }}
                   style={styles.footerIcon}
                 />
@@ -134,6 +208,17 @@ const HomeTabs = ({ navigation }) => {
                 <Text style={styles.footerText} numberOfLines={1}>
                   {item.title || "Không có tiêu đề"}
                 </Text>
+                {/* Nút 3 chấm */}
+                <TouchableOpacity
+                  style={styles.moreButton}
+                  onPress={() => handleMoreOptions(item)}
+                >
+                  <Ionicons
+                    name="ellipsis-horizontal"
+                    size={20}
+                    color="black"
+                  />
+                </TouchableOpacity>
               </View>
             </View>
           );
@@ -160,7 +245,12 @@ const HomeTabs = ({ navigation }) => {
         />
       </View>
       {/* Footer */}
-      <Footer navigation={navigation} avatar={avatar} namePage={"Trang Ghim"} />
+      <Footer
+        navigation={navigation}
+        avatar={avatar}
+        initialSelectedIcon={"HomeTabs"}
+        namePage={"Trang Home"}
+      />
     </View>
   );
 };

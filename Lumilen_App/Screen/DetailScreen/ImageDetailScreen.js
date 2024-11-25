@@ -24,19 +24,18 @@ const ImageDetailScreen = ({ route, navigation }) => {
     width: 500,
   };
 
-  const userID = dataAnh.userId; // Lấy userID từ dữ liệu ảnh
-  const [user, setUser] = useState(null); // Lưu thông tin người dùng
+  const userID = dataAnh.userId; // Lấy userID từ dữ liệu ảnh chính
+  const [user, setUser] = useState(null); // Lưu thông tin người dùng đăng ảnh chính
   const [relatedImages, setRelatedImages] = useState([]); // Lưu danh sách ảnh liên quan
-  const uriImage = dataAnh.uri; // Lấy URI của ảnh hiện tại
-  const title = dataAnh.title; // Lấy tiêu đề ảnh hiện tại
+  const uriImage = dataAnh.uri; // Lấy URI của ảnh chính
+  const title = dataAnh.title; // Lấy tiêu đề ảnh chính
 
+  // Lấy thông tin người dùng đăng ảnh chính
   useEffect(() => {
     const fetchUser = async () => {
       try {
-        // Gọi API để lấy thông tin người dùng
         const response = await fetch(`${BASE_URL}:5000/user/findUserById/${userID}`);
         const userData = await response.json();
-        console.log("User data:", userData);
 
         if (response.ok) {
           setUser(userData); // Lưu thông tin người dùng vào state
@@ -51,15 +50,45 @@ const ImageDetailScreen = ({ route, navigation }) => {
     fetchUser();
   }, [userID]);
 
+  // Lấy danh sách ảnh liên quan và thông tin user của từng ảnh
   useEffect(() => {
     const fetchRelatedImages = async () => {
       try {
         const response = await fetch(`${BASE_URL}:5000/picture/getAllPictures`);
         const data = await response.json();
-        console.log("Related Images Data:", data);
 
         const imagesWithSize = await convertDataWithSize(data);
-        setRelatedImages(imagesWithSize);
+
+        // Gắn thông tin user vào từng ảnh
+        const imagesWithUser = await Promise.all(
+          imagesWithSize.map(async (image) => {
+            try {
+              const userResponse = await fetch(`${BASE_URL}:5000/user/findUserById/${image.userId}`);
+              const userData = await userResponse.json();
+
+              return {
+                ...image,
+                user: {
+                  avatar: userData.avatar || "https://via.placeholder.com/150",
+                  firstName: userData.firstName || "Unknown",
+                  lastName: userData.lastName || "User",
+                },
+              };
+            } catch (error) {
+              console.error(`Error fetching user for image ${image._id}:`, error.message);
+              return {
+                ...image,
+                user: {
+                  avatar: "https://via.placeholder.com/150",
+                  firstName: "Unknown",
+                  lastName: "User",
+                },
+              };
+            }
+          })
+        );
+
+        setRelatedImages(imagesWithUser);
       } catch (error) {
         console.error("Error fetching related images:", error.message);
       }
@@ -68,13 +97,14 @@ const ImageDetailScreen = ({ route, navigation }) => {
     fetchRelatedImages();
   }, []);
 
+  // Hàm xử lý nút theo dõi
   const handleFollowUser = async () => {
     try {
-      if (!user) return; // Kiểm tra nếu user chưa tải
+      if (!user) return;
       const updatedUser = { ...user };
       const currentUserId = "currentUserId"; // ID người dùng hiện tại
 
-      // Kiểm tra nếu đã theo dõi
+      // Cập nhật trạng thái follow
       if (updatedUser.followers.includes(currentUserId)) {
         updatedUser.followers = updatedUser.followers.filter(
           (id) => id !== currentUserId
@@ -83,7 +113,7 @@ const ImageDetailScreen = ({ route, navigation }) => {
         updatedUser.followers.push(currentUserId);
       }
 
-      setUser(updatedUser); // Cập nhật giao diện
+      setUser(updatedUser);
 
       // Gửi yêu cầu lên server
       await fetch(`${BASE_URL}:5000/users/addFollower/${user._id}`, {
@@ -98,19 +128,16 @@ const ImageDetailScreen = ({ route, navigation }) => {
     }
   };
 
-  // Hiển thị avatar và tên người dùng
-  const userAvatar = user?.avatar || "https://via.placeholder.com/150"; // Ảnh mặc định nếu không có avatar
+  // Hiển thị avatar và tên người dùng của ảnh chính
+  const userAvatar = user?.avatar || "https://via.placeholder.com/150";
   const userName = user ? `${user.firstName} ${user.lastName}` : "Unknown User";
 
-  const COLUMN_COUNT = 2; // Số cột
-  const SPACING = 10; // Khoảng cách giữa các cột
+  const COLUMN_COUNT = 2;
+  const SPACING = 10;
   const columnWidth = (width - (COLUMN_COUNT + 1) * SPACING) / COLUMN_COUNT;
 
   const renderRelatedImage = ({ item }) => {
-    const imageHeight =
-      item.height && item.width
-        ? (item.height / item.width) * columnWidth
-        : columnWidth;
+    const imageHeight = (item.height / item.width) * columnWidth;
 
     return (
       <View
@@ -123,15 +150,7 @@ const ImageDetailScreen = ({ route, navigation }) => {
         <TouchableOpacity
           onPress={() =>
             navigation.navigate("ImageDetailScreen", {
-              image: {
-                uri: item.uri,
-                title: item.title,
-                user: {
-                  avatar: item.user?.avatar || "https://via.placeholder.com/150",
-                  firstName: item.user?.firstName || "Unknown",
-                  lastName: item.user?.lastName || "User",
-                },
-              },
+              image: item,
             })
           }
         >
@@ -141,15 +160,13 @@ const ImageDetailScreen = ({ route, navigation }) => {
               width: columnWidth,
               height: imageHeight,
               borderRadius: 10,
-              resizeMode: "contain",
+              resizeMode: "cover",
             }}
           />
         </TouchableOpacity>
         <View style={styles.footerContainer}>
           <Image
-            source={{
-              uri: item.user?.avatar || "https://via.placeholder.com/150",
-            }}
+            source={{ uri: item.user?.avatar }}
             style={styles.footerIcon}
           />
           <Text style={styles.footerText} numberOfLines={1}>
@@ -180,10 +197,7 @@ const ImageDetailScreen = ({ route, navigation }) => {
               {/* Avatar và thông tin người dùng */}
               <View style={styles.userInfoContainer}>
                 <View style={{ flexDirection: "row", alignItems: "center" }}>
-                  <Image
-                    source={{ uri: userAvatar }}
-                    style={styles.avatar}
-                  />
+                  <Image source={{ uri: userAvatar }} style={styles.avatar} />
                   <View>
                     <Text style={styles.userName}>{userName}</Text>
                     <Text style={styles.followerCount}>
@@ -197,7 +211,11 @@ const ImageDetailScreen = ({ route, navigation }) => {
                   style={styles.followButton}
                   onPress={handleFollowUser}
                 >
-                  <Text style={styles.followButtonText}>Theo dõi</Text>
+                  <Text style={styles.followButtonText}>
+                    {user?.followers?.includes("currentUserId")
+                      ? "Bỏ theo dõi"
+                      : "Theo dõi"}
+                  </Text>
                 </TouchableOpacity>
               </View>
 
@@ -220,7 +238,7 @@ const ImageDetailScreen = ({ route, navigation }) => {
           return renderRelatedImage({ item });
         }
       }}
-      keyExtractor={(item, index) => (item.key ? item.key : `related-${index}`)}
+      keyExtractor={(item, index) => item.key || `related-${index}`}
       numColumns={COLUMN_COUNT}
       columnWrapperStyle={{
         justifyContent: "space-between",

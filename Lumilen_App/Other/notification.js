@@ -3,7 +3,7 @@ import { showMessage } from "react-native-flash-message";
 export const showNotification = (message, type = "success") => {
   showMessage({
     message: message,
-    type: type === "success" ? "success" : "danger",
+    type: type === "success" ? "success" : "error",
     duration: 2000,
     position: "top",
     animated: true,
@@ -16,6 +16,7 @@ export const showNotification = (message, type = "success") => {
       margin: 10,
       paddingHorizontal: 20,
       paddingVertical: 15,
+      marginTop: 30, 
     },
     titleStyle: {
       fontSize: 16,

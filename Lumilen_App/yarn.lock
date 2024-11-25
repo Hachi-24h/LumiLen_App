@@ -2911,10 +2911,10 @@ expo-image-loader@~5.0.0:
   resolved "https://registry.yarnpkg.com/expo-image-loader/-/expo-image-loader-5.0.0.tgz#4f58a21ab26e40d6fccc211b664fd9fe21a5dcb8"
   integrity sha512-Eg+5FHtyzv3Jjw9dHwu2pWy4xjf8fu3V0Asyy42kO+t/FbvW/vjUixpTjPtgKQLQh+2/9Nk4JjFDV6FwCnF2ZA==
 
-expo-image-picker@~16.0.1:
-  version "16.0.1"
-  resolved "https://registry.yarnpkg.com/expo-image-picker/-/expo-image-picker-16.0.1.tgz#cfd67dc270ce606bab4258c5c766f0dd24a970c4"
-  integrity sha512-/UWohgPj2Wa4S03JZYitZXRSwMTESBWSCp/ifHkmdeF8pkWwT8uDmnPbBoeIx9gLoMtHgzRLYfsedEEijBz4Fg==
+expo-image-picker@~16.0.3:
+  version "16.0.3"
+  resolved "https://registry.yarnpkg.com/expo-image-picker/-/expo-image-picker-16.0.3.tgz#8b096777b4455272a3cb0dccfa3cee89b81bb13c"
+  integrity sha512-c4IOqIQOtx8puWWU4fVsJhuGiAhH6gAIdrVzhimOXSEUHnfxCckRYzvznbd/0cuvaA5y9H0CSYrxpTUc/0WNVw==
   dependencies:
     expo-image-loader "~5.0.0"
 
@@ -5031,16 +5031,12 @@ react-native-keyboard-aware-scroll-view@^0.9.5:
     prop-types "^15.6.2"
     react-native-iphone-x-helper "^1.0.3"
 
-<<<<<<< HEAD
 react-native-masonry-layout@^1.0.6:
   version "1.0.6"
   resolved "https://registry.yarnpkg.com/react-native-masonry-layout/-/react-native-masonry-layout-1.0.6.tgz#b0ac509fb22a07b1df91e91b7c56374251aa68e2"
   integrity sha512-oQRuSqU+yInfLdWHkfyhDnFJzH+4To/i8shyWJ/3GI8bzYv7jm0m3vsTK+DB+W9YB/tsQ0D+WCFXV0OO3yRgXA==
 
-react-native-masonry-list@^2.16.2:
-=======
 react-native-masonry-list@^2.16.1, react-native-masonry-list@^2.16.2:
->>>>>>> 68cdf7b985f18cfda0b0a01d6f7fd6d6bedde5dd
   version "2.16.2"
   resolved "https://registry.yarnpkg.com/react-native-masonry-list/-/react-native-masonry-list-2.16.2.tgz#7f860b878cb3df3591954913ae64e188e32acdd9"
   integrity sha512-n/660aX+6iMKJMHgEgn4K/VQRH8Fv59OdlYtLoj2zmLwHTz6+IZql81Wq8WVBdidF5i5ZXm2lWKn/qLlRpVUVg==

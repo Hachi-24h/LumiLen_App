@@ -6,7 +6,13 @@ import { createStackNavigator } from "@react-navigation/stack";
 import { enableScreens } from "react-native-screens";
 import { UserProvider } from "./Hook/UserContext";
 import Screens from "./ImportScreen";
+import { LogBox } from "react-native";
 
+// Tắt cảnh báo cụ thể
+LogBox.ignoreLogs([
+  "expo-image-picker", // Hoặc thêm phần thông báo cụ thể
+]);
+LogBox.ignoreAllLogs(false); // Hiển thị tất cả cảnh báo
 enableScreens();
 
 const Stack = createStackNavigator();
@@ -15,7 +21,7 @@ const App = () => {
   return (
     <UserProvider>
       <NavigationContainer>
-        <Stack.Navigator initialRouteName="AddGhim">
+        <Stack.Navigator initialRouteName="SignIn">
          
           {Object.keys(Screens).map((screen) => (
             <Stack.Screen

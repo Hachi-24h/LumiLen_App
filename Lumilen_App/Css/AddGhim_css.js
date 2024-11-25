@@ -1,5 +1,5 @@
 import { StyleSheet, Dimensions } from "react-native";
-
+import colors from "../Other/Color";
 const { width, height } = Dimensions.get("window"); // Lấy kích thước màn hình thiết bị
 
 const styles = StyleSheet.create({
@@ -11,34 +11,30 @@ const styles = StyleSheet.create({
   header: {
     flexDirection: "row",
     alignItems: "center",
-    marginBottom: height * 0.03, // Margin bottom 3% chiều cao
+    justifyContent : "flex-start",  
+    // marginBottom: height * 0.03,
+    height : height * 0.07,
   },
   backIcon: {
-    width: width * 0.06, // Chiều rộng icon 6% chiều rộ
-    height: width * 0.06, // Chiều cao icon bằng chiều rộng
+    width: width * 0.1, // Chiều rộng icon 6% chiều rộ
+    height: width * 0.1, // Chiều cao icon bằng chiều rộng
     tintColor: "#333",
   },
   headerText: {
-    fontSize: width * 0.06, // Font size tương ứng 6% chiều rộng màn hình
+    fontSize: width * 0.05, 
     fontWeight: "bold",
-    marginBottom: height * 0.02, // Margin bottom 2% chiều cao màn hình
+    marginLeft: width * 0.3, // Margin left
     textAlign: "center",
     color: "#333",
+  },
+  ImageChoose :{
+    height : height * 0.35,
+    width : width * 0.9,
   },
   imageSection: {
     alignItems: "center",
     justifyContent: "center",
     marginBottom: height * 0.03, // Margin bottom 3% chiều cao màn hình
-  },
-  placeholder: {
-    width: width * 0.4, // Chiều rộng placeholder 40% màn hình
-    height: width * 0.4, // Chiều cao bằng chiều rộng
-    borderRadius: width * 0.04, // Border radius 4% chiều rộng màn hình
-    backgroundColor: "#f0f0f0",
-    justifyContent: "center",
-    alignItems: "center",
-    borderWidth: 2,
-    borderColor: "red",
   },
   placeholderText: {
     fontSize: width * 0.04, // Font size 4% chiều rộng màn hình
@@ -52,26 +48,56 @@ const styles = StyleSheet.create({
   },
   inputSection: {
     marginBottom: height * 0.02,
+
   },
   label: {
     fontSize: width * 0.045,
     marginBottom: height * 0.01,
     color: "#333",
+    fontWeight: "bold",
   },
   input: {
     borderWidth: 1,
-    borderColor: "#ccc",
     borderRadius: width * 0.02,
-    padding: width * 0.03,
+    marginBottom: height * 0.02,
     fontSize: width * 0.045,
+    height: height * 0.06,
     color: "#333",
     backgroundColor: "#fff",
+    paddingLeft: width * 0.04,
+  },
+  Buttonhander:{
+    width : width * 0.9,
+    alignItems: "flex-end",
+    
+  },
+  createButton :{
+    backgroundColor: colors.red,
+    justifyContent: "center",
+    borderRadius: width * 0.07,
+    alignItems: "center",
+    width : width * 0.25,
+    height : height * 0.07,
+  },
+  createButtonText: {
+    color: "#fff",
+    fontSize: width * 0.04,
+    fontWeight: "bold",
+    textAlign: "center",
+  },
+  placeholder :{
+    width : width * 0.3,
+    height : "80%",
+    backgroundColor : "#f8f8f8",
+    borderRadius : width * 0.02,
+    justifyContent : "center",
+    alignItems : "center",
   },
   selectionButton: {
     flexDirection: "row",
     justifyContent: "space-between",
-    alignItems: "center",
-    padding: width * 0.04,
+    alignItems: "flex-end",
+    padding: width * 0.04 ,
     borderWidth: 1,
     borderColor: "#ccc",
     borderRadius: width * 0.02,
@@ -80,11 +106,12 @@ const styles = StyleSheet.create({
   },
   selectionButtonText: {
     fontSize: width * 0.045,
-    color: "#333",
+    color:colors.black,
+    
   },
   rightArrow: {
-    fontSize: width * 0.045,
-    color: "#999",
+    height : height * 0.03,
+    width : width * 0.05,
   },
   modalOverlay: {
     flex: 1,
@@ -122,7 +149,7 @@ const styles = StyleSheet.create({
     alignItems: "center",
     paddingVertical: height * 0.015,
     borderBottomWidth: 1,
-    borderColor: "#eee",
+    borderColor: colors.gray,
     paddingHorizontal: width * 0.04,
   },
   boardImage: {
@@ -135,7 +162,9 @@ const styles = StyleSheet.create({
   },
   boardName: {
     fontSize: width * 0.045,
-    color: "#333",
+    color: colors.black,
+    marginLeft: width * 0.01,
+
   },
   lockIcon: {
     width: width * 0.04,
@@ -146,13 +175,15 @@ const styles = StyleSheet.create({
   createNewBoardButton: {
     marginTop: height * 0.02,
     padding: width * 0.04,
-    backgroundColor: "#f8f8f8",
+    backgroundColor: colors.gray,
     borderRadius: width * 0.02,
     alignItems: "center",
   },
   createNewBoardText: {
-    color: "#333",
+    color: colors.black,
+    fontWeight: "bold",
     fontSize: width * 0.045,
+
   },
   privateMode: {
     flexDirection: "row",
@@ -187,6 +218,37 @@ const styles = StyleSheet.create({
     color: "#333",
     backgroundColor: "#fff",
     marginBottom: height * 0.02,
+  },
+
+  // loading
+  loadingOverlay: {
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
+    backgroundColor: 'rgba(0, 0, 0, 0.5)',
+  },
+  loadingContainer: {
+    width: 150,
+    padding: 20,
+    backgroundColor: '#fff',
+    borderRadius: 10,
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+  dotsContainer: {
+    flexDirection: 'row',
+    marginBottom: 10,
+  },
+  dot: {
+    fontSize: 32,
+    color: '#ff4500',
+    marginHorizontal: 2,
+    animation: 'fade 1.5s infinite',
+  },
+  loadingText: {
+    fontSize: 16,
+    color: '#333',
+    textAlign: 'center',
   },
 });
 

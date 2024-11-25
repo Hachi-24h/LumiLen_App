@@ -17,10 +17,11 @@ const upload = multer({ storage: storage });
 
 // Route upload ảnh
 router.post("/", upload.fields([{ name: "img", maxCount: 1 }]), (req, res) => {
-    console.log("Files uploaded:", req.files);
+    // console.log("Files uploaded:", req.files);
     if (req.files && req.files["img"]) {
         const link_img = req.files["img"][0];
-        res.send(link_img);
+        console.log("LINK :",link_img.path);
+        res.send(link_img); 
     } else {
         res.status(400).send("No files uploaded.");
     }

@@ -309,7 +309,7 @@ const InfoScreen = ({ navigation, route }) => {
 
             <View style={styles.createOptions}>
               <View style={{ marginBottom: 20, alignItems: "center" }}>
-                <TouchableOpacity style={styles.optionButton}>
+                <TouchableOpacity style={styles.optionButton}    onPress={() => navigation.navigate("AddGhim", { userId })} > 
                   <Image
                     source={require("../../Icon/upload.png")}
                     style={styles.optionIcon}

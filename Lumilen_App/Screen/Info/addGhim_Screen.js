@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect , useContext} from "react";
 import {
   View,
   Text,
@@ -15,13 +15,20 @@ import * as ImagePicker from "expo-image-picker";
 import axios from "axios";
 import styles from "../../Css/AddGhim_css";
 import BASE_URL from "../../IpAdress";
-const PinCreationScreen = () => {
+import { showNotification } from "../../Other/notification";
+import LoadingModal from "../../Other/Loading";
+import { UserContext } from "../../Hook/UserContext";
+import colors from "./../../Other/Color";
+const PinCreationScreen = ({navigation, route}) => {
+  const userId = route.params.userId;
+  
   const [imageUri, setImageUri] = useState(null);
   const [imageDimensions, setImageDimensions] = useState({
     width: 0,
     height: 0,
   });
   const [statusText, setStatusText] = useState("Chọn ảnh để tải lên");
+
   const [modalVisible, setModalVisible] = useState(false); // Modal chọn bảng
   const [createBoardModalVisible, setCreateBoardModalVisible] = useState(false); // Modal tạo bảng
   const [selectedBoard, setSelectedBoard] = useState("");
@@ -29,8 +36,12 @@ const PinCreationScreen = () => {
   const [isPrivate, setIsPrivate] = useState(false); // Chế độ hiển thị của bảng
   const [boards, setBoards] = useState([]); // Danh sách bảng
   const [loading, setLoading] = useState(true); // Trạng thái tải API
+  const [title, setTitle] = useState(""); // Tiêu đề Ghim
+  const [description, setDescription] = useState(""); // Mô tả Ghim
+  const { userdata } = useContext(UserContext);
 
-  const userId = "672cd1f6ea6637803a6b8424"; // ID của user hiện tại
+  
+  console.log("Id người dùng:", userId);
   // Gọi API lấy danh sách bảng
   useEffect(() => {
     const fetchBoards = async () => {
@@ -48,6 +59,13 @@ const PinCreationScreen = () => {
 
     fetchBoards();
   }, []);
+
+  const FuntsetSelectedBoard = () => {
+    if (selectedBoard === "Chọn một bảng") {
+      setSelectedBoard(boards[0].name);
+    }
+  };
+  FuntsetSelectedBoard();
 
   const chooseImage = async () => {
     try {
@@ -77,6 +95,7 @@ const PinCreationScreen = () => {
 
         setImageUri(selectedImageUri);
         setStatusText("Ảnh của bạn đây");
+        
       }
     } catch (error) {
       console.error("Lỗi khi chọn ảnh:", error);
@@ -88,22 +107,150 @@ const PinCreationScreen = () => {
     setModalVisible(false);
   };
 
-  const handleCreateBoard = () => {
-    if (!newBoardName.trim()) {
-      Alert.alert("Lỗi", "Tên bảng không được để trống!");
+  const handleCreateBoard = async () => {
+    const trimmedBoardName = newBoardName.trim().toLowerCase();
+
+    if (!trimmedBoardName) {
+      showNotification("Tên bảng không được để trống !", "error");
       return;
     }
-    Alert.alert("Thành công", `Bảng "${newBoardName}" đã được tạo!`);
-    setCreateBoardModalVisible(false);
-    setModalVisible(false);
+
+    // Kiểm tra trùng lặp với các bảng hiện có
+    const isDuplicate = boards.some(
+      (board) => board.name.trim().toLowerCase() === trimmedBoardName
+    );
+
+    if (isDuplicate) {
+      showNotification("Tên bảng đã được sử dụng !", "error");
+      return; // Ngừng tạo bảng nếu bị trùng
+    }
+
+    try {
+      const statusTab = isPrivate ? "block" : "unblock";
+
+      const response = await axios.post(
+        `${BASE_URL}:5000/tableUser/addTableUser`,
+        {
+          userId,
+          name: newBoardName.trim(), // Tên bảng đã loại bỏ khoảng trắng
+          statusTab,
+        }
+      );
+
+      if (response.status === 200) {
+        const newBoard = response.data.tableUser;
+
+        // Thêm bảng mới vào danh sách và đặt làm bảng đã chọn
+        setBoards((prevBoards) => [...prevBoards, newBoard]);
+        setSelectedBoard(newBoard.name); // Đặt tên bảng mới được tạo
+        showNotification(`Tạo ${newBoardName}`, "success");
+      } else {
+        showNotification("Có lỗi xảy ra !", "error");
+      }
+    } catch (error) {
+      showNotification("Có lỗi xảy ra !", "error");
+    } finally {
+      setCreateBoardModalVisible(false);
+      setModalVisible(false);
+    }
   };
 
-  const handleUpload = () => {
+  // Xử lý khi nhấn nút "Tạo"
+  const handleUpload = async () => {
     if (!imageUri) {
-      Alert.alert("Lỗi", "Bạn cần chọn ảnh trước khi tạo!");
+      showNotification("Bạn cần chọn ảnh trước khi upload", "error");
       return;
     }
-    Alert.alert("Thành công", "Ghim của bạn đã được tạo!");
+
+    if (!selectedBoard) {
+      showNotification("Hãy chọn một bảng để thêm ảnh", "error");
+      return;
+    }
+
+    if (!title.trim()) {
+      showNotification("Tiêu đề không được để trống!", "error");
+      return;
+    }
+
+    setLoading(true); // Hiển thị loading
+
+    try {
+      // 1. Upload ảnh và lấy link
+      const formData = new FormData();
+      formData.append("img", {
+        uri: imageUri,
+        type: "image/jpeg",
+        name: "picture.jpg",
+      });
+
+      const uploadResponse = await axios.post(
+        `${BASE_URL}:5000/upload`,
+        formData,
+        {
+          headers: {
+            "Content-Type": "multipart/form-data",
+          },
+        }
+      );
+
+      const uploadedImageUri = uploadResponse.data.path;
+      // console.error("Đường dẫn ảnh trên Cloudinary:", uploadedImageUri);
+      if (!uploadedImageUri) {
+        throw new Error("Upload ảnh thất bại");
+      }
+
+      // 2. Tạo dữ liệu ảnh mới
+      const newPictureData = {
+        uri: uploadedImageUri,
+        title: title.trim(),
+        id: userId,
+        typePicture: description.trim(),
+      };
+      console.log("Dữ liệu ảnh mới:", newPictureData);
+
+      const createPictureResponse = await axios.post(
+        `${BASE_URL}:5000/picture/addPicture`,
+        newPictureData
+      );
+
+      const newPicture = createPictureResponse.data.picture;
+      console.log("Dữ liệu ảnh đã tạo:", newPicture);
+
+      if (!newPicture || !newPicture._id) {
+        throw new Error("Tạo dữ liệu ảnh thất bại");
+      }
+      console.log("Id ảnh mới:", newPicture._id);
+
+      // 3. Thêm ảnh vào bảng được chọn
+      const selectedBoardData = boards.find(
+        (board) => board.name === selectedBoard
+      );
+
+      if (!selectedBoardData || !selectedBoardData._id) {
+        throw new Error("Không tìm thấy bảng được chọn");
+      }
+
+      console.log("Id bảng được chọn:", selectedBoardData._id);
+      const addPictureToTableResponse = await axios.post(
+        `${BASE_URL}:5000/picture/addPictureToTableUser`,
+        {
+          userId,
+          tableUserId: selectedBoardData._id,
+          pictureId: newPicture._id,
+        }
+      );
+      console.log("Kết quả thêm ảnh vào bảng:", addPictureToTableResponse.data);
+
+      if (addPictureToTableResponse.status === 200) {
+        showNotification("Tạo ghim thành công!", "success");
+      } else {
+        throw new Error("Thêm ảnh vào bảng thất bại");
+      }
+    } catch (error) {
+      showNotification(error.message || "Có lỗi xảy ra!", "error");
+    } finally {
+      setLoading(false); // Tắt loading
+    }
   };
 
   return (
@@ -118,6 +265,7 @@ const PinCreationScreen = () => {
         <Text style={styles.headerText}>Tạo Ghim</Text>
       </View>
       {/* Phần ảnh */}
+      <View style={styles.ImageChoose}>
       <TouchableOpacity style={styles.imageSection} onPress={chooseImage}>
         {imageUri ? (
           <Image
@@ -126,26 +274,32 @@ const PinCreationScreen = () => {
               width: imageDimensions.width / 4,
               height: imageDimensions.height / 4,
               borderRadius: 15,
-              borderWidth: 2,
-              borderColor: "red",
+            
+              
             }}
             resizeMode="contain"
           />
         ) : (
-          <View style={styles.placeholder}>
-            <Text style={styles.placeholderText}>150 x 150</Text>
+          <View style={[styles.placeholder]}>
+           <Image source={require("../../Picture/defaulttableuser.jpg")} style={styles.placeholder} />  
+           
           </View>
         )}
         <Text style={styles.statusText}>{statusText}</Text>
       </TouchableOpacity>
-
-      {/* Tiêu đề */}
+      </View>
+    
       <View style={styles.inputSection}>
         <Text style={styles.label}>Tiêu đề</Text>
         <TextInput
-          style={styles.input}
-          placeholder="Cho mọi người biết Ghim của bạn giới thiệu điều gì"
+          style={[
+            styles.input,
+            title.trim() ? { borderColor: colors.black } : { borderColor: colors.red },
+          ]}
+          placeholder="Tiêu đề của bạn là gì nhỉ ?"
           placeholderTextColor="#999"
+          value={title}
+          onChangeText={setTitle}
         />
       </View>
 
@@ -153,13 +307,16 @@ const PinCreationScreen = () => {
       <View style={styles.inputSection}>
         <Text style={styles.label}>Mô tả</Text>
         <TextInput
-          style={styles.input}
-          placeholder="Thêm mô tả, đề cập hoặc hashtag vào Ghim của bạn."
+       style={[
+        styles.input,
+        description.trim() ? { borderColor: colors.black } : { borderColor: colors.red },
+      ]}
+          placeholder="  Nhập mô tả cho ghim của bạn"
           placeholderTextColor="#999"
+          value={description} 
+          onChangeText={setDescription}
         />
-      </View>
-
-      {/* Chọn bảng */}
+     <Text style={styles.label}>Chọn Bảng </Text>
       <TouchableOpacity
         style={styles.selectionButton}
         onPress={() => setModalVisible(true)}
@@ -167,9 +324,9 @@ const PinCreationScreen = () => {
         <Text style={styles.selectionButtonText}>
           {selectedBoard || "Chọn một bảng"}
         </Text>
-        <Text style={styles.rightArrow}>›</Text>
+       <Image source={require("./../../Icon/right.png")} style={styles.rightArrow} />
       </TouchableOpacity>
-
+ </View>
       {/* Modal chọn bảng */}
       <Modal visible={modalVisible} animationType="slide" transparent={true}>
         <TouchableOpacity
@@ -216,7 +373,7 @@ const PinCreationScreen = () => {
                 setModalVisible(false);
               }}
             >
-              <Text style={styles.createNewBoardText}>+ Tạo bảng</Text>
+              <Text style={styles.createNewBoardText}>Tạo bảng</Text>
             </TouchableOpacity>
           </View>
         </TouchableOpacity>
@@ -237,7 +394,7 @@ const PinCreationScreen = () => {
             <Text style={styles.modalTitle}>Tạo bảng</Text>
             <TextInput
               style={styles.input}
-              placeholder="Thêm tiêu đề như 'Tự làm' hoặc 'Công thức nấu ăn'"
+              placeholder="Tên bảng mới ..."
               value={newBoardName}
               onChangeText={setNewBoardName}
             />
@@ -248,6 +405,7 @@ const PinCreationScreen = () => {
                 onValueChange={(value) => setIsPrivate(value)}
               />
             </View>
+            <View style={styles.Buttonhander}>
             <TouchableOpacity
               style={styles.createButton}
               onPress={handleCreateBoard}
@@ -255,13 +413,16 @@ const PinCreationScreen = () => {
               <Text style={styles.createButtonText}>Tạo</Text>
             </TouchableOpacity>
           </View>
+          </View>
         </TouchableOpacity>
       </Modal>
 
-      {/* Button tạo */}
+      <View style={styles.Buttonhander}>
       <TouchableOpacity style={styles.createButton} onPress={handleUpload}>
         <Text style={styles.createButtonText}>Tạo</Text>
       </TouchableOpacity>
+      {loading && <LoadingModal loading={loading} text="Đang tạo Ghim" />}
+      </View>
     </View>
   );
 };

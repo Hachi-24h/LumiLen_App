@@ -3,7 +3,9 @@ import { View, TouchableOpacity, Image } from "react-native";
 import styles from "../Css/footer_css";
 
 const Footer = ({ navigation, avatar, initialSelectedIcon, namePage }) => {
-  const [selectedIcon, setSelectedIcon] = useState(initialSelectedIcon || "HomeTabs"); 
+  const [selectedIcon, setSelectedIcon] = useState(
+    initialSelectedIcon || "HomeTabs"
+  );
   const [styleName, setStyleName] = useState(styles.Touch_unselected);
 
   const handleIconPress = (iconName) => {
@@ -17,7 +19,9 @@ const Footer = ({ navigation, avatar, initialSelectedIcon, namePage }) => {
       }
     } else {
       setSelectedIcon(iconName);
-      navigation.navigate(iconName === "account" ? "Info_Bang" : iconName, { selectedIcon: iconName });
+      navigation.navigate(iconName === "account" ? "Info_Bang" : iconName, {
+        selectedIcon: iconName,
+      });
     }
   };
 
@@ -80,7 +84,11 @@ const Footer = ({ navigation, avatar, initialSelectedIcon, namePage }) => {
       </TouchableOpacity>
 
       {/* Account Icon */}
-      <TouchableOpacity onPress={() => handleIconPress("account")} style={styleName}>
+      <TouchableOpacity
+        onPress={() => handleIconPress("account")}
+        // style={styleName}
+        style={styles.Touch_selected}
+      >
         <Image
           source={
             avatar

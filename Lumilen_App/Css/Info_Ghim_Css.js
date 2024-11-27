@@ -1,27 +1,28 @@
 import { StyleSheet, Dimensions } from 'react-native';
-
-const { width } = Dimensions.get('window');
+import colors from '../Other/Color';
+const { width ,height} = Dimensions.get('window');
 
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: "#fff",
+    backgroundColor: colors.white,
+    width: width,
+    height: height,
     padding:0,
-    width:"100%",
-    height:"100%"
   },
+
+  // Header
   header: {
     flexDirection: "row",
     alignItems: "center",
     justifyContent: "space-between",
-    padding: 15,
-    backgroundColor: "#fff",
+    padding: width * 0.04,
+    backgroundColor: colors.white,
     borderBottomWidth: 1,
     borderBottomColor: "#eee",
-    height: "10%",
+    height: height * 0.1,
   },
   headerLeft: {
-    flex: 1,
     justifyContent: "center",
     alignItems: "center",
   },
@@ -33,51 +34,70 @@ const styles = StyleSheet.create({
     alignItems: "center",
   },
   headerTitle: {
-    fontSize: 18,
-    color: "#333",
-    marginHorizontal: 15,
+    fontSize: height * 0.022,
+    color: colors.black,
+    marginHorizontal: height * 0.015,
     fontWeight: "bold",
+  },
+  headerTitle2: {
+    fontSize: height * 0.022,
+    color: colors.black,
+    marginHorizontal: height * 0.015,
   },
   activeTab: {
     
     borderBottomWidth: 2,
-    borderBottomColor: "#000",
+    borderBottomColor: colors.black,
   },
   headerRight: {
     flex: 1,
     justifyContent: "center",
     alignItems: "center",
   },
-  addButton: {
-    width: 40,
-    height: 40,
-    borderRadius: 20,
-    backgroundColor: "#ddd",
-    justifyContent: "center",
-    alignItems: "center",
-  },
-  addButtonText: {
-    fontSize: 24,
-    color: "#000",
-  },
+  // search 
   searchBarContainer: {
-    padding: 10,
-    backgroundColor: "#fff",
+    padding: width * 0.02,
+    backgroundColor: colors.white,
     alignItems: "center",
-    height:"7%",
+    height:height*0.08,
   },
   searchBar: {
-    width: "100%",
-    height: 40,
-    backgroundColor: "#F2F2F2",
-    borderRadius: 20,
-    paddingHorizontal: 15,
+    width: width * 0.9,
+    height: height * 0.06,
+    backgroundColor: colors.gray,
+    borderRadius: height * 0.03,
+    paddingLeft: width * 0.05,
   },
+
+  // filter
   filterContainer: {
     flexDirection: "row",
-    padding: 10,
-    justifyContent: "space-around",
-    height:"7%",
+    height:height*0.07,
+    width:width,
+    paddingHorizontal: width * 0.01,
+    justifyContent: "flex-start",
+  },
+  navtouch :{
+    height: height * 0.04,
+    width: width * 0.1,
+    justifyContent: "center",
+    alignItems: "center",
+    marginTop: height * 0.005,
+  },
+  imgHeader3: {
+    height: height * 0.04,
+    resizeMode: "contain",
+  },
+  filterButton: {
+    width: width * 0.25,
+    height: height * 0.05,
+    justifyContent: "center",
+    alignItems: "center",
+    backgroundColor: "white",
+    borderRadius: width * 0.05,
+    borderWidth:1,
+    borderColor:"black",
+   
   },
   ListTab: {
     flexDirection: "row",
@@ -85,16 +105,7 @@ const styles = StyleSheet.create({
     padding: 10,
     height:"69%",
   },
-  filterButton: {
-    width: 80,
-    height: 40,
-    justifyContent: "center",
-    alignItems: "center",
-    backgroundColor: "white",
-    borderRadius: 15,
-    borderWidth:1,
-    borderColor:"black"
-  },
+
 
   filterTextButton: {
     padding: 5,
@@ -105,6 +116,7 @@ const styles = StyleSheet.create({
   },
   imageList: {
     flex: 1,
+    padding:0,
     
   },
   imageStyle: {
@@ -199,7 +211,77 @@ const styles = StyleSheet.create({
     fontWeight: "bold",
     marginVertical: 10,
   },
+  optionText2:{
+    fontSize: 14,
+    color: "Black",
+   
+    marginVertical: 10,
+  },
+  imageContainer: {
+    marginBottom: height * 0.006,
+    borderRadius: height * 0.01,
+    overflow: "hidden",
+    backgroundColor: colors.lightGrey,
+    padding:0,
+  },
+  // CSS cho Modal
+  modalContainer: {
+    flex: 1,
+    justifyContent: "flex-end",
+    backgroundColor: "rgba(0, 0, 0, 0.5)",
 
+
+  },
+  modalContent: {
+    backgroundColor: colors.white,
+    borderTopLeftRadius: height * 0.05,
+    borderTopRightRadius: height * 0.05,
+    padding: height * 0.02,
+    height: height * 0.4,
+  
+  },
+  modalChoose: {
+    flexDirection: "column",
+    justifyContent: "space-between",
+    alignItems: "flex-start",
+    marginBottom: height * 0.05,
+  },
+
+  modalTitle: {
+    marginTop: height * 0.02,
+    fontSize: height * 0.022,
+    fontWeight: "bold",
+    textAlign: "center",
+    marginBottom: height * 0.015,
+    color: colors.black,
+  },
+  modalOption: {
+    paddingVertical: height * 0.015,
+  },
+  modalOptionText: {
+    fontSize: height * 0.02,
+    color: colors.black,
+    fontWeight: "bold",
+  },
+  modalOptionActive: {
+    fontSize: height * 0.02,
+    color: colors.red,
+    fontWeight: "bold",
+  },
+  modalCloseButton: {
+    alignItems: "center",
+    paddingVertical: height * 0.015,
+    backgroundColor: colors.gray  ,
+    borderRadius: height * 0.1,
+    width: width * 0.3,
+    marginLeft: width * 0.32,
+  },
+  modalCloseText: {
+    fontSize: height * 0.02,
+    color: colors.black,
+    fontWeight: "bold",
+  },
+ 
 });
 
 export default styles;

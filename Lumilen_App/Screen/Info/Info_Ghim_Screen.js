@@ -6,7 +6,11 @@ import {
   TouchableOpacity,
   Dimensions,
   TextInput,
-  StatusBar, Modal,
+  Pressable,
+  FlatList,
+  StatusBar,
+  TouchableWithoutFeedback,
+  Modal,
 } from "react-native";
 import MasonryList from "react-native-masonry-list";
 import Footer from "../footer";
@@ -14,15 +18,6 @@ import styles from "../../Css/Info_Ghim_Css";
 import { UserContext } from "../../Hook/UserContext";
 import BASE_URL from "../../IpAdress";
 import { convertDataWithSize } from "../../Hook/imageUtils";
-
-// Usage example
-// const processedImages = await convertDataWithSize(data);
-
-
-const { width } = Dimensions.get("window");
-const COLUMN_COUNT = 3;
-const SPACING = 2;
-const columnWidth = (width - SPACING * (COLUMN_COUNT + 1)) / COLUMN_COUNT;
 
 const InfoScreen = ({ navigation, route }) => {
   const { selectedIcon } = route.params || {};
@@ -76,6 +71,58 @@ const InfoScreen = ({ navigation, route }) => {
     );
     setFilteredImages(filtered);
   };
+  // xử lí hiển thị ảnh
+  const [viewMode, setViewMode] = useState(2);
+
+  const { width, height } = Dimensions.get("window");
+  const SPACING = 10; // Khoảng cách giữa các cột
+  const columnWidth = (width - (viewMode + 1) * SPACING) / viewMode;
+  const [modalVisible, setModalVisible] = useState(false); // Trạng thái hiển thị Modal
+  // Tạo dữ liệu cho từng cột
+  const generateColumns = (data) => {
+    const columns = Array.from({ length: viewMode }, () => []);
+    data.forEach((item, index) => {
+      const columnIndex = index % viewMode; // Phân bố ảnh vào các cột
+      columns[columnIndex].push(item);
+    });
+    return columns;
+  };
+
+  // Render từng cột ảnh
+  const renderColumn = (columnData, columnIndex) => (
+    <View
+      key={`column-${columnIndex}`}
+      style={{ flex: 1, paddingHorizontal: width * 0.01 }}
+    >
+      {columnData.map((item, index) => {
+        const imageHeight = (item.height / item.width) * columnWidth;
+        return (
+          <View key={`${item.id}-${index}`} style={styles.imageContainer}>
+            {/* {console.log("item", item)} */}
+            <TouchableOpacity
+              onPress={() =>
+                navigation.navigate("ImageDetailScreen", { dataAnh: item })
+              }
+            >
+              <Image
+                source={{ uri: item.uri }}
+                style={{
+                  width: columnWidth,
+                  height: imageHeight,
+
+                  resizeMode: "cover",
+                }}
+              />
+            </TouchableOpacity>
+          </View>
+        );
+      })}
+    </View>
+  );
+  const updateViewMode = (mode) => {
+    setViewMode(mode);
+    setModalVisible(false);
+  };
 
   return (
     <View style={styles.container}>
@@ -94,7 +141,7 @@ const InfoScreen = ({ navigation, route }) => {
             <Text style={[styles.headerTitle, styles.activeTab]}>Ghim</Text>
           </TouchableOpacity>
           <TouchableOpacity onPress={() => navigation.navigate("Info_Bang")}>
-            <Text style={styles.headerTitle}>Bảng</Text>
+            <Text style={styles.headerTitle2}>Bảng</Text>
           </TouchableOpacity>
         </View>
         <View style={styles.headerRight}>
@@ -116,16 +163,38 @@ const InfoScreen = ({ navigation, route }) => {
       </View>
       <View style={styles.filterContainer}>
         <TouchableOpacity
+          onPress={() => setModalVisible(true)}
+          style={styles.navtouch}
+        >
+          <Image
+            source={
+              viewMode === 1
+                ? require("../../Icon/1x1.png")
+                : viewMode === 2
+                ? require("../../Icon/2x2.png")
+                : require("../../Icon/3x3.png")
+            }
+            style={styles.imgHeader3}
+          />
+        </TouchableOpacity>
+        <TouchableOpacity
           style={[
             styles.filterButton,
             {
               borderWidth: selectItem === "Tất cả" ? 2 : 1,
-              borderColor: selectItem === "Tất cả" ? "red" : "black",
+              // borderColor: selectItem === "Tất cả" ? "red" : "black",
             },
           ]}
           onPress={() => setSelectItem("Tất cả")}
         >
-          <Text style={styles.filterText}>Tất cả</Text>
+          <Text
+            style={[
+              styles.filterText,
+              { fontWeight: selectItem === "Tất cả" ? "bold" : "normal" },
+            ]}
+          >
+            Tất cả
+          </Text>
         </TouchableOpacity>
 
         <TouchableOpacity
@@ -133,14 +202,22 @@ const InfoScreen = ({ navigation, route }) => {
             styles.filterButton,
             {
               borderWidth: selectItem === "Bản Thân" ? 2 : 1,
-              borderColor: selectItem === "Bản Thân" ? "red" : "black",
+              // borderColor: selectItem === "Bản Thân" ? "red" : "black",
             },
           ]}
           onPress={() => setSelectItem("Bản Thân")}
         >
-          <Text style={styles.filterText}>Bản Thân</Text>
+          <Text
+            style={[
+              styles.filterText,
+              { fontWeight: selectItem === "Bản Thân" ? "bold" : "normal" },
+            ]}
+          >
+            Bản Thân
+          </Text>
         </TouchableOpacity>
       </View>
+
       <View style={styles.ListTab}>
         {filteredImages.length === 0 ? (
           <View style={styles.emptyMessageContainer}>
@@ -154,16 +231,15 @@ const InfoScreen = ({ navigation, route }) => {
           </View>
         ) : (
           <View style={styles.imageList}>
-            <MasonryList
-              key={filteredImages.length}
-              images={filteredImages.map((item) => ({
-                source: { uri: item.uri },
-                width: (item.width * columnWidth * 2) / item.width,
-                height: (item.height * columnWidth * 2) / item.width,
-              }))}
-              columns={COLUMN_COUNT}
-              spacing={SPACING}
-              imageContainerStyle={styles.imageStyle}
+            <FlatList
+              data={generateColumns(images)} // Chia ảnh thành các cột
+              renderItem={({ item, index }) => renderColumn(item, index)} // Render từng cột
+              key={viewMode} // Buộc FlatList render lại khi số cột thay đổi
+              numColumns={viewMode}
+              contentContainerStyle={{
+                paddingBottom: 20,
+              }}
+              showsVerticalScrollIndicator={false}
             />
           </View>
         )}
@@ -189,7 +265,16 @@ const InfoScreen = ({ navigation, route }) => {
 
             <View style={styles.createOptions}>
               <View style={{ marginBottom: 20, alignItems: "center" }}>
-                <TouchableOpacity style={styles.optionButton}>
+                <TouchableOpacity
+                  style={styles.optionButton}
+                  onPress={() =>
+                    navigation.navigate(
+                      "AddGhim",
+                      { userId },
+                      setCreateModalVisible(false)
+                    )
+                  }
+                >
                   <Image
                     source={require("../../Icon/upload.png")}
                     style={styles.optionIcon}
@@ -217,6 +302,75 @@ const InfoScreen = ({ navigation, route }) => {
         initialSelectedIcon={"account"}
         namePage={"Trang Ghim"}
       />
+      <Modal
+        animationType="slide"
+        transparent={true}
+        visible={modalVisible}
+        onRequestClose={() => setModalVisible(false)} // Đóng modal khi nhấn nút back (Android)
+      >
+        <TouchableWithoutFeedback
+          onPress={() => setModalVisible(false)} // Tắt modal khi bấm ra ngoài
+        >
+          <View style={styles.modalContainer}>
+            <TouchableWithoutFeedback>
+              <View style={styles.modalContent}>
+                <Text style={styles.modalTitle}>Chế độ xem</Text>
+                <Pressable style={styles.modalChoose}>
+                  <Pressable
+                    style={styles.modalOption}
+                    onPress={() => updateViewMode(3)}
+                  >
+                    <Text
+                      style={
+                        viewMode === 3
+                          ? styles.modalOptionActive
+                          : styles.modalOptionText
+                      }
+                    >
+                      Thu nhỏ
+                    </Text>
+                  </Pressable>
+                  <Pressable
+                    style={styles.modalOption}
+                    onPress={() => updateViewMode(2)}
+                  >
+                    <Text
+                      style={
+                        viewMode === 2
+                          ? styles.modalOptionActive
+                          : styles.modalOptionText
+                      }
+                    >
+                      Mặc định
+                    </Text>
+                  </Pressable>
+                  <Pressable
+                    style={styles.modalOption}
+                    onPress={() => updateViewMode(1)}
+                  >
+                    <Text
+                      style={
+                        viewMode === 1
+                          ? styles.modalOptionActive
+                          : styles.modalOptionText
+                      }
+                    >
+                      Rộng
+                    </Text>
+                  </Pressable>
+                </Pressable>
+
+                <Pressable
+                  onPress={() => setModalVisible(false)}
+                  style={styles.modalCloseButton}
+                >
+                  <Text style={styles.modalCloseText}>Đóng</Text>
+                </Pressable>
+              </View>
+            </TouchableWithoutFeedback>
+          </View>
+        </TouchableWithoutFeedback>
+      </Modal>
     </View>
   );
 };

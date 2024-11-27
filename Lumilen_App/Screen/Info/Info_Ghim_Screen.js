@@ -19,7 +19,7 @@ import { UserContext } from "../../Hook/UserContext";
 import BASE_URL from "../../IpAdress";
 import { convertDataWithSize } from "../../Hook/imageUtils";
 
-const InfoScreen = ({ navigation, route }) => {
+const Info_Ghim_Screen = ({ navigation, route }) => {
   const { selectedIcon } = route.params || {};
   const { userData } = useContext(UserContext);
   const avatar = userData ? userData.avatar : null;
@@ -190,7 +190,11 @@ const InfoScreen = ({ navigation, route }) => {
           <Text
             style={[
               styles.filterText,
-              { fontWeight: selectItem === "Tất cả" ? "bold" : "normal" },
+              {
+                fontWeight: selectItem === "Tất cả" ? "bold" : "normal",
+                fontSize:
+                  selectItem === "Tất cả" ? height * 0.022 : height * 0.02,
+              },
             ]}
           >
             Tất cả
@@ -210,14 +214,17 @@ const InfoScreen = ({ navigation, route }) => {
           <Text
             style={[
               styles.filterText,
-              { fontWeight: selectItem === "Bản Thân" ? "bold" : "normal" },
+              {
+                fontWeight: selectItem === "Bản Thân" ? "bold" : "normal",
+                fontSize:
+                  selectItem === "Bản Thân" ? height * 0.022 : height * 0.02,
+              },
             ]}
           >
             Bản Thân
           </Text>
         </TouchableOpacity>
       </View>
-
       <View style={styles.ListTab}>
         {filteredImages.length === 0 ? (
           <View style={styles.emptyMessageContainer}>
@@ -244,64 +251,68 @@ const InfoScreen = ({ navigation, route }) => {
           </View>
         )}
       </View>
-      <Modal
-        visible={isCreateModalVisible}
-        animationType="slide"
-        transparent={true}
-        onRequestClose={() => setCreateModalVisible(false)}
-      >
-        <View style={styles.modalContainer}>
-          <View style={styles.createModalContent}>
-            <TouchableOpacity
-              onPress={() => setCreateModalVisible(false)}
-              style={styles.closeButton}
-            >
-              <Image
-                source={require("../../Icon/cancel.png")}
-                style={styles.optionIcon}
-              />
-              <Text style={styles.createModalTitle}>Bắt đầu tạo ngay</Text>
-            </TouchableOpacity>
-
-            <View style={styles.createOptions}>
-              <View style={{ marginBottom: 20, alignItems: "center" }}>
-                <TouchableOpacity
-                  style={styles.optionButton}
-                  onPress={() =>
-                    navigation.navigate(
-                      "AddGhim",
-                      { userId },
-                      setCreateModalVisible(false)
-                    )
-                  }
-                >
-                  <Image
-                    source={require("../../Icon/upload.png")}
-                    style={styles.optionIcon}
-                  />
-                </TouchableOpacity>
-                <Text style={styles.optionText}>Ghim</Text>
-              </View>
-
-              <View style={{ marginBottom: 20, alignItems: "center" }}>
-                <TouchableOpacity style={styles.optionButton}>
-                  <Image
-                    source={require("../../Icon/abum.png")}
-                    style={styles.optionIcon}
-                  />
-                </TouchableOpacity>
-                <Text style={styles.optionText}>Bảng</Text>
-              </View>
-            </View>
-          </View>
-        </View>
-      </Modal>
       <Footer
         navigation={navigation}
         avatar={avatar}
         initialSelectedIcon={"account"}
         namePage={"Trang Ghim"}
       />
+
+      <Modal
+        visible={isCreateModalVisible}
+        animationType="slide"
+        transparent={true}
+        onRequestClose={() => setCreateModalVisible(false)}
+      >
+        <TouchableWithoutFeedback onPress={() => setCreateModalVisible(false)}>
+          <View style={styles.modalContainer}>
+            <View style={styles.createModalContent}>
+              <View style={styles.buttoncancel}>
+                <TouchableOpacity
+                  onPress={() => setCreateModalVisible(false)}
+                  style={styles.closeButton}
+                >
+                  <Image
+                    source={require("../../Icon/cancel.png")}
+                    style={styles.optionIcon}
+                  />
+                </TouchableOpacity>
+                <Text style={styles.createModalTitle}>Bắt đầu tạo ngay</Text>
+              </View>
+              <View style={styles.createOptions}>
+                <View style={{ marginBottom: 20, alignItems: "center" }}>
+                  <TouchableOpacity
+                    style={styles.optionButton}
+                    onPress={() =>
+                      navigation.navigate(
+                        "AddGhim",
+                        { userId },
+                        setCreateModalVisible(false)
+                      )
+                    }
+                  >
+                    <Image
+                      source={require("../../Icon/upload.png")}
+                      style={styles.optionIcon}
+                    />
+                  </TouchableOpacity>
+                  <Text style={styles.optionText}>Ghim</Text>
+                </View>
+
+                <View style={{ marginBottom: 20, alignItems: "center" }}>
+                  <TouchableOpacity style={styles.optionButton}>
+                    <Image
+                      source={require("../../Icon/abum.png")}
+                      style={styles.optionIcon}
+                    />
+                  </TouchableOpacity>
+                  <Text style={styles.optionText}>Bảng</Text>
+                </View>
+              </View>
+            </View>
+          </View>
+        </TouchableWithoutFeedback>
+      </Modal>
       <Modal
         animationType="slide"
         transparent={true}
@@ -375,4 +386,4 @@ const InfoScreen = ({ navigation, route }) => {
   );
 };
 
-export default InfoScreen;
+export default Info_Ghim_Screen;

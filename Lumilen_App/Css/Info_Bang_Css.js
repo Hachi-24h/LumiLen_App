@@ -1,6 +1,6 @@
-import { StyleSheet, Dimensions } from 'react-native';
-import colors from '../Other/Color';
-const { width ,height} = Dimensions.get('window');
+import { StyleSheet, Dimensions } from "react-native";
+import colors from "../Other/Color";
+const { width, height } = Dimensions.get("window");
 
 const styles = StyleSheet.create({
   container: {
@@ -8,7 +8,6 @@ const styles = StyleSheet.create({
     backgroundColor: colors.white,
     width: width,
     height: height,
-    padding:0,
   },
 
   // Header
@@ -56,7 +55,7 @@ const styles = StyleSheet.create({
     width: width * 0.08,
     height: width * 0.08,
     borderRadius: width * 0.04,
-    padding:width * 0.01,
+    padding: width * 0.01,
   },
   TouchableOpacitystyle: {
     width: width * 0.1,
@@ -67,12 +66,13 @@ const styles = StyleSheet.create({
     borderWidth: 2,
     borderColor: "black",
   },
-  // search 
+
+  // search
   searchBarContainer: {
     padding: width * 0.02,
     backgroundColor: colors.white,
     alignItems: "center",
-    height:height*0.08,
+    height: height * 0.08,
   },
   searchBar: {
     width: width * 0.9,
@@ -99,6 +99,7 @@ const styles = StyleSheet.create({
     alignItems: "center",
     marginTop: height * 0.005,
     marginRight: width * 0.05,
+  
   },
   imgHeader3: {
     height: height * 0.04,
@@ -118,50 +119,107 @@ const styles = StyleSheet.create({
     color: colors.black,
   },
 
-  // Body
+  // Board List
   ListTab: {
     flexDirection: "row",
     justifyContent: "space-around",
     padding: width * 0.02,
-    height:"69%",
+    height: "69%",
   },
 
+  boardItem: {
+    width: width * 0.48,
+    marginBottom: height * 0.02,
+    justifyContent: "center",
+    alignItems: "flex-start",
+  },
+  boardImage: {
+    width: width * 0.45,
+    height: height * 0.17,
+    borderRadius: 10,
+    resizeMode: "cover",
+    overflow: "hidden",
+    flexDirection: "row",
+  },
+  img: {
+    width: "100%",
+    height: "100%",
+    resizeMode: "cover",
+    margin: 0,
+    padding: 0,
+  },
+  null: {},
+  lock:{
+    position: "absolute",
+    top: "5%",
+    left: "8%",
+    width: height * 0.04,
+    height: height * 0.04,
+    resizeMode: "contain",
+    backgroundColor:colors.white,
+    borderRadius: height * 0.02,
+    justifyContent: "center",
+    alignItems: "center",
+  },
+  lockIcon: {
+    width: height * 0.03,
+    height: height * 0.03,
+    resizeMode: "contain",
+  },
 
-  filterTextButton: {
-    padding: 5,
-  },
- 
-  imageList: {
-    flex: 1,
-    padding:0,
-    
-  },
-  imageStyle: {
-    borderRadius: 10, // Bo góc ảnh
+  boardTitle: {
+    fontSize: height * 0.017,
+    color: colors.black,
+    fontWeight: "bold",
    
   },
-  // filterContainer: {
-  //   flexDirection: "row",
-  //   padding: 10,
-  //   justifyContent: "space-around",
+  boardDetails: {
+    fontSize: height * 0.015,
+    color: colors.darkgray,
     
-  // },
- 
- 
-  emptyMessageContainer: {
-    flex: 1,
-    justifyContent: 'center',
-    alignItems: 'center',
-  },
-  emptyMessageText: {
-    fontSize: 16,
-    color: 'gray',
-    textAlign: 'center',
-    padding: 20,
   },
 
+  modalContent: {
+    backgroundColor: "white",
+    padding: height * 0.02,
+    borderTopLeftRadius: height * 0.05,
+    borderTopRightRadius: height * 0.05,
+    paddingTop: height * 0.05,
+    paddingLeft: width * 0.05,
+  },
+  buttonsort:{
+    flexDirection: "row",
+    justifyContent: "space-between",
+    width: width * 0.9,
+    height: height * 0.06,
+    alignItems: "center",
+   
+  },
+  null:{},
+  modalOption: {
+    fontSize: height * 0.024,
+    paddingVertical: height * 0.015,
+  },
+  modalTitle: {
+    fontSize: height * 0.03,
+    fontWeight: "bold",
+    marginBottom: height * 0.015,
+  },
+ 
+  modalCloseButton: {
+    fontSize: height * 0.02,
+    color: colors.black,
+    textAlign: "center",
+    paddingVertical: height * 0.015,
+    marginTop: height * 0.05,
+    backgroundColor: colors.gray,
+    width: width * 0.3,
+    borderRadius: height * 0.1,
+    marginLeft: "40%",
+  },
 
-  // Modal create 
+ 
+  // Create Modal
   modalContainer: {
     flex: 1,
     justifyContent: "flex-end",
@@ -217,64 +275,11 @@ const styles = StyleSheet.create({
     fontWeight: "bold",
     marginVertical: height * 0.015,
   },
-  // CSS cho Modal
-  modalContainer: {
+  emptyMessageContainer: {
     flex: 1,
-    justifyContent: "flex-end",
-    backgroundColor: "rgba(0, 0, 0, 0.5)",
-
-
-  },
-  modalContent: {
-    backgroundColor: colors.white,
-    borderTopLeftRadius: height * 0.05,
-    borderTopRightRadius: height * 0.05,
-    padding: height * 0.02,
-    height: height * 0.4,
-  
-  },
-  modalChoose: {
-    flexDirection: "column",
-    justifyContent: "space-between",
-    alignItems: "flex-start",
-    marginBottom: height * 0.05,
-  },
-
-  modalTitle: {
-    marginTop: height * 0.02,
-    fontSize: height * 0.022,
-    fontWeight: "bold",
-    textAlign: "center",
-    marginBottom: height * 0.015,
-    color: colors.black,
-  },
-  modalOption: {
-    paddingVertical: height * 0.015,
-  },
-  modalOptionText: {
-    fontSize: height * 0.02,
-    color: colors.black,
-    fontWeight: "bold",
-  },
-  modalOptionActive: {
-    fontSize: height * 0.02,
-    color: colors.red,
-    fontWeight: "bold",
-  },
-  modalCloseButton: {
+    justifyContent: "center",
     alignItems: "center",
-    paddingVertical: height * 0.015,
-    backgroundColor: colors.gray  ,
-    borderRadius: height * 0.1,
-    width: width * 0.3,
-    marginLeft: width * 0.32,
   },
-  modalCloseText: {
-    fontSize: height * 0.02,
-    color: colors.black,
-    fontWeight: "bold",
-  },
- 
 });
 
 export default styles;

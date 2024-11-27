@@ -86,8 +86,8 @@ const Footer = ({ navigation, avatar, initialSelectedIcon, namePage }) => {
       {/* Account Icon */}
       <TouchableOpacity
         onPress={() => handleIconPress("account")}
-        // style={styleName}
-        style={styles.Touch_selected}
+        style={styleName}
+
       >
         <Image
           source={

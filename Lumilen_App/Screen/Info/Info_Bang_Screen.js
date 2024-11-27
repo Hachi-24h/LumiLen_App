@@ -9,14 +9,16 @@ import {
   TouchableOpacity,
   Dimensions,
   Modal,
+  TouchableWithoutFeedback,
+  Animated,
 } from "react-native";
-import styles from "../../Css/Info_Css";
+import styles from "../../Css/Info_Bang_Css";
 import Footer from "../footer";
 import { UserContext } from "../../Hook/UserContext";
 
-const { width } = Dimensions.get("window");
+const { width, height } = Dimensions.get("window");
 
-const InfoScreen = ({ navigation, route }) => {
+const Info_Bang_Screen = ({ navigation, route }) => {
   const DefaultAvatar = require("../../Picture/defaulttableuser.jpg");
 
   const { userData } = useContext(UserContext);
@@ -31,7 +33,7 @@ const InfoScreen = ({ navigation, route }) => {
   const [searchQuery, setSearchQuery] = useState("");
   const [isSortModalVisible, setSortModalVisible] = useState(false);
   const [isCreateModalVisible, setCreateModalVisible] = useState(false);
-
+  const [status, setStatus] = useState("Oldest");
   useEffect(() => {
     handleSearch(searchQuery);
   }, [selectItem, searchQuery, originalListTableUser]);
@@ -41,9 +43,11 @@ const InfoScreen = ({ navigation, route }) => {
       let sortedList = [...originalListTableUser];
       switch (sortType) {
         case "A-Z":
+          setStatus("A-Z");
           sortedList.sort((a, b) => a.name.localeCompare(b.name));
           break;
         case "LastSaved":
+          setStatus("LastSaved");
           sortedList.sort((a, b) => {
             const lastImageA =
               a.listAnh.length > 0
@@ -57,11 +61,13 @@ const InfoScreen = ({ navigation, route }) => {
           });
           break;
         case "Newest":
+          setStatus("Newest");
           sortedList.sort(
             (a, b) => new Date(b.createdAt) - new Date(a.createdAt)
           );
           break;
         case "Oldest":
+          setStatus("Oldest");
           sortedList.sort(
             (a, b) => new Date(a.createdAt) - new Date(b.createdAt)
           );
@@ -90,8 +96,7 @@ const InfoScreen = ({ navigation, route }) => {
   const renderTableUser = ({ item }) => {
     const tableName = item.name;
     const numberOfImages = item.listAnh.length;
-    const styleIcon =
-      item.statusTab === "block" ? styles.lockIcon : styles.null;
+    const styleIcon = item.statusTab === "block" ? styles.lock : styles.null;
 
     const images = [
       item.listAnh[0] ? { uri: item.listAnh[0].uri } : DefaultAvatar,
@@ -115,10 +120,12 @@ const InfoScreen = ({ navigation, route }) => {
           <View style={styles.boardImage}>
             <View style={{ width: "50%", height: "100%", paddingRight: 1 }}>
               <Image source={images[0]} style={styles.img} />
-              <Image
-                source={require("../../Icon/lock.png")}
-                style={styleIcon}
-              />
+              <View style={styleIcon}>
+                <Image
+                  source={require("../../Icon/lock.png")}
+                  style={styles.lockIcon}
+                />
+              </View>
             </View>
             <View
               style={{
@@ -143,6 +150,25 @@ const InfoScreen = ({ navigation, route }) => {
     );
   };
 
+  const [translateY] = useState(new Animated.Value(100)); // Khởi tạo Animated.Value, modal sẽ bắt đầu từ dưới
+  useEffect(() => {
+    if (isSortModalVisible) {
+      // Khi modal xuất hiện, animate slide from bottom
+      Animated.timing(translateY, {
+        toValue: 0, // Đưa modal về vị trí ban đầu
+        duration: 200, // Thời gian animation (ms)
+        useNativeDriver: true,
+      }).start();
+    } else {
+      // Khi modal bị đóng, animate slide out down
+      Animated.timing(translateY, {
+        toValue: 200, // Đưa modal xuống dưới
+        duration: 200, // Thời gian animation (ms)
+        useNativeDriver: true,
+      }).start();
+    }
+  }, [isSortModalVisible]);
+
   return (
     <View style={styles.container}>
       <StatusBar hidden={false} />
@@ -165,9 +191,9 @@ const InfoScreen = ({ navigation, route }) => {
               })
             }
           >
-            <Text style={styles.headerTitle}>Ghim</Text>
+            <Text style={styles.headerTitle2}>Ghim</Text>
           </TouchableOpacity>
-          <TouchableOpacity onPress={() => navigation.navigate("Info")}>
+          <TouchableOpacity onPress={() => navigation.navigate("Info_Bang")}>
             <Text style={[styles.headerTitle, styles.activeTab]}>Bảng</Text>
           </TouchableOpacity>
         </View>
@@ -194,18 +220,12 @@ const InfoScreen = ({ navigation, route }) => {
       {/* Filter Buttons */}
       <View style={styles.filterContainer}>
         <TouchableOpacity
-          style={[
-            styles.filterButton,
-            {
-              borderWidth: selectItem === "Sắp xếp" ? 2 : 1,
-              borderColor: selectItem === "Sắp xếp" ? "red" : "black",
-            },
-          ]}
+          style={[styles.navtouch]}
           onPress={() => setSortModalVisible(true)}
         >
           <Image
             source={require("../../Icon/sort.png")}
-            style={styles.filterIcon}
+            style={styles.imgHeader3}
           />
         </TouchableOpacity>
         <TouchableOpacity
@@ -213,24 +233,46 @@ const InfoScreen = ({ navigation, route }) => {
             styles.filterButton,
             {
               borderWidth: selectItem === "Tất cả" ? 2 : 1,
-              borderColor: selectItem === "Tất cả" ? "red" : "black",
+              // borderColor: selectItem === "Tất cả" ? "red" : "black",
             },
           ]}
           onPress={() => setSelectItem("Tất cả")}
         >
-          <Text style={styles.filterText}>Tất cả</Text>
+          <Text
+            style={[
+              styles.filterText,
+              {
+                fontWeight: selectItem === "Tất cả" ? "bold" : "normal",
+                fontSize:
+                  selectItem === "Tất cả" ? height * 0.022 : height * 0.02,
+              },
+            ]}
+          >
+            Tất cả
+          </Text>
         </TouchableOpacity>
         <TouchableOpacity
           style={[
             styles.filterButton,
             {
               borderWidth: selectItem === "Bí mật" ? 2 : 1,
-              borderColor: selectItem === "Bí mật" ? "red" : "black",
+              // borderColor: selectItem === "Bí mật" ? "red" : "black",
             },
           ]}
           onPress={() => setSelectItem("Bí mật")}
         >
-          <Text style={styles.filterText}>Bí mật</Text>
+          <Text
+            style={[
+              styles.filterText,
+              {
+                fontWeight: selectItem === "Bí mật" ? "bold" : "normal",
+                fontSize:
+                  selectItem === "Bí mật" ? height * 0.022 : height * 0.02,
+              },
+            ]}
+          >
+            Bí mật
+          </Text>
         </TouchableOpacity>
       </View>
 
@@ -266,32 +308,73 @@ const InfoScreen = ({ navigation, route }) => {
       {/* Sort Modal */}
       <Modal
         visible={isSortModalVisible}
-        animationType="slide"
+        animationType="none" // Tắt animation mặc định của Modal
         transparent={true}
         onRequestClose={() => setSortModalVisible(false)}
       >
-        <View style={styles.modalContainer}>
-          <View style={styles.modalContent}>
-            <Text style={styles.modalTitle}>Sắp xếp theo</Text>
-            <TouchableOpacity onPress={() => handleSort("A-Z")}>
-              <Text style={styles.modalOption}>Từ A đến Z</Text>
-            </TouchableOpacity>
-            <TouchableOpacity onPress={() => handleSort("LastSaved")}>
-              <Text style={styles.modalOption}>Được lưu lần cuối vào</Text>
-            </TouchableOpacity>
-            <TouchableOpacity onPress={() => handleSort("Newest")}>
-              <Text style={styles.modalOption}>Mới nhất</Text>
-            </TouchableOpacity>
-            <TouchableOpacity onPress={() => handleSort("Oldest")}>
-              <Text style={styles.modalOption}>Cũ nhất</Text>
-            </TouchableOpacity>
-            <TouchableOpacity onPress={() => setSortModalVisible(false)}>
-              <Text style={styles.modalCloseButton}>Đóng</Text>
-            </TouchableOpacity>
+        <TouchableWithoutFeedback onPress={() => setSortModalVisible(false)}>
+          <View style={styles.modalContainer}>
+            <TouchableWithoutFeedback>
+              <Animated.View
+                style={[styles.modalContent, { transform: [{ translateY }] }]}
+              >
+                <Text style={styles.modalTitle}>Sắp xếp theo</Text>
+                <TouchableOpacity
+                  onPress={() => handleSort("A-Z")}
+                  style={styles.buttonsort}
+                >
+                  <Text style={styles.modalOption}>Từ A đến Z</Text>
+                  {status === "A-Z" && (
+                    <Image
+                      source={require("../../Icon/check_2.png")}
+                      style={styles.imgHeader3}
+                    />
+                  )}
+                </TouchableOpacity>
+                <TouchableOpacity
+                  onPress={() => handleSort("LastSaved")}
+                  style={styles.buttonsort}
+                >
+                  <Text style={styles.modalOption}>Được lưu lần cuối vào</Text>
+                  {status === "LastSaved" && (
+                    <Image
+                      source={require("../../Icon/check_2.png")}
+                      style={styles.imgHeader3}
+                    />
+                  )}
+                </TouchableOpacity>
+                <TouchableOpacity
+                  onPress={() => handleSort("Newest")}
+                  style={styles.buttonsort}
+                >
+                  <Text style={styles.modalOption}>Mới nhất</Text>
+                  {status === "Newest" && (
+                    <Image
+                      source={require("../../Icon/check_2.png")}
+                      style={styles.imgHeader3}
+                    />
+                  )}
+                </TouchableOpacity>
+                <TouchableOpacity
+                  onPress={() => handleSort("Oldest")}
+                  style={styles.buttonsort}
+                >
+                  <Text style={styles.modalOption}>Cũ nhất</Text>
+                  {status === "Oldest" && (
+                    <Image
+                      source={require("../../Icon/check_2.png")}
+                      style={styles.imgHeader3}
+                    />
+                  )}
+                </TouchableOpacity>
+                <TouchableOpacity onPress={() => setSortModalVisible(false)}>
+                  <Text style={styles.modalCloseButton}>Đóng</Text>
+                </TouchableOpacity>
+              </Animated.View>
+            </TouchableWithoutFeedback>
           </View>
-        </View>
+        </TouchableWithoutFeedback>
       </Modal>
-
       {/* Create Modal */}
       <Modal
         visible={isCreateModalVisible}
@@ -299,54 +382,57 @@ const InfoScreen = ({ navigation, route }) => {
         transparent={true}
         onRequestClose={() => setCreateModalVisible(false)}
       >
-        <View style={styles.modalContainer}>
-          <View style={styles.createModalContent}>
-            <TouchableOpacity
-              onPress={() => setCreateModalVisible(false)}
-              style={styles.closeButton}
-            >
-              <Image
-                source={require("../../Icon/cancel.png")}
-                style={styles.optionIcon}
-              />
-              <Text style={styles.createModalTitle}>Bắt đầu tạo ngay</Text>
-            </TouchableOpacity>
-
-            <View style={styles.createOptions}>
-              <View style={{ marginBottom: 20, alignItems: "center" }}>
+        <TouchableWithoutFeedback onPress={() => setCreateModalVisible(false)}>
+          <View style={styles.modalContainer}>
+            <View style={styles.createModalContent}>
+              <View style={styles.buttoncancel}>
                 <TouchableOpacity
-                  style={styles.optionButton}
-                  onPress={() =>
-                    navigation.navigate(
-                      "AddGhim",
-                      { userId },
-                      setCreateModalVisible(false)
-                    )
-                  }
+                  onPress={() => setCreateModalVisible(false)}
+                  style={styles.closeButton}
                 >
                   <Image
-                    source={require("../../Icon/upload.png")}
+                    source={require("../../Icon/cancel.png")}
                     style={styles.optionIcon}
                   />
                 </TouchableOpacity>
-                <Text style={styles.optionText}>Ghim</Text>
+                <Text style={styles.createModalTitle}>Bắt đầu tạo ngay</Text>
               </View>
+              <View style={styles.createOptions}>
+                <View style={{ marginBottom: 20, alignItems: "center" }}>
+                  <TouchableOpacity
+                    style={styles.optionButton}
+                    onPress={() =>
+                      navigation.navigate(
+                        "AddGhim",
+                        { userId },
+                        setCreateModalVisible(false)
+                      )
+                    }
+                  >
+                    <Image
+                      source={require("../../Icon/upload.png")}
+                      style={styles.optionIcon}
+                    />
+                  </TouchableOpacity>
+                  <Text style={styles.optionText}>Ghim</Text>
+                </View>
 
-              <View style={{ marginBottom: 20, alignItems: "center" }}>
-                <TouchableOpacity style={styles.optionButton}>
-                  <Image
-                    source={require("../../Icon/abum.png")}
-                    style={styles.optionIcon}
-                  />
-                </TouchableOpacity>
-                <Text style={styles.optionText}>Bảng</Text>
+                <View style={{ marginBottom: 20, alignItems: "center" }}>
+                  <TouchableOpacity style={styles.optionButton}>
+                    <Image
+                      source={require("../../Icon/abum.png")}
+                      style={styles.optionIcon}
+                    />
+                  </TouchableOpacity>
+                  <Text style={styles.optionText}>Bảng</Text>
+                </View>
               </View>
             </View>
           </View>
-        </View>
+        </TouchableWithoutFeedback>
       </Modal>
     </View>
   );
 };
 
-export default InfoScreen;
+export default Info_Bang_Screen;

@@ -1,7 +1,7 @@
 import React, { createContext, useState, useEffect, useCallback } from "react";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import axios from "axios";
-import BASE_URL from "../IpAdress";
+import BASE_URL from "../config/IpAdress";
 
 export const UserContext = createContext();
 
@@ -40,15 +40,19 @@ export const UserProvider = ({ children }) => {
     }
   }, []);
 
-  // Hàm xóa dữ liệu người dùng khỏi `AsyncStorage` và trạng thái `userData`
   const clearUserData = async () => {
     try {
+      console.log("Đang xóa dữ liệu người dùng...");
       await AsyncStorage.removeItem("userData");
-      setUserData(null);
+      console.log("Dữ liệu người dùng đã bị xóa khỏi AsyncStorage.");
+      setUserData(null); // Đảm bảo set lại null cho userData trong context
     } catch (error) {
-      console.error("Failed to clear user data:", error);
+      console.error("Lỗi khi xóa dữ liệu người dùng:", error);
     }
   };
+  
+  
+  
 
   return (
     <UserContext.Provider value={{ userData, fetchUserData, clearUserData, loading }}>

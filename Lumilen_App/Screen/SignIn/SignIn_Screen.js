@@ -12,7 +12,7 @@ import { Ionicons, FontAwesome } from "@expo/vector-icons";
 import styles from "../../Css/SignIn_css";
 import axios from "axios";
 import { UserContext } from "../../Hook/UserContext";
-import BASE_URL from "../../IpAdress";
+import BASE_URL from "../../config/IpAdress";
 
 import * as Google from 'expo-auth-session/providers/google';
 import * as WebBrowser from 'expo-web-browser';

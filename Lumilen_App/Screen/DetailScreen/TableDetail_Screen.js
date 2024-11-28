@@ -12,7 +12,7 @@ import {
   Pressable,
 } from "react-native";
 import styles from "./../../Css/TableDetail_css"; // File CSS riêng
-import BASE_URL from "../../IpAdress"; // Địa chỉ API
+import BASE_URL from "../../config/IpAdress"; // Địa chỉ API
 import { convertDataWithSize } from "../../Hook/imageUtils"; // Hàm xử lý kích thước ảnh
 
 const { height, width } = Dimensions.get("window");

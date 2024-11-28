@@ -9,10 +9,10 @@ import {
   TextInput,
   StatusBar,
 } from "react-native";
-import Footer from "../footer";
+import Footer from "../Other/footer";
 import styles from "../../Css/Home_Css";
 import { UserContext } from "../../Hook/UserContext";
-import BASE_URL from "../../IpAdress";
+import BASE_URL from "../../config/IpAdress";
 import { convertDataWithSize } from "../../Hook/imageUtils";
 
 const { width, height } = Dimensions.get("window");

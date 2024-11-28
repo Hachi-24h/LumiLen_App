@@ -5,7 +5,7 @@ import { NavigationContainer } from "@react-navigation/native";
 import { createStackNavigator } from "@react-navigation/stack";
 import { enableScreens } from "react-native-screens";
 import { UserProvider } from "./Hook/UserContext";
-import Screens from "./ImportScreen";
+import Screens from "./config/ImportScreen";
 import { LogBox } from "react-native";
 
 // Tắt cảnh báo cụ thể

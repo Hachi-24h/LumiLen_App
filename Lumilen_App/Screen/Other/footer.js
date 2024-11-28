@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { View, TouchableOpacity, Image } from "react-native";
-import styles from "../Css/footer_css";
+import styles from "../../Css/footer_css";
 
 const Footer = ({ navigation, avatar, initialSelectedIcon, namePage }) => {
   const [selectedIcon, setSelectedIcon] = useState(
@@ -40,8 +40,8 @@ const Footer = ({ navigation, avatar, initialSelectedIcon, namePage }) => {
         <Image
           source={
             selectedIcon === "HomeTabs"
-              ? require("../Icon/home_check.png")
-              : require("../Icon/home_uncheck.png")
+              ? require("../../Icon/home_check.png")
+              : require("../../Icon/home_uncheck.png")
           }
           style={styles.imgIcon}
         />
@@ -52,8 +52,8 @@ const Footer = ({ navigation, avatar, initialSelectedIcon, namePage }) => {
         <Image
           source={
             selectedIcon === "Search"
-              ? require("../Icon/search_check.png")
-              : require("../Icon/search_uncheck.png")
+              ? require("../../Icon/search_check.png")
+              : require("../../Icon/search_uncheck.png")
           }
           style={styles.imgIcon}
         />
@@ -64,8 +64,8 @@ const Footer = ({ navigation, avatar, initialSelectedIcon, namePage }) => {
         <Image
           source={
             selectedIcon === "plus"
-              ? require("../Icon/plus_check.png")
-              : require("../Icon/plus_uncheck.png")
+              ? require("../../Icon/plus_check.png")
+              : require("../../Icon/plus_uncheck.png")
           }
           style={styles.imgIcon}
         />
@@ -76,8 +76,8 @@ const Footer = ({ navigation, avatar, initialSelectedIcon, namePage }) => {
         <Image
           source={
             selectedIcon === "mess"
-              ? require("../Icon/mess_check.png")
-              : require("../Icon/mess_uncheck.png")
+              ? require("../../Icon/mess_check.png")
+              : require("../../Icon/mess_uncheck.png")
           }
           style={styles.imgIcon}
         />
@@ -94,8 +94,8 @@ const Footer = ({ navigation, avatar, initialSelectedIcon, namePage }) => {
             avatar
               ? { uri: avatar }
               : selectedIcon === "account"
-              ? require("../Icon/acount_check.png")
-              : require("../Icon/acount_uncheck.png")
+              ? require("../../Icon/acount_check.png")
+              : require("../../Icon/acount_uncheck.png")
           }
           style={styles.imgIcon}
         />

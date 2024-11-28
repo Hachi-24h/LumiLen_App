@@ -1,11 +1,42 @@
-import React from "react";
-import { View, Text, Image, TouchableOpacity, ScrollView } from "react-native";
+import React, { useEffect } from "react";
+import { View, Text, Image, TouchableOpacity, Alert, BackHandler } from "react-native";
 import { LinearGradient } from "expo-linear-gradient";
 import styles from "../../Css/SignUp_css";
-import useFetch from "../../Hook/useEffetch";
+
 const SignUp = ({ navigation }) => {
-  const { data: dataTest } = useFetch("http://192.168.114.1:5000/User/");
-  // console.log(dataTest);
+
+  useEffect(() => {
+    // Lắng nghe sự kiện quay lại của điện thoại
+    const backAction = () => {
+      // Hiển thị thông báo xác nhận khi người dùng nhấn nút quay lại
+      Alert.alert(
+        "Thoát ứng dụng",
+        "Bạn chắc chắn muốn thoát ứng dụng?",
+        [
+          {
+            text: "Hủy",
+            style: "cancel",
+            onPress: () => null, // Không làm gì khi người dùng chọn Hủy
+          },
+          {
+            text: "Có",
+            onPress: () => BackHandler.exitApp(), // Thoát ứng dụng khi người dùng chọn "Có"
+          },
+        ],
+        { cancelable: false }
+      );
+      return true; // Ngăn không cho quay lại màn hình trước
+    };
+
+    // Thêm sự kiện backHandler khi màn hình SignUp được hiển thị
+    BackHandler.addEventListener("hardwareBackPress", backAction);
+
+    // Cleanup khi component unmount
+    return () => {
+      BackHandler.removeEventListener("hardwareBackPress", backAction);
+    };
+  }, []);
+
   return (
     <View style={styles.signUp1}>
       <View style={styles.image}>
@@ -70,9 +101,7 @@ const SignUp = ({ navigation }) => {
               style={styles.buttonBase}
               onPress={() => navigation.navigate("SignUp1")}
             >
-              <Text style={styles.button}>
-              {dataTest && dataTest.length > 0 ? dataTest[0].name : "Sign Up"}
-              </Text>
+              <Text style={styles.button}>Sign Up</Text>
             </TouchableOpacity>
           </View>
           <View style={styles.buttons1}>
@@ -105,28 +134,3 @@ const SignUp = ({ navigation }) => {
 };
 
 export default SignUp;
-
-// import React from 'react';
-// import { View, Text, ActivityIndicator, Button , StatusBar} from 'react-native';
-// import useEfetch from '../../Hook/useEffetch';
-
-// const UserList = () => {
-//   const { data: users, loading, error, refetch } = useEfetch('http://localhost:5000/users');
-
-//   if (loading) return <ActivityIndicator size="large" color="#0000ff" />;
-//   if (error) return <Text>Error fetching data: {error.message}</Text>;
-
-//   return (
-//     <View>
-//       <StatusBar hidden={false} />
-//       {users && users.length > 0 ? (
-//         users.map((user) => <Text key={user.id}>{user.name}</Text>)
-//       ) : (
-//         <Text>No users found</Text>
-//       )}
-//       <Button title="Refetch Data" onPress={refetch} />
-//     </View>
-//   );
-// };
-
-// export default UserList;

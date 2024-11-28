@@ -4,7 +4,7 @@ import { Ionicons } from '@expo/vector-icons';
 import axios from 'axios';
 import styles from '../../../../../Css/ChangePassword_css'; 
 import { UserContext } from '../../../../../Hook/UserContext';
-import BASE_URL from '../../../../../IpAdress';
+import BASE_URL from '../../../../../config/IpAdress';
 
 const ChangePasswordScreen = ({ navigation }) => {
   const { userData, fetchUserData } = useContext(UserContext);

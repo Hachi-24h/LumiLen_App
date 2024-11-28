@@ -14,7 +14,7 @@ import DateTimePicker from "@react-native-community/datetimepicker";
 import styles from "../../../../../../Css/DOB_Css";
 import { Ionicons } from "@expo/vector-icons";
 import { UserContext } from "../../../../../../Hook/UserContext";
-import BASE_URL from "../../../../../../IpAdress";
+import BASE_URL from "../../../../../../config/IpAdress";
 
 const BirthdayScreen = ({ navigation }) => {
   const { userData, fetchUserData } = useContext(UserContext);
@@ -59,7 +59,7 @@ const BirthdayScreen = ({ navigation }) => {
       try {
         const formattedDate = date.toISOString();
 
-        const response = await fetch(`${BASE_URL}/user/updateUser/${userID}`, {
+        const response = await fetch(`${BASE_URL}:5000/user/updateUser/${userID}`, {
           method: "PUT",
           headers: {
             "Content-Type": "application/json",
@@ -75,7 +75,7 @@ const BirthdayScreen = ({ navigation }) => {
           // Gọi hàm fetchUserData để làm mới dữ liệu trong UserContext
           await fetchUserData(userData.email);
 
-          navigation.navigate("PersonalInfo", { showSuccessMessage: "Thêm ngày sinh thành công" });
+          navigation.navigate("PersonalInfo", { showNotification: "Thêm ngày sinh thành công",type: "success" });
         } else {
           setErrorMessage(result.message || "Có lỗi xảy ra khi cập nhật ngày sinh.");
         }

@@ -520,5 +520,34 @@ router.get('/getAllPicturesWithAvatar', async (req, res) => {
     }
 });
 
+// update email
+router.put('/updateEmail/:id', async (req, res) => {
+    const { id } = req.params;  // Lấy id của user cần cập nhật
+    const { newEmail } = req.body;  // Lấy email mới từ request body
+
+    try {
+        // Kiểm tra xem email mới đã tồn tại trong cơ sở dữ liệu chưa
+        const existingUser = await User.findOne({ email: newEmail });
+
+        if (existingUser) {
+            return res.status(400).json({ message: 'Email đã tồn tại, vui lòng chọn email khác.' });
+        }
+
+        // Cập nhật email của người dùng nếu không có sự trùng lặp
+        const updatedUser = await User.findByIdAndUpdate(id, { email: newEmail }, { new: true });
+
+        if (!updatedUser) {
+            return res.status(404).json({ message: 'Không tìm thấy người dùng với ID đã cho.' });
+        }
+
+        res.status(200).json({
+            message: 'Cập nhật email thành công.',
+            user: updatedUser
+        });
+    } catch (error) {
+        res.status(500).json({ message: error.message });
+    }
+});
+
 
 module.exports = router;

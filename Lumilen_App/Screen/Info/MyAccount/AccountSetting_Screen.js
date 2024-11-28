@@ -8,20 +8,54 @@ import {
   StatusBar,
   TouchableOpacity,
   Dimensions,
+ 
   Modal,
+  Alert,
   ScrollView,
 } from "react-native";
+import AsyncStorage from '@react-native-async-storage/async-storage';
+
 import styles from "../../../Css/AccountSetting_Css"; // Import CSS
 import { Ionicons } from "@expo/vector-icons";
-import Footer from "../../footer";
+import Footer from "../../Other/footer";
 import { UserContext } from "../../../Hook/UserContext";
 
 const AccountScreen = ({ navigation, route }) => {
   const DefaultAvatar = require("../../../Icon/acount_check.png");
-  const { userData } = useContext(UserContext);
+  const { userData,clearUserData } = useContext(UserContext);
   const avatar = userData ? userData.avatar : DefaultAvatar;
   const name = userData ? userData.lastName + " "+ userData.firstName : "Chưa cập nhật";
  
+  const handleLogout = () => {
+    // Hiển thị cảnh báo xác nhận khi bấm nút đăng xuất
+    Alert.alert(
+      "Đăng xuất",
+      "Bạn chắc chắn muốn đăng xuất?",
+      [
+        {
+          text: "Hủy",
+          style: "cancel",
+        },
+        {
+          text: "Đăng xuất",
+          onPress: async () => {
+            try {
+              // Điều hướng đến màn hình SignUp và không cho phép quay lại
+              navigation.reset({
+                index: 0, // Đặt lại index của stack navigation
+                routes: [{ name: "SignUp" }], // Chỉ định màn hình mới là SignUp
+              });
+            } catch (error) {
+              console.error("Lỗi khi đăng xuất:", error);
+            }
+          },
+        },
+      ],
+      { cancelable: false }
+    );
+  };
+  
+  
   return (
     <View style={styles.container}>
       <View style={styles.header}>
@@ -98,8 +132,8 @@ const AccountScreen = ({ navigation, route }) => {
             <Ionicons name="chevron-forward-outline" size={20} />
           </TouchableOpacity>
 
-          <TouchableOpacity style={styles.settingItem}>
-            <Text style={styles.settingText}>Đăng xuất</Text>
+          <TouchableOpacity style={styles.settingItem} onPress={handleLogout}>
+            <Text style={styles.settingText}>Đăng xuất</Text> 
             <Ionicons name="chevron-forward-outline" size={20} />
           </TouchableOpacity>
 

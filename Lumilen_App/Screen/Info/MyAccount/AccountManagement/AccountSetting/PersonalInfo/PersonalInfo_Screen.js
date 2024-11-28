@@ -2,7 +2,7 @@ import React, { useState, useEffect, useContext } from "react";
 import { View, Text, TouchableOpacity } from "react-native";
 import { Ionicons } from "@expo/vector-icons";
 import FlashMessage from "react-native-flash-message";
-import { showSuccessMessage } from "../../../../../../Other/notification";
+import { showNotification } from "../../../../../../Custom/notification";
 import styles from "../../../../../../Css/PersonalInfo_Css";
 import { UserContext } from "../../../../../../Hook/UserContext";
 
@@ -19,15 +19,15 @@ const PersonalInfoScreen = ({ navigation, route }) => {
   const gender = userData.gender === "Male" ? "Nam" : userData.gender === "Female"  ? "Nữ" : "Khác";
   
   useEffect(() => {
-    if (route.params?.showSuccessMessage) {
-      showSuccessMessage(route.params.showSuccessMessage);
+    if (route.params?.showNotification) {
+      showNotification(route.params.showNotification,route.params.type);
     }
   }, [route.params]);
 
   return (
     <View style={styles.container}>
       <View style={styles.header}>
-        <TouchableOpacity onPress={() => navigation.goBack()}>
+        <TouchableOpacity onPress={() => navigation.navigate("AccountManagement")}>
           <Ionicons name="chevron-back-outline" size={24} color="black" />
         </TouchableOpacity>
         <Text style={styles.headerTitle}>Thông tin cá nhân</Text>

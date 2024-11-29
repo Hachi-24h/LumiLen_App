@@ -205,26 +205,6 @@ router.post('/addFollower/:userId', async (req, res) => {
     }
 });
 
-// Route để tìm người dùng theo idUser
-router.get('/findUserByIdUser', async (req, res) => {
-    const { idUser } = req.query; // Lấy idUser từ query parameters
-
-    if (!idUser) {
-        return res.status(400).json({ message: "idUser là bắt buộc." });
-    }
-
-    try {
-        const user = await User.findOne({ idUser });
-
-        if (!user) {
-            return res.status(404).json({ message: "Người dùng không tồn tại." });
-        }
-
-        res.status(200).json(user);
-    } catch (error) {
-        res.status(500).json({ message: error.message });
-    }
-});
 
 
 // Route để tìm người dùng theo email
@@ -548,6 +528,67 @@ router.put('/updateEmail/:id', async (req, res) => {
         res.status(500).json({ message: error.message });
     }
 });
+
+// tìm kiếm người dùng theo idUser, firstName và lastName
+router.get('/findUserByIdUser', async (req, res) => {
+    const { idUser } = req.query;  // Lấy giá trị idUser từ query string
+
+    // Kiểm tra xem idUser có được truyền vào không
+    if (!idUser) {
+        return res.status(400).json({ message: "idUser là bắt buộc." });
+    }
+
+    try {
+        // Bước 1: Tìm người dùng theo idUser (dùng regex để tìm các idUser tương tự, không phân biệt hoa thường)
+        const usersById = await User.find({ idUser: { $regex: idUser, $options: 'i' } });
+
+        // Bước 2: Nếu số lượng người dùng tìm thấy ít hơn 5, tìm kiếm theo tên (firstName + lastName)
+        let users = usersById; // Dùng luôn kết quả tìm theo idUser
+
+      
+        if (usersById.length < 5) {
+            // Tìm kiếm theo firstName và lastName không phân biệt hoa thường
+            const usersByName = await User.find({
+                $or: [
+                    { firstName: { $regex: idUser, $options: 'i' } },  // Tìm theo firstName
+                    { lastName: { $regex: idUser, $options: 'i' } }    // Tìm theo lastName
+                ]
+            });
+
+          users = users.concat(usersByName);
+           // xóa các user trung nhau
+              users = users.filter((user, index, self) =>
+                index === self.findIndex((t) => (
+                    t.idUser === user.idUser
+                ))
+            );
+
+        }
+
+        // // Bước 3: Nếu không tìm thấy người dùng nào
+        // if (users.length === 0) {
+        //     return res.status(404).json({ message: "Không tìm thấy người dùng." });
+        // }
+
+        // Bước 4: Trả về danh sách người dùng tìm được với thông tin ngắn gọn
+        const result = users.map(user => ({
+            idUser: user.idUser,
+            firstName: user.firstName,
+            lastName: user.lastName,
+            email: user.email,  // Trả về email
+            avatar: user.avatar,  // Trả về avatar
+            id: user._id.toString()  // Trả về _id của user
+        }));
+
+        // Trả về kết quả
+        res.status(200).json(result);
+    } catch (error) {
+        res.status(500).json({ message: error.message });
+    }
+});
+
+
+
 
 
 module.exports = router;

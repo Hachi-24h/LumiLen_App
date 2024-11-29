@@ -16,7 +16,7 @@ import BASE_URL from "../../config/IpAdress";
 import { convertDataWithSize } from "../../Hook/imageUtils";
 
 const { width, height } = Dimensions.get("window");
-const COLUMN_COUNT = 3; // Số cột
+const COLUMN_COUNT = 4; // Số cột
 const SPACING = 10; // Khoảng cách giữa các cột
 const columnWidth = (width - (COLUMN_COUNT + 1) * SPACING) / COLUMN_COUNT;
 

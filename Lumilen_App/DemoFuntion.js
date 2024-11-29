@@ -1,122 +1,391 @@
-// import React, { useEffect, useState, useContext } from "react";
+// import React, { useState, useContext, useEffect, useRef } from "react";
 // import {
 //   View,
 //   Text,
-//   Image,
-//   TouchableOpacity,
-//   Dimensions,
-//   StatusBar,
+//   TextInput,
 //   FlatList,
+//   TouchableOpacity,
+//   ScrollView,
+//   Dimensions,
+//   Image,
+//   ActivityIndicator,
+//   Keyboard,
 // } from "react-native";
-// import Footer from "../footer";
-// import styles from "../../Css/Info_Ghim_Css";
+// import axios from "axios";
+// import styles from "../../Css/Search_css";
+// import Footer from "../Other/footer";
+// import { Ionicons } from "@expo/vector-icons";
+// import BASE_URL from "../../config/IpAdress";
 // import { UserContext } from "../../Hook/UserContext";
-// import BASE_URL from "../../IpAdress";
 // import { convertDataWithSize } from "../../Hook/imageUtils";
-
+// import MasonryList from "react-native-masonry-list";
 // const { width } = Dimensions.get("window");
-// const COLUMN_COUNT = 3; // Số cột
-// const SPACING = 2; // Khoảng cách giữa các cột
+// const COLUMN_COUNT = 2;
+// const SPACING = 2;
 // const columnWidth = (width - SPACING * (COLUMN_COUNT + 1)) / COLUMN_COUNT;
-
-// const InfoScreen = ({ navigation }) => {
+// const Search = ({ navigation }) => {
+//   const bannerRef = useRef(null);
+//   const [currentView, setCurrentView] = useState("default");
+//   const [searchText, setSearchText] = useState("");
+//   const [images, setImages] = useState([]);
+//   const [isLoading, setIsLoading] = useState(false);
+//   const [noResults, setNoResults] = useState(false);
+//   const [listHistoryText, setListHistoryText] = useState([]);
+//   const [currentBannerIndex, setCurrentBannerIndex] = useState(0);
 //   const { userData } = useContext(UserContext);
-//   const avatar = userData ? userData.avatar : null;
 //   const userId = userData ? userData._id : null;
+//   const avatar = userData ? userData.avatar : null;
 
-//   const [images, setImages] = useState([]); // Danh sách ảnh đầy đủ
-//   const [filteredImages, setFilteredImages] = useState([]); // Danh sách ảnh được lọc
+//   const bannerImages = [
+//     "https://res.cloudinary.com/dflxpcdxz/image/upload/v1730987883/DataPicture/jtj1vu4bzsb9vsv6gpy6.jpg",
+//     "https://res.cloudinary.com/dflxpcdxz/image/upload/v1730987883/DataPicture/jtj1vu4bzsb9vsv6gpy6.jpg",
+//     "https://res.cloudinary.com/dflxpcdxz/image/upload/v1730987883/DataPicture/jtj1vu4bzsb9vsv6gpy6.jpg",
+//     "https://res.cloudinary.com/dflxpcdxz/image/upload/v1730987883/DataPicture/jtj1vu4bzsb9vsv6gpy6.jpg",
+//   ];
 
-//   // Hàm lấy dữ liệu từ API
-//   const fetchDataFromAPI = async () => {
+//   const imageLists = [
+//     {
+//       title: "Lời trích về cuộc sống",
+//       images: [
+//         "https://res.cloudinary.com/dflxpcdxz/image/upload/v1730987883/DataPicture/jtj1vu4bzsb9vsv6gpy6.jpg",
+//         "https://res.cloudinary.com/dflxpcdxz/image/upload/v1730987883/DataPicture/jtj1vu4bzsb9vsv6gpy6.jpg",
+//         "https://res.cloudinary.com/dflxpcdxz/image/upload/v1730987883/DataPicture/jtj1vu4bzsb9vsv6gpy6.jpg",
+//       ],
+//     },
+//     {
+//       title: "Hình về cute",
+//       images: [
+//         "https://res.cloudinary.com/dflxpcdxz/image/upload/v1730987883/DataPicture/jtj1vu4bzsb9vsv6gpy6.jpg",
+
+//         "https://res.cloudinary.com/dflxpcdxz/image/upload/v1730987883/DataPicture/jtj1vu4bzsb9vsv6gpy6.jpg",
+
+//         "https://res.cloudinary.com/dflxpcdxz/image/upload/v1730987883/DataPicture/jtj1vu4bzsb9vsv6gpy6.jpg",
+//       ],
+//     },
+//     {
+//       title: "Avatar đôi",
+//       images: [
+//         "https://res.cloudinary.com/dflxpcdxz/image/upload/v1730987883/DataPicture/jtj1vu4bzsb9vsv6gpy6.jpg",
+//         "https://res.cloudinary.com/dflxpcdxz/image/upload/v1730987883/DataPicture/jtj1vu4bzsb9vsv6gpy6.jpg",
+//         "https://res.cloudinary.com/dflxpcdxz/image/upload/v1730987883/DataPicture/jtj1vu4bzsb9vsv6gpy6.jpg",
+//       ],
+//     },
+//     {
+//       title: "Ảnh bầu trời đêm",
+//       images: [
+//         "https://res.cloudinary.com/dflxpcdxz/image/upload/v1730987883/DataPicture/jtj1vu4bzsb9vsv6gpy6.jpg",
+//         "https://res.cloudinary.com/dflxpcdxz/image/upload/v1730987883/DataPicture/jtj1vu4bzsb9vsv6gpy6.jpg",
+//         "https://res.cloudinary.com/dflxpcdxz/image/upload/v1730987883/DataPicture/jtj1vu4bzsb9vsv6gpy6.jpg",
+//       ],
+//     },
+//   ];
+
+//   // Fetch history text
+//   useEffect(() => {
+//     const fetchHistoryText = async () => {
+//       if (!userId) return;
+
+//       try {
+//         const { data } = await axios.get(
+//           `${BASE_URL}:5000/user/getUserHistory/${userId}`
+//         );
+//         setListHistoryText(data.historyText || []);
+//       } catch (err) {
+//         console.error("API Error:", err.message || "Unknown error");
+//       }
+//     };
+
+//     fetchHistoryText();
+//   }, [userId]);
+
+//   // Handle delete history text
+//   const handleDeleteHistoryText = async (text) => {
 //     try {
-//       const response = await fetch(`${BASE_URL}:5000/picture/getUserImages?userId=${userId}`);
-//       const data = await response.json();
-//       const imagesWithSize = await convertDataWithSize(data);
-//       setImages(imagesWithSize);
-//       setFilteredImages(imagesWithSize);
-//     } catch (error) {
-//       console.error("Error fetching images:", error);
+//       const { data } = await axios.delete(
+//         `${BASE_URL}:5000/user/deleteHistoryText`,
+//         {
+//           data: { id: userId, text },
+//         }
+//       );
+//       setListHistoryText(data.historyText || []);
+//     } catch (err) {
+//       console.error(
+//         "Error deleting history text:",
+//         err.message || "Unknown error"
+//       );
 //     }
 //   };
 
-//   useEffect(() => {
-//     fetchDataFromAPI();
-//   }, [userId]);
+//   // Handle direct search for history text
+//   const handleDirectSearch = async (text) => {
+//     setSearchText(text);
+//     setIsLoading(true);
+//     setCurrentView("results");
 
-//   // Tạo dữ liệu từng cột cho hiệu ứng masonry
-//   const generateColumns = (data) => {
-//     const columns = Array.from({ length: COLUMN_COUNT }, () => []);
-//     data.forEach((item, index) => {
-//       const columnIndex = index % COLUMN_COUNT;
-//       columns[columnIndex].push(item);
-//     });
-//     return columns;
+//     try {
+//       // Gọi API tìm kiếm với text
+//       const response = await axios.post(`${BASE_URL}:5001/api/search_image`, {
+//         keyword: text,
+//       });
+
+//       const fetchedImages = response.data.best_image_urls;
+//       if (fetchedImages.length > 0) {
+//         setImages(await convertDataWithSize(fetchedImages));
+//         setNoResults(false);
+//       } else {
+//         setImages([]);
+//         setNoResults(true);
+//       }
+//     } catch (err) {
+//       console.error("Error fetching images:", err.message || "Unknown error");
+//       setImages([]);
+//       setNoResults(true);
+//     } finally {
+//       setIsLoading(false);
+//     }
 //   };
 
-//   // Render từng cột
-//   const renderColumn = (columnData, columnIndex) => (
-//     <View
-//       key={`column-${columnIndex}`}
-//       style={{ flex: 1, marginHorizontal: SPACING / 2 }}
-//     >
-//       {columnData.map((item, index) => {
-//         const imageHeight = (item.height / item.width) * columnWidth;
+//   // Handle search and add history
+//   const handleSearch = async () => {
+//     if (!searchText.trim()) return;
 
-//         return (
-//           <View
-//             key={`${item._id || "undefined"}-${index}`}
-//             style={styles.imageContainer}
-//           >
-//             <TouchableOpacity
-//               onPress={() =>
-//                 navigation.navigate("ImageDetailScreen", {
-//                   dataAnh: item,
-//                 })
-//               }
-//             >
-//               <Image
-//                 source={{ uri: item.uri }}
-//                 style={{
-//                   width: columnWidth,
-//                   height: imageHeight,
-//                   borderRadius: 15,
-//                   resizeMode: "cover",
-//                 }}
-//               />
-//             </TouchableOpacity>
-//           </View>
-//         );
-//       })}
-//     </View>
-//   );
+//     setIsLoading(true);
+//     setCurrentView("results");
+
+//     try {
+//       // Thêm từ khóa vào lịch sử
+//       await axios.post(`${BASE_URL}:5000/user/addHistoryText`, {
+//         id: userId,
+//         text: searchText,
+//       });
+
+//       // Gọi API tìm kiếm
+//       const response = await axios.post(`${BASE_URL}:5001/api/search_image`, {
+//         keyword: searchText,
+//       });
+
+//       const fetchedImages = response.data.best_image_urls;
+//       if (fetchedImages.length > 0) {
+//         setImages(await convertDataWithSize(fetchedImages));
+//         setNoResults(false);
+//       } else {
+//         setImages([]);
+//         setNoResults(true);
+//       }
+
+//       // Cập nhật lịch sử
+//       const { data } = await axios.get(
+//         `${BASE_URL}:5000/user/getUserHistory/${userId}`
+//       );
+//       setListHistoryText(data.historyText || []);
+//     } catch (err) {
+//       console.error("Error searching:", err.message || "Unknown error");
+//     } finally {
+//       setIsLoading(false);
+//     }
+//   };
+
+//   const renderHistoryText = () => {
+//     return listHistoryText.map((text, index) => (
+//       <View style={styles.historyRow} key={`${text}-${index}`}>
+//         {/* Icon tìm kiếm và nội dung */}
+//         <TouchableOpacity
+//           style={styles.historyItem}
+//           onPress={() => handleDirectSearch(text)} // Tìm kiếm trực tiếp
+//         >
+//           <Image
+//             source={require("../../Icon/search.png")}
+//             style={styles.iconSearch}
+//           />
+//           <Text style={styles.historyText}>{text}</Text>
+//         </TouchableOpacity>
+
+//         {/* Icon xóa */}
+//         <TouchableOpacity onPress={() => handleDeleteHistoryText(text)}>
+//           <Ionicons name="close" size={20} color="#999" />
+//         </TouchableOpacity>
+//       </View>
+//     ));
+//   };
+
+//   const handleCancel = () => {
+//     setCurrentView("default");
+//     setSearchText("");
+//     setImages([]);
+//     setNoResults(false);
+//     Keyboard.dismiss();
+//   };
+
+//   const handleBackToDefault = () => {
+//     setCurrentView("default");
+//     setSearchText("");
+//     setImages([]);
+//     setNoResults(false);
+//   };
+
+//   useEffect(() => {
+//     const interval = setInterval(() => {
+//       if (bannerRef.current) {
+//         const nextIndex = (currentBannerIndex + 1) % bannerImages.length; // Chuyển sang ảnh tiếp theo hoặc quay lại đầu
+//         bannerRef.current.scrollToIndex({ index: nextIndex });
+//         setCurrentBannerIndex(nextIndex);
+//       }
+//     }, 5000);
+  
+//     return () => clearInterval(interval); // Xóa interval khi component bị hủy
+//   }, [currentBannerIndex]);
+  
+
+//   // Hàm xử lý khi lướt banner thủ công
+//   const handleBannerScroll = (event) => {
+//     if (!event.nativeEvent || !event.nativeEvent.contentOffset) {
+//       console.error("Event or contentOffset is undefined");
+//       return;
+//     }
+  
+//     const scrollPosition = event.nativeEvent.contentOffset.x;
+//     const currentIndex = Math.floor(scrollPosition / width);
+  
+//     // Nếu đến ảnh cuối cùng thì quay lại đầu
+//     if (currentIndex === bannerImages.length - 1) {
+//       setTimeout(() => {
+//         bannerRef.current.scrollToIndex({ index: 0, animated: false });
+//         setCurrentBannerIndex(0);
+//       }, 300);
+//     } else if (currentIndex === 0 && currentBannerIndex === bannerImages.length - 1) {
+//       // Nếu đang từ cuối lướt ngược về đầu
+//       setTimeout(() => {
+//         bannerRef.current.scrollToIndex({ index: bannerImages.length - 1, animated: false });
+//         setCurrentBannerIndex(bannerImages.length - 1);
+//       }, 300);
+//     } else {
+//       setCurrentBannerIndex(currentIndex);
+//     }
+//   };
+  
 
 //   return (
 //     <View style={styles.container}>
-//       <StatusBar hidden={false} />
 //       <View style={styles.header}>
-//         <TouchableOpacity onPress={() => navigation.navigate("AccountSetting")}>
-//           <Image source={{ uri: avatar }} style={styles.profileImage} />
-//         </TouchableOpacity>
-//         <Text style={styles.headerTitle}>Ghim</Text>
-//       </View>
-//       <View style={styles.body}>
-//         <FlatList
-//           data={generateColumns(filteredImages)}
-//           renderItem={({ item, index }) => renderColumn(item, index)}
-//           keyExtractor={(item, index) => `column-${index}`}
-//           horizontal={false}
-//           numColumns={COLUMN_COUNT}
-//           contentContainerStyle={{
-//             padding: SPACING,
-//             paddingBottom: 20,
-//           }}
-//           showsVerticalScrollIndicator={false}
+//         {currentView === "results" && (
+//           <TouchableOpacity
+//             onPress={handleBackToDefault}
+//             style={styles.backButton}
+//           >
+//             <Ionicons name="arrow-back" size={24} color="#007AFF" />
+//           </TouchableOpacity>
+//         )}
+//         <TextInput
+//           style={styles.searchBar}
+//           placeholder="Tìm kiếm ý tưởng"
+//           value={searchText}
+//           onFocus={() => setCurrentView("searching")}
+//           onChangeText={(text) => setSearchText(text)}
+//           onSubmitEditing={handleSearch}
+//           returnKeyType="search"
 //         />
+//         {currentView === "searching" && (
+//           <TouchableOpacity onPress={handleCancel} style={styles.cancelButton}>
+//             <Text style={styles.cancelText}>Hủy</Text>
+//           </TouchableOpacity>
+//         )}
 //       </View>
-//       <Footer navigation={navigation} avatar={avatar} namePage={"Trang Ghim"} />
+
+//       <View style={styles.body}>
+//         {currentView === "default" && (
+//           <ScrollView>
+//             {/* Banner tự động trượt */}
+//             <View style={styles.bannerContainer}>
+//               <FlatList
+//                 data={bannerImages}
+//                 horizontal
+//                 pagingEnabled
+//                 showsHorizontalScrollIndicator={false}
+//                 renderItem={({ item }) => (
+//                   <Image source={{ uri: item }} style={styles.bannerImage} />
+//                 )}
+//                 keyExtractor={(item, index) => index.toString()}
+//                 onMomentumScrollEnd={handleBannerScroll} // Lắng nghe sự kiện cuộn hoàn thành
+//                 ref={(ref) => (bannerRef.current = ref)} // Lưu tham chiếu FlatList để điều khiển cuộn
+//               />
+
+//               {/* Chấm tròn chỉ số banner */}
+//               <View style={styles.dotContainer}>
+//                 {bannerImages.map((_, index) => (
+//                   <View
+//                     key={index}
+//                     style={[
+//                       styles.dot,
+//                       {
+//                         backgroundColor:
+//                           currentBannerIndex === index ? "#333" : "#ccc",
+//                       },
+//                     ]}
+//                   />
+//                 ))}
+//               </View>
+//             </View>
+
+//             {/* Danh sách ảnh */}
+//             <View>
+//               {imageLists.map((list, index) => (
+//                 <View key={index} style={styles.listContainer}>
+//                   <View style={styles.listHeader}>
+//                     <Text style={styles.listTitle}>{list.title}</Text>
+//                     <TouchableOpacity>
+//                       <Text style={styles.seeMore}>Xem thêm</Text>
+//                     </TouchableOpacity>
+//                   </View>
+//                   <FlatList
+//                     data={list.images}
+//                     horizontal
+//                     showsHorizontalScrollIndicator={false}
+//                     renderItem={({ item }) => (
+//                       <Image source={{ uri: item }} style={styles.listImage} />
+//                     )}
+//                     keyExtractor={(item, idx) => `${index}-${idx}`}
+//                   />
+//                 </View>
+//               ))}
+//             </View>
+//           </ScrollView>
+//         )}
+//         {currentView === "searching" && (
+//           <ScrollView>{renderHistoryText()}</ScrollView>
+//         )}
+//         {currentView === "results" && (
+//           <>
+//             {isLoading ? (
+//               <ActivityIndicator size="large" color="#007AFF" />
+//             ) : noResults ? (
+//               <Text style={styles.noResultsText}>Không có ảnh nào.</Text>
+//             ) : (
+//               <View style={styles.imageList}>
+//                 <MasonryList
+//                   key={images.length}
+//                   images={images.map((item) => ({
+//                     source: { uri: item.uri },
+//                     width: (item.width * columnWidth * 2) / item.width,
+//                     height: (item.height * columnWidth * 2) / item.width,
+//                   }))}
+//                   columns={COLUMN_COUNT}
+//                   spacing={SPACING}
+//                   imageContainerStyle={styles.imageStyle}
+//                 />
+//               </View>
+//             )}
+//           </>
+//         )}
+//       </View>
+
+//       <Footer
+//         navigation={navigation}
+//         avatar={avatar}
+//         initialSelectedIcon={"Search"}
+//         namePage={"Trang tìm kiếm"}
+//       />
 //     </View>
 //   );
 // };
 
-// export default InfoScreen;
+// export default Search;

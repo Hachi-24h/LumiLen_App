@@ -1,5 +1,5 @@
 import { StyleSheet, Dimensions } from "react-native";
-
+import colors from "../Custom/Color";
 const { width, height } = Dimensions.get("window");
 
 const styles = StyleSheet.create({
@@ -165,6 +165,41 @@ const styles = StyleSheet.create({
     marginHorizontal: 10,
     backgroundColor: "#f0f0f0",
   },
+
+  // danh sách user
+  userItem: {
+      width: width * 0.9,
+      height:height * 0.1,
+      flexDirection: "row",
+  },
+  imageContainer :{
+    width: width * 0.1,
+    height: width * 0.1,    
+    justifyContent: "center",
+    alignItems: "center",
+    margin:width * 0.05,
+  },
+  imageStyle: {
+    width: width * 0.1,
+    height: width * 0.1,
+    borderRadius: width * 0.05,
+  },
+  userInfo:{
+    width: width * 0.6,
+    height: height * 0.1,
+    justifyContent: "center",
+    alignItems: "flex-start",
+    marginTop:height * 0.005,
+  },
+  userName:{
+    fontSize:height*0.02,
+    fontWeight: "bold",
+    color: colors.black,
+  },
+  userID:{
+    fontSize:height*0.015,
+    color: colors.darkgray,
+  }
 });
 
 export default styles;

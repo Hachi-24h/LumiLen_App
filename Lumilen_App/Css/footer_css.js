@@ -37,5 +37,65 @@ const styles = StyleSheet.create({
     alignItems: "center",
     justifyContent: "center",
   },
+  modalContainer: {
+    flex: 1,
+    justifyContent: "flex-end",
+    backgroundColor: "rgba(0, 0, 0, 0.5)",
+  },
+
+  createModalContent: {
+    backgroundColor:colors.white,
+    borderTopLeftRadius: height * 0.05,
+    borderTopRightRadius: height * 0.05,
+    padding: height * 0.02,
+    alignItems: "center",
+  },
+  buttoncancel :{
+    flexDirection: "row",
+    justifyContent: "flex-start",
+    width: width * 0.9,
+    height: height * 0.06,
+  },
+  closeButton: {
+    alignItems: "center",
+   
+  },
+  createModalTitle: {
+    fontSize: height * 0.025,
+    fontWeight: "bold",
+    height: height * 0.06,
+    width: width * 0.9,
+    alignItems: "center",
+    textAlign: "center",
+    paddingRight: width * 0.1,
+  },
+  createOptions: {
+    flexDirection: "row",
+    justifyContent: "space-around",
+    width: width * 0.5,
+  },
+  optionButton: {
+    alignItems: "center",
+    backgroundColor: "#ddd",
+    width: width * 0.2,
+    height: height * 0.1,
+    borderRadius: width * 0.05,
+    justifyContent: "center",
+  },
+  optionIcon: {
+    width: height * 0.04,
+    height: height * 0.04,
+  },
+  optionText: {
+    fontSize: height * 0.02,
+    color: colors.black,
+    fontWeight: "bold",
+    marginVertical: height * 0.015,
+  },
+  emptyMessageContainer: {
+    flex: 1,
+    justifyContent: "center",
+    alignItems: "center",
+  },
 });
 export default styles;

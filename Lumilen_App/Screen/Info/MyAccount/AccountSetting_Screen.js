@@ -40,7 +40,7 @@ const AccountScreen = ({ navigation, route }) => {
           text: "Đăng xuất",
           onPress: async () => {
             try {
-              // Điều hướng đến màn hình SignUp và không cho phép quay lại
+            
               navigation.reset({
                 index: 0, // Đặt lại index của stack navigation
                 routes: [{ name: "SignUp" }], // Chỉ định màn hình mới là SignUp

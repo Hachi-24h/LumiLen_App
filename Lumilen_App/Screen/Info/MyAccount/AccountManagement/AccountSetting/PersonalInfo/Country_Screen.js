@@ -1,4 +1,4 @@
-// CountrySelection.js
+
 import React from 'react';
 import { View, Text, FlatList, SafeAreaView ,StatusBar,TouchableOpacity} from 'react-native';
 import { styles } from '../../../Css/Country_Css'; // Import file styles riêng biệt

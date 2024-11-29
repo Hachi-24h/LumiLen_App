@@ -1,13 +1,15 @@
-import React, { useState, useEffect } from "react";
-import { View, TouchableOpacity, Image } from "react-native";
+import React, { useState, useEffect , useContext} from "react";
+import { View, TouchableOpacity, Image ,Modal ,Text, TouchableWithoutFeedback} from "react-native";
 import styles from "../../Css/footer_css";
-
+import { UserContext } from "../../Hook/UserContext";
 const Footer = ({ navigation, avatar, initialSelectedIcon, namePage }) => {
   const [selectedIcon, setSelectedIcon] = useState(
     initialSelectedIcon || "HomeTabs"
   );
+  const { userData } = useContext(UserContext);
+  const userId = userData ? userData._id : null;
   const [styleName, setStyleName] = useState(styles.Touch_unselected);
-
+  const [isCreateModalVisible, setCreateModalVisible] = useState(false);
   const handleIconPress = (iconName) => {
     if (iconName === "account") {
       if (selectedIcon === "account") {
@@ -60,7 +62,7 @@ const Footer = ({ navigation, avatar, initialSelectedIcon, namePage }) => {
       </TouchableOpacity>
 
       {/* Plus Icon */}
-      <TouchableOpacity onPress={() => handleIconPress("Search")}>
+      <TouchableOpacity onPress={() => {setCreateModalVisible(true)}}>
         <Image
           source={
             selectedIcon === "plus"
@@ -100,6 +102,63 @@ const Footer = ({ navigation, avatar, initialSelectedIcon, namePage }) => {
           style={styles.imgIcon}
         />
       </TouchableOpacity>
+      <Modal
+          visible={isCreateModalVisible}
+          animationType="slide"
+          transparent={true}
+          onRequestClose={() => setCreateModalVisible(false)}
+        >
+          <TouchableWithoutFeedback
+            onPress={() => setCreateModalVisible(false)}
+          >
+            <View style={styles.modalContainer}>
+              <View style={styles.createModalContent}>
+                <View style={styles.buttoncancel}>
+                  <TouchableOpacity
+                    onPress={() => setCreateModalVisible(false)}
+                    style={styles.closeButton}
+                  >
+                    <Image
+                      source={require("../../Icon/cancel.png")}
+                      style={styles.optionIcon}
+                    />
+                  </TouchableOpacity>
+                  <Text style={styles.createModalTitle}>Bắt đầu tạo ngay</Text>
+                </View>
+                <View style={styles.createOptions}>
+                  <View style={{ marginBottom: 20, alignItems: "center" }}>
+                    <TouchableOpacity
+                      style={styles.optionButton}
+                      onPress={() =>
+                        navigation.navigate(
+                          "AddGhim",
+                          { userId },
+                          setCreateModalVisible(false)
+                        )
+                      }
+                    >
+                      <Image
+                        source={require("../../Icon/upload.png")}
+                        style={styles.optionIcon}
+                      />
+                    </TouchableOpacity>
+                    <Text style={styles.optionText}>Ghim</Text>
+                  </View>
+
+                  <View style={{ marginBottom: 20, alignItems: "center" }}>
+                    <TouchableOpacity style={styles.optionButton}>
+                      <Image
+                        source={require("../../Icon/abum.png")}
+                        style={styles.optionIcon}
+                      />
+                    </TouchableOpacity>
+                    <Text style={styles.optionText}>Bảng</Text>
+                  </View>
+                </View>
+              </View>
+            </View>
+          </TouchableWithoutFeedback>
+        </Modal>
     </View>
   );
 };

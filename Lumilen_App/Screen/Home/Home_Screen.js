@@ -6,19 +6,23 @@ import {
   FlatList,
   TouchableOpacity,
   Dimensions,
-  TextInput,
   StatusBar,
-  Platform
+  Modal,
+  StyleSheet,
+  Alert,
+  TextInput,
+  ActivityIndicator,
 } from "react-native";
 import Footer from "../footer";
 import styles from "../../Css/Home_Css";
 import { UserContext } from "../../Hook/UserContext";
 import BASE_URL from "../../IpAdress";
 import { convertDataWithSize } from "../../Hook/imageUtils";
-import * as FileSystem from "expo-file-system";
 import { Ionicons } from "@expo/vector-icons";
-import { Alert } from "react-native";
+import * as FileSystem from "expo-file-system";
 import * as MediaLibrary from "expo-media-library";
+import axios from "axios";
+
 
 const { width } = Dimensions.get("window");
 const COLUMN_COUNT = 2; // Số cột
@@ -30,7 +34,15 @@ const HomeTabs = ({ navigation }) => {
   const avatar = userData ? userData.avatar : null;
   const [images, setImages] = useState([]); // Danh sách ảnh đầy đủ
   const [filteredImages, setFilteredImages] = useState([]); // Danh sách ảnh được lọc
+  const [selectedItem, setSelectedItem] = useState(null); // Lưu ảnh được chọn
+  const [isModalGhim, setModalGhim] = useState(false); // Trạng thái của Modal
+  const [isPinModalVisible, setPinModalVisible] = useState(false); // Trạng thái của modal ghim ảnh
+  const [pinTitle, setPinTitle] = useState(""); // Khai báo pinTitle để lưu giá trị tiêu đề ghim
+  const [isModalBang, setModalBang] = useState(false); // Modal chọn bảng
+  const [boards, setBoards] = useState([]); // Danh sách bảng
+  const [loading, setLoading] = useState(true); // Trạng thái tải API
 
+  const userId = userData ? userData._id : null; // Lấy userId từ dữ liệu người dùng
   // Hàm lấy dữ liệu từ API
   const fetchDataFromAPI = async () => {
     try {
@@ -83,6 +95,22 @@ const HomeTabs = ({ navigation }) => {
     fetchAndConvertImages();
   }, []);
 
+  useEffect(() => {
+    const fetchBoards = async () => {
+      try {
+        const response = await axios.get(
+          `${BASE_URL}:5000/tableUser/getTableUsers/${userId}`
+        );
+        setBoards(response.data);
+        setLoading(false);
+      } catch (error) {
+        console.error("Lỗi khi tải dữ liệu bảng:", error);
+        setLoading(false);
+      }
+    };
+
+    fetchBoards();
+  }, []);
   // Tạo dữ liệu từng cột để tạo hiệu ứng masonry
   const generateColumns = (data) => {
     const columns = Array.from({ length: COLUMN_COUNT }, () => []); // Tạo mảng số cột
@@ -93,75 +121,110 @@ const HomeTabs = ({ navigation }) => {
     return columns;
   };
 
-  const handleMoreOptions = (item) => {
-    Alert.alert(
-      "Chọn hành động",
-      null,
-      [
-        { text: "Tải xuống", onPress: () => handleDownload(item) },
-        { text: "Ghim", onPress: () => handlePin(item) },
-        { text: "Hủy", style: "cancel" },
-      ],
-      { cancelable: true }
-    );
-  };
-
-  const handleDownload = async (item) => {
+  const handleDownloadImage = async (uri) => {
     try {
-      // Kiểm tra quyền truy cập MediaLibrary
+      // Yêu cầu quyền truy cập MediaLibrary
       const { status } = await MediaLibrary.requestPermissionsAsync();
       if (status !== "granted") {
-        Alert.alert("Lỗi!", "Bạn cần cấp quyền truy cập thư viện để tải ảnh.");
+        Alert.alert(
+          "Cấp quyền",
+          "Bạn cần cấp quyền truy cập để tải ảnh xuống."
+        );
         return;
       }
-  
-      // Tải ảnh về thư mục tạm
-      const fileUri =
-        FileSystem.cacheDirectory + `${item.title.replace(/\s+/g, "_")}.jpg`;
-  
+
+      // Đường dẫn tạm thời để lưu file
+      const fileUri = FileSystem.cacheDirectory + uri.split("/").pop();
+
+      // Tải ảnh từ URI và lưu vào file tạm
       const downloadResumable = FileSystem.createDownloadResumable(
-        item.uri,
+        uri,
         fileUri
       );
-      const { uri } = await downloadResumable.downloadAsync();
-  
-      // Lưu ảnh vào thư mục `Download`
-      const asset = await MediaLibrary.createAssetAsync(uri);
+      const { uri: tempUri } = await downloadResumable.downloadAsync();
+
+      // Lưu file từ thư mục tạm vào thư mục `Download`
+      const asset = await MediaLibrary.createAssetAsync(tempUri);
       const album = await MediaLibrary.getAlbumAsync("Download");
-      if (album == null) {
+      if (album === null) {
         await MediaLibrary.createAlbumAsync("Download", asset, false);
       } else {
         await MediaLibrary.addAssetsToAlbumAsync([asset], album, false);
       }
-  
-      Alert.alert("Tải xuống thành công!", `Ảnh đã lưu vào thư mục Download.`);
+
+      Alert.alert("Thành công", "Ảnh đã được tải xuống thư mục Download!");
     } catch (error) {
-      Alert.alert("Tải xuống thất bại!", error.message);
-      console.error(error);
+      console.error("Lỗi khi tải ảnh:", error);
+      Alert.alert("Lỗi", "Không thể tải xuống ảnh.");
     }
   };
-  
 
-  const handlePin = async (item) => {
-    try {
-      const response = await fetch(`${BASE_URL}:5000/user/addPictureToListAnhGhim/${userData._id}`, {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ pictureId: item._id }),
-      });
-  
-      if (response.ok) {
-        Alert.alert("Thành công!", "Ảnh đã được ghim.");
-      } else {
-        const errorData = await response.json();
-        Alert.alert("Lỗi!", errorData.message || "Không thể ghim ảnh.");
-      }
-    } catch (error) {
-      Alert.alert("Lỗi!", error.message);
+// Hàm xử lý khi bấm vào ba chấm
+const handleMoreOptions = (item) => {
+  setSelectedItem(item); // Gán giá trị selectedItem khi bấm vào ảnh
+  setModalGhim(true); // Mở modal
+};
+
+  const handleBoardSelection = () => {
+    setModalBang(true);
+    setModalGhim(false);
+  };
+ // Hàm xử lý lưu ảnh vào bảng và Ghim
+const handleBoard = async (selectedBoard) => {
+  try {
+    // Kiểm tra xem đã chọn ảnh và bảng chưa
+    if (!selectedItem || !selectedItem._id) {
+      Alert.alert("Lỗi", "Vui lòng chọn ảnh trước khi ghim.");
+      return;
     }
-  };  
 
-  // Hàm render từng cột
+    if (!selectedBoard || !selectedBoard._id) {
+      Alert.alert("Lỗi", "Vui lòng chọn một bảng.");
+      return;
+    }
+
+    setModalBang(false);
+    setPinModalVisible(true);
+
+    console.log("Selected Item ID: ", selectedItem._id); // Kiểm tra ID ảnh
+    console.log("Selected Board ID: ", selectedBoard._id); // Kiểm tra ID bảng
+    console.log("User ID: ", userId);
+
+    // Gửi yêu cầu lưu ảnh vào bảng
+    const response = await axios.post(
+      `${BASE_URL}:5000/picture/addPictureToTableUser`,
+      {
+        tableUserId: selectedBoard._id, // Chắc chắn bảng đã chọn có ID hợp lệ
+        pictureId: selectedItem._id,    // Chắc chắn ảnh đã chọn có ID hợp lệ
+        userId: userId,
+      }
+    );
+
+    if (response.status === 200) {
+      Alert.alert("Thành công", "Ảnh đã được lưu vào bảng!");
+    } else {
+      Alert.alert("Lỗi", "Không thể lưu ảnh vào bảng.");
+    }
+
+    // Lưu ảnh vào Ghim
+    const pinResponse = await axios.post(
+      `${BASE_URL}:5000/picture/addPicture`,
+      {
+        uri: selectedItem.uri,
+        title: selectedItem.title,
+        userId: userId,
+      }
+    );
+
+    if (pinResponse.status === 200) {
+      Alert.alert("Thành công", "Ảnh đã được lưu vào Ghim!");
+    }
+  } catch (error) {
+    console.error("Lỗi khi lưu ảnh vào bảng hoặc Ghim:", error.response || error);
+    Alert.alert("Lỗi", "Có lỗi xảy ra khi lưu ảnh vào bảng hoặc Ghim.");
+  }
+};
+  
   const renderColumn = (columnData, columnIndex) => {
     return (
       <View
@@ -173,17 +236,14 @@ const HomeTabs = ({ navigation }) => {
 
           return (
             <View
-              key={`${item._id || "undefined"}-${index}`}
+              key={item._id || `${columnIndex}-${index}`} // Đảm bảo key là duy nhất
               style={styles.imageContainer}
             >
               <TouchableOpacity
                 onPress={() =>
-                  navigation.navigate("ImageDetailScreen", {
-                    dataAnh: item,
-                  })
+                  navigation.navigate("ImageDetailScreen", { dataAnh: item })
                 }
               >
-                {/* Ảnh */}
                 <Image
                   source={{ uri: item.uri }}
                   style={{
@@ -195,20 +255,16 @@ const HomeTabs = ({ navigation }) => {
                 />
               </TouchableOpacity>
 
-              {/* Footer bên dưới ảnh */}
               <View style={styles.footerContainer}>
-                {/* Avatar */}
                 <Image
                   source={{
-                    uri: item.avatar || "https://via.placeholder.com/150", // Avatar của người đăng ảnh
+                    uri: item.avatar || "https://via.placeholder.com/150",
                   }}
                   style={styles.footerIcon}
                 />
-                {/* Tiêu đề */}
                 <Text style={styles.footerText} numberOfLines={1}>
                   {item.title || "Không có tiêu đề"}
                 </Text>
-                {/* Nút 3 chấm */}
                 <TouchableOpacity
                   style={styles.moreButton}
                   onPress={() => handleMoreOptions(item)}
@@ -251,6 +307,86 @@ const HomeTabs = ({ navigation }) => {
         initialSelectedIcon={"HomeTabs"}
         namePage={"Trang Home"}
       />
+
+      {/* Modal khi bấm vào ba chấm */}
+      {selectedItem && (
+        <Modal
+          visible={isModalGhim}
+          transparent={true}
+          animationType="slide"
+          onRequestClose={() => setModalGhim(false)}
+        >
+          <View style={styles.modalContainer}>
+            <View style={styles.modalContent}>
+              <Image
+                source={{ uri: selectedItem.avatar }}
+                style={styles.avatar}
+              />
+              <TouchableOpacity
+                style={styles.actionButton}
+                onPress={handleBoardSelection}
+              >
+                <Text style={styles.actionText}>Ghim</Text>
+              </TouchableOpacity>
+              <TouchableOpacity
+                style={styles.actionButton}
+                onPress={() => handleDownloadImage(selectedItem.uri)}
+              >
+                <Text style={styles.actionText}>Tải xuống</Text>
+              </TouchableOpacity>
+              <TouchableOpacity
+                style={styles.closeButtonTxt}
+                onPress={() => setModalGhim(false)}
+              >
+                <Text style={styles.closeButtonText}>Đóng</Text>
+              </TouchableOpacity>
+            </View>
+          </View>
+        </Modal>
+      )}
+
+      {/* Modal chọn bảng */}
+      <Modal visible={isModalBang} animationType="slide" transparent={true}>
+        <TouchableOpacity
+          style={styles.modalOverlay}
+          activeOpacity={1}
+          onPressOut={() => setModalBang(false)}
+        >
+          <View style={styles.modalContent}>
+            <Text style={styles.modalTitle}>Lưu vào bảng</Text>
+            {loading ? (
+              <ActivityIndicator size="large" color="#000" />
+            ) : (
+              <FlatList
+                data={boards}
+                keyExtractor={(item) => item._id}
+                renderItem={({ item }) => (
+                  <TouchableOpacity
+                    style={styles.boardItem}
+                    onPress={() => handleBoard(item.name)}
+                  >
+                    <Image
+                      source={
+                        item.uri
+                          ? { uri: item.uri }
+                          : require("./../../Picture/defaulttableuser.jpg")
+                      }
+                      style={styles.boardImage}
+                    />
+                    <Text style={styles.boardName}>{item.name}</Text>
+                    {item.statusTab === "block" && (
+                      <Image
+                        source={require("./../../Icon/lock.png")}
+                        style={styles.lockIcon}
+                      />
+                    )}
+                  </TouchableOpacity>
+                )}
+              />
+            )}
+          </View>
+        </TouchableOpacity>
+      </Modal>
     </View>
   );
 };

@@ -70,34 +70,37 @@ router.get('/getUserImages', async (req, res) => {
 });
 
 // Route để thêm một Picture mới
+// Hàm thêm ảnh vào Ghim
 router.post('/addPicture', async (req, res) => {
     try {
-        // Lấy dữ liệu từ req.body
-        const { uri, title, id, typePicture } = req.body;
+        const { uri, title, userId } = req.body;
 
-        // Kiểm tra các trường bắt buộc
-        if (!uri || !id) {
-            return res.status(400).json({ message: "uri và id là bắt buộc." });
+        // Kiểm tra ID
+        if (!mongoose.Types.ObjectId.isValid(userId)) {
+            return res.status(400).json({ message: "Invalid userId format." });
         }
 
         // Tạo một Picture mới
         const newPicture = new Picture({
             uri,
             title,
-            id,
-            typePicture
+            id: userId,
         });
 
         // Lưu Picture vào cơ sở dữ liệu
         const savedPicture = await newPicture.save();
 
-        // Trả về kết quả
-        res.status(200).json({ message: "Picture added successfully", picture: savedPicture });
+        // Thêm ảnh vào ListAnhGhim của User
+        const user = await User.findById(userId);
+        user.ListAnhGhim.push(savedPicture._id);
+        await user.save();
+
+        res.status(200).json({ message: "Picture added to Ghim successfully.", picture: savedPicture });
     } catch (error) {
+        console.error("Error adding picture to Ghim:", error);
         res.status(500).json({ message: error.message });
     }
 });
-
 
 // Hàm tìm ảnh theo id
 // http://172.21.80.105:5000/picture/getPictureById/6728e2c2893cc88bd98fd342
@@ -143,55 +146,56 @@ router.delete('/deletePicture', async (req, res) => {
     }
 });
 
-
-// Hàm thêm ảnh mới vào Picture và liên kết với User
+// Hàm thêm ảnh vào TableUser và Ghim
+// Hàm thêm ảnh vào bảng
 router.post('/addPictureToTableUser', async (req, res) => {
     try {
-        const { userId, tableUserId, pictureId } = req.body;
+        const { tableUserId, pictureId, userId } = req.body;
 
-       
-
-        if (!mongoose.Types.ObjectId.isValid(userId) || 
-            !mongoose.Types.ObjectId.isValid(tableUserId) || 
-            !mongoose.Types.ObjectId.isValid(pictureId)) {
+        // Kiểm tra các ID
+        if (!mongoose.Types.ObjectId.isValid(tableUserId) || 
+            !mongoose.Types.ObjectId.isValid(pictureId) || 
+            !mongoose.Types.ObjectId.isValid(userId)) {
             return res.status(400).json({ message: "Invalid ID format. Each ID must be a 24-character hex string." });
         }
 
-        // Tìm kiếm User dựa trên userId
-        const user = await User.findById(userId).populate('collectionUser'); // Giả sử `collectionUser` chứa các `tableUserId`
-
+        // Tìm User để đảm bảo tồn tại
+        const user = await User.findById(userId).populate('collectionUser');
         if (!user) {
             return res.status(404).json({ message: "User not found." });
         }
 
         // Kiểm tra xem tableUserId có thuộc User này hay không
-        const tableUserExists = user.collectionUser.some(tableUser => tableUser._id.toString() === tableUserId);
-        if (!tableUserExists) {
+        const tableUser = user.collectionUser.find(table => table._id.toString() === tableUserId);
+        if (!tableUser) {
             return res.status(404).json({ message: "TableUser not found for this user." });
         }
 
-        // Tìm kiếm TableUser dựa trên tableUserId
-        const tableUser = await TableUser.findById(tableUserId);
-        if (!tableUser) {
-            return res.status(404).json({ message: "TableUser not found." });
-        }
+        // In ra để kiểm tra dữ liệu
+        console.log("TableUser:", tableUser);
+        console.log("Picture ID:", pictureId);
+        console.log("List of pictures in table:", tableUser.listAnh);
 
-        // Kiểm tra xem pictureId đã tồn tại trong listAnh của TableUser chưa
-        if (tableUser.listAnh.includes(pictureId)) {
+        // Kiểm tra xem ảnh đã tồn tại trong listAnh của TableUser chưa
+        const isPictureExists = tableUser.listAnh.some((pic) => pic.equals(new mongoose.Types.ObjectId(pictureId))); // Sử dụng `equals()` để so sánh ObjectId
+        if (isPictureExists) {
             return res.status(400).json({ message: "Picture already exists in this TableUser's list." });
         }
 
-        // Thêm pictureId vào listAnh
+        // Thêm pictureId vào listAnh của TableUser
         tableUser.listAnh.push(pictureId);
+        await tableUser.save(); // Lưu vào bảng
 
-        // Lưu thay đổi vào cơ sở dữ liệu
-        await tableUser.save();
+        // Cập nhật lại thông tin bảng trong User nếu cần
+        await user.save();
 
-        res.status(200).json({ message: "Picture added to listAnh successfully.", tableUser });
+        res.status(200).json({ message: "Picture added to table successfully.", tableUser });
     } catch (error) {
+        console.error("Error adding picture to table:", error);
         res.status(500).json({ message: error.message });
     }
 });
+
 
 // Xóa 1 ảnh khỏi listAnh của TableUser
 // {

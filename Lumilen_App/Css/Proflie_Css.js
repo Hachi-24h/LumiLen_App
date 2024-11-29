@@ -73,24 +73,7 @@ export default StyleSheet.create({
     color: '#333',
     fontWeight: 'bold',
   },
-  tabContainer: {
-    marginTop: 25,
-    flexDirection: 'row',
-    justifyContent: 'center',
-    marginBottom: 10,
-  },
-  tab: {
-    paddingVertical: 10,
-    paddingHorizontal: 20,
-  },
-  activeTab: {
-    borderBottomWidth: 2,
-    borderBottomColor: '#000',
-  },
-  tabText: {
-    fontSize: 16,
-    color: '#333',
-  },
+
   pinsContainer: {
     paddingHorizontal: 15,
   },

@@ -207,7 +207,22 @@ router.get('/getTableUserbyUser/:userId/:tableUserId', async (req, res) => {
     }
 });
 
-
+router.get('/getAllTables', async (req, res) => {
+    try {
+      // Tìm tất cả các bảng
+      const tables = await TableUser.find(); 
+  
+      if (!tables.length) {
+        return res.status(404).json({ message: "Không có bảng nào." });
+      }
+  
+      // Trả về dữ liệu các bảng
+      res.status(200).json(tables);
+    } catch (error) {
+      console.error("Lỗi khi lấy dữ liệu bảng:", error);
+      res.status(500).json({ message: "Lỗi khi lấy dữ liệu bảng. Vui lòng thử lại." });
+    }
+  });
 
 
 module.exports = router;

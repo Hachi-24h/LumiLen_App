@@ -1,4 +1,23 @@
 import React, { useEffect } from "react";
+<<<<<<< HEAD
+import { View, Text, Image, TouchableOpacity, ScrollView } from "react-native";
+import { LinearGradient } from "expo-linear-gradient";
+import styles from "../../Css/SignUp_css";
+import useFetch from "../../Hook/useEffetch";
+
+const SignUp = ({ navigation }) => {
+  const { data: dataTest } = useFetch("http://192.168.114.1:5000/User/");
+
+  useEffect(() => {
+    // Ngăn người dùng quay lại màn hình trước đó
+    const unsubscribe = navigation.addListener("beforeRemove", (e) => {
+      e.preventDefault(); // Chặn hành động quay lại
+    });
+
+    // Dọn dẹp listener khi component bị unmount
+    return unsubscribe;
+  }, [navigation]);
+=======
 import { View, Text, Image, TouchableOpacity, Alert, BackHandler } from "react-native";
 import { LinearGradient } from "expo-linear-gradient";
 import styles from "../../Css/SignUp_css";
@@ -36,6 +55,7 @@ const SignUp = ({ navigation }) => {
       BackHandler.removeEventListener("hardwareBackPress", backAction);
     };
   }, []);
+>>>>>>> e9ea54421d64159fd4d4bfe754395aad7cb859fe
 
   return (
     <View style={styles.signUp1}>
@@ -101,7 +121,13 @@ const SignUp = ({ navigation }) => {
               style={styles.buttonBase}
               onPress={() => navigation.navigate("SignUp1")}
             >
+<<<<<<< HEAD
+              <Text style={styles.button}>
+                {dataTest && dataTest.length > 0 ? dataTest[0].name : "Sign Up"}
+              </Text>
+=======
               <Text style={styles.button}>Sign Up</Text>
+>>>>>>> e9ea54421d64159fd4d4bfe754395aad7cb859fe
             </TouchableOpacity>
           </View>
           <View style={styles.buttons1}>

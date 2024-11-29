@@ -4,6 +4,7 @@ const User = require('../../model/User');
 const mongoose = require('mongoose');
 
 
+
 // Check Login  
 router.post("/login", async (req, res) => {
     const { email, password } = req.body;
@@ -114,32 +115,39 @@ router.put('/updateUser/:userId', async (req, res) => {
 });
 
 // Thêm một ảnh vào ListAnhGhim của người dùng
+// Thêm một ảnh vào ListAnhGhim của người dùng
 router.post('/addPictureToListAnhGhim/:userId', async (req, res) => {
-    const { userId } = req.params;
-    const { pictureId } = req.body;
-    console.log("pictureId nhận được:", pictureId); // Kiểm tra giá trị của pictureId
+    const { userId } = req.params;  // Lấy userId từ params
+    const { pictureId } = req.body;  // Lấy pictureId từ body của request
 
+    // Kiểm tra tính hợp lệ của pictureId
     if (!mongoose.Types.ObjectId.isValid(pictureId)) {
         return res.status(400).json({ message: "pictureId không hợp lệ." });
     }
 
     try {
+        // Tìm người dùng với userId
         const user = await User.findById(userId);
         if (!user) {
             return res.status(404).json({ message: "Người dùng không tồn tại." });
         }
 
-        if (!user.ListAnhGhim.includes(pictureId)) {
-            user.ListAnhGhim.push(pictureId);
-            await user.save();
-            return res.status(200).json({ message: "Thêm ảnh vào ListAnhGhim thành công.", user });
-        } else {
+        // Kiểm tra nếu pictureId đã có trong danh sách ListAnhGhim
+        if (user.ListAnhGhim.includes(pictureId)) {
             return res.status(400).json({ message: "Ảnh đã tồn tại trong ListAnhGhim." });
         }
+
+        // Nếu chưa có, thêm ảnh vào ListAnhGhim
+        user.ListAnhGhim.push(pictureId);
+        await user.save();
+
+        return res.status(200).json({ message: "Thêm ảnh vào ListAnhGhim thành công.", user });
     } catch (error) {
+        console.error("Lỗi khi thêm ảnh vào ListAnhGhim:", error);
         res.status(500).json({ message: error.message });
     }
 });
+
 
 // Route để thêm một người dùng vào following
 router.post('/addFollowing/:userId', async (req, res) => {

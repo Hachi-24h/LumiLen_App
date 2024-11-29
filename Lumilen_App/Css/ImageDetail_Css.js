@@ -160,8 +160,8 @@ const styles = StyleSheet.create({
     marginBottom: 20,
     borderRadius: 10,
     overflow: "hidden",
-    backgroundColor: "yellow",
   }
+  
 
 });
 

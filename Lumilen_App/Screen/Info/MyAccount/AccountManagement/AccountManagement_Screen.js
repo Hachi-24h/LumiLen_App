@@ -13,7 +13,7 @@ import {
 } from "react-native";
 import { Ionicons } from '@expo/vector-icons';
 import styles from '../../../../Css/AccountManagement_Css'; 
-import { showSuccessMessage } from "../../../../Other/notification";
+import { showSuccessMessage } from "../../../../Custom/notification";
 import { UserContext } from "../../../../Hook/UserContext";
 const AccountManagementScreen = ({ navigation, route }) => {
   const [isSoundEnabled, setIsSoundEnabled] = useState(false);
@@ -33,7 +33,7 @@ const AccountManagementScreen = ({ navigation, route }) => {
       <StatusBar hidden={false} />
    
       <View style={styles.header}>
-        <TouchableOpacity onPress={() => navigation.goBack()}>
+        <TouchableOpacity onPress={() => navigation.navigate("AccountSetting")}>
           <Ionicons name="chevron-back-outline" size={24} color="black" />
         </TouchableOpacity>
         <Text style={styles.headerTitle}>Quản lý tài khoản</Text>

@@ -14,11 +14,11 @@ import {
 import * as ImagePicker from "expo-image-picker";
 import axios from "axios";
 import styles from "../../Css/AddGhim_css";
-import BASE_URL from "../../IpAdress";
-import { showNotification } from "../../Other/notification";
-import LoadingModal from "../../Other/Loading";
+import BASE_URL from "../../config/IpAdress";
+import { showNotification } from "../../Custom/notification";
+import LoadingModal from "../../Custom/Loading";
 import { UserContext } from "../../Hook/UserContext";
-import colors from "./../../Other/Color";
+import colors from "../../Custom/Color";
 const PinCreationScreen = ({navigation, route}) => {
   const userId = route.params.userId;
   

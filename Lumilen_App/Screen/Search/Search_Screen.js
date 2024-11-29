@@ -13,9 +13,9 @@ import {
 } from "react-native";
 import axios from "axios";
 import styles from "../../Css/Search_css";
-import Footer from "../../Screen/footer";
+import Footer from "../Other/footer";
 import { Ionicons } from "@expo/vector-icons";
-import BASE_URL from "../../IpAdress";
+import BASE_URL from "../../config/IpAdress";
 import { UserContext } from "../../Hook/UserContext";
 import { convertDataWithSize } from "../../Hook/imageUtils";
 import MasonryList from "react-native-masonry-list";

@@ -18,9 +18,9 @@ import * as ImagePicker from "expo-image-picker";
 import axios from "axios";
 import { UserContext } from "../../../../../Hook/UserContext";
 import styles from "../../../../../Css/UpdateInfo_css";
-import BASE_URL from "../../../../../IpAdress";
-import { showNotification } from "../../../../../Other/notification";
-import colors from "../../../../../Other/Color";
+import BASE_URL from "../../../../../config/IpAdress";
+import { showNotification } from "../../../../../Custom/notification";
+import colors from "../../../../../Custom/Color";
 
 const ProfileScreen = () => {
   const navigation = useNavigation();

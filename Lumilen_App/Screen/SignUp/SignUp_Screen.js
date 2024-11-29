@@ -1,4 +1,5 @@
 import React, { useEffect } from "react";
+<<<<<<< HEAD
 import { View, Text, Image, TouchableOpacity, ScrollView } from "react-native";
 import { LinearGradient } from "expo-linear-gradient";
 import styles from "../../Css/SignUp_css";
@@ -16,6 +17,45 @@ const SignUp = ({ navigation }) => {
     // Dọn dẹp listener khi component bị unmount
     return unsubscribe;
   }, [navigation]);
+=======
+import { View, Text, Image, TouchableOpacity, Alert, BackHandler } from "react-native";
+import { LinearGradient } from "expo-linear-gradient";
+import styles from "../../Css/SignUp_css";
+
+const SignUp = ({ navigation }) => {
+
+  useEffect(() => {
+    // Lắng nghe sự kiện quay lại của điện thoại
+    const backAction = () => {
+      // Hiển thị thông báo xác nhận khi người dùng nhấn nút quay lại
+      Alert.alert(
+        "Thoát ứng dụng",
+        "Bạn chắc chắn muốn thoát ứng dụng?",
+        [
+          {
+            text: "Hủy",
+            style: "cancel",
+            onPress: () => null, // Không làm gì khi người dùng chọn Hủy
+          },
+          {
+            text: "Có",
+            onPress: () => BackHandler.exitApp(), // Thoát ứng dụng khi người dùng chọn "Có"
+          },
+        ],
+        { cancelable: false }
+      );
+      return true; // Ngăn không cho quay lại màn hình trước
+    };
+
+    // Thêm sự kiện backHandler khi màn hình SignUp được hiển thị
+    BackHandler.addEventListener("hardwareBackPress", backAction);
+
+    // Cleanup khi component unmount
+    return () => {
+      BackHandler.removeEventListener("hardwareBackPress", backAction);
+    };
+  }, []);
+>>>>>>> e9ea54421d64159fd4d4bfe754395aad7cb859fe
 
   return (
     <View style={styles.signUp1}>
@@ -81,9 +121,13 @@ const SignUp = ({ navigation }) => {
               style={styles.buttonBase}
               onPress={() => navigation.navigate("SignUp1")}
             >
+<<<<<<< HEAD
               <Text style={styles.button}>
                 {dataTest && dataTest.length > 0 ? dataTest[0].name : "Sign Up"}
               </Text>
+=======
+              <Text style={styles.button}>Sign Up</Text>
+>>>>>>> e9ea54421d64159fd4d4bfe754395aad7cb859fe
             </TouchableOpacity>
           </View>
           <View style={styles.buttons1}>

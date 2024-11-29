@@ -3,8 +3,9 @@ import { View, Text, TouchableOpacity, Alert } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
 import axios from 'axios';
 import styles from '../../../../../../Css/GenderInfo_Css';
-import BASE_URL from '../../../../../../IpAdress';
+import BASE_URL from '../../../../../../config/IpAdress';
 import { UserContext } from '../../../../../../Hook/UserContext';
+import { showNotification } from '../../../../../../Custom/notification';
 
 const GenderInfoScreen = ({ navigation, route }) => {
   const { userData, fetchUserData } = useContext(UserContext);
@@ -30,7 +31,7 @@ const GenderInfoScreen = ({ navigation, route }) => {
     const mappedGender = genderMap[gender]; // Chuyển đổi giá trị hiển thị sang giá trị enum
 
     try {
-      const response = await axios.put(`${BASE_URL}/user/updateUser/${userId}`, {
+      const response = await axios.put(`${BASE_URL}:5000/user/updateUser/${userId}`, {
         gender: mappedGender, // Gửi giá trị enum
       });
 
@@ -38,19 +39,20 @@ const GenderInfoScreen = ({ navigation, route }) => {
         await fetchUserData(userData.email); // Làm mới dữ liệu user trong context
         navigation.navigate("PersonalInfo", {
           selectedGender: mappedGender,
-          showSuccessMessage: "Thêm giới tính thành công",
+          showNotification: "Thêm giới tính thành công",
+          type: "success",
         });
       }
     } catch (error) {
-      console.error("Lỗi khi cập nhật giới tính:", error);
-      Alert.alert("Lỗi", "Không thể cập nhật giới tính. Vui lòng thử lại sau.");
+      // console.error("Lỗi khi cập nhật giới tính:", error);
+      showNotification("Có lỗi xảy ra khi cập nhật giới tính", "error");
     }
   };
 
   return (
     <View style={styles.container}>
       <View style={styles.header}>
-        <TouchableOpacity onPress={() => navigation.goBack()}>
+        <TouchableOpacity onPress={() => navigation.navigate("PersonalInfo")}>
           <Ionicons name="chevron-back-outline" size={24} color="black" />
         </TouchableOpacity>
         <Text style={styles.headerTitle}>Giới tính</Text>

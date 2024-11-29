@@ -1,5 +1,5 @@
 import { StyleSheet, Dimensions } from "react-native";
-import colors from "../Other/Color";
+import colors from "../Custom/Color";
 const { width, height } = Dimensions.get("window"); // Lấy kích thước màn hình thiết bị
 
 const styles = StyleSheet.create({

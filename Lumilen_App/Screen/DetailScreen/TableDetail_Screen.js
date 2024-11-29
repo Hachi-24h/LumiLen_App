@@ -12,10 +12,10 @@ import {
   Pressable,
 } from "react-native";
 import styles from "./../../Css/TableDetail_css"; // File CSS riêng
-import BASE_URL from "../../IpAdress"; // Địa chỉ API
+import BASE_URL from "../../config/IpAdress"; // Địa chỉ API
 import { convertDataWithSize } from "../../Hook/imageUtils"; // Hàm xử lý kích thước ảnh
 
-const { height,width } = Dimensions.get("window");
+const { height, width } = Dimensions.get("window");
 const SPACING = 10; // Khoảng cách giữa các cột
 
 const GalleryScreen = ({ navigation, route }) => {
@@ -66,7 +66,6 @@ const GalleryScreen = ({ navigation, route }) => {
     changedata();
   }, [tableId]);
 
-  // Tính toán chiều rộng mỗi cột dựa trên chế độ hiển thị
   const columnWidth = (width - (viewMode + 1) * SPACING) / viewMode;
 
   // Tạo dữ liệu cho từng cột
@@ -90,13 +89,17 @@ const GalleryScreen = ({ navigation, route }) => {
         return (
           <View key={`${item.id}-${index}`} style={styles.imageContainer}>
             {/* {console.log("item", item)} */}
-            <TouchableOpacity onPress={() => navigation.navigate("ImageDetailScreen",{dataAnh: item})}  >
+            <TouchableOpacity
+              onPress={() =>
+                navigation.navigate("ImageDetailScreen", { dataAnh: item })
+              }
+            >
               <Image
                 source={{ uri: item.uri }}
                 style={{
                   width: columnWidth,
                   height: imageHeight,
-                 
+
                   resizeMode: "cover",
                 }}
               />
@@ -149,7 +152,7 @@ const GalleryScreen = ({ navigation, route }) => {
           />
         </TouchableOpacity>
       </View>
-      {/* Danh sách ảnh */}
+     
       <FlatList
         data={generateColumns(images)} // Chia ảnh thành các cột
         renderItem={({ item, index }) => renderColumn(item, index)} // Render từng cột

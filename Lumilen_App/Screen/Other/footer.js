@@ -1,9 +1,11 @@
 import React, { useState, useEffect } from "react";
 import { View, TouchableOpacity, Image } from "react-native";
-import styles from "../Css/footer_css";
+import styles from "../../Css/footer_css";
 
 const Footer = ({ navigation, avatar, initialSelectedIcon, namePage }) => {
-  const [selectedIcon, setSelectedIcon] = useState(initialSelectedIcon || "HomeTabs"); 
+  const [selectedIcon, setSelectedIcon] = useState(
+    initialSelectedIcon || "HomeTabs"
+  );
   const [styleName, setStyleName] = useState(styles.Touch_unselected);
 
   const handleIconPress = (iconName) => {
@@ -17,7 +19,9 @@ const Footer = ({ navigation, avatar, initialSelectedIcon, namePage }) => {
       }
     } else {
       setSelectedIcon(iconName);
-      navigation.navigate(iconName === "account" ? "Info_Bang" : iconName, { selectedIcon: iconName });
+      navigation.navigate(iconName === "account" ? "Info_Bang" : iconName, {
+        selectedIcon: iconName,
+      });
     }
   };
 
@@ -36,8 +40,8 @@ const Footer = ({ navigation, avatar, initialSelectedIcon, namePage }) => {
         <Image
           source={
             selectedIcon === "HomeTabs"
-              ? require("../Icon/home_check.png")
-              : require("../Icon/home_uncheck.png")
+              ? require("../../Icon/home_check.png")
+              : require("../../Icon/home_uncheck.png")
           }
           style={styles.imgIcon}
         />
@@ -48,8 +52,8 @@ const Footer = ({ navigation, avatar, initialSelectedIcon, namePage }) => {
         <Image
           source={
             selectedIcon === "Search"
-              ? require("../Icon/search_check.png")
-              : require("../Icon/search_uncheck.png")
+              ? require("../../Icon/search_check.png")
+              : require("../../Icon/search_uncheck.png")
           }
           style={styles.imgIcon}
         />
@@ -60,8 +64,8 @@ const Footer = ({ navigation, avatar, initialSelectedIcon, namePage }) => {
         <Image
           source={
             selectedIcon === "plus"
-              ? require("../Icon/plus_check.png")
-              : require("../Icon/plus_uncheck.png")
+              ? require("../../Icon/plus_check.png")
+              : require("../../Icon/plus_uncheck.png")
           }
           style={styles.imgIcon}
         />
@@ -72,22 +76,26 @@ const Footer = ({ navigation, avatar, initialSelectedIcon, namePage }) => {
         <Image
           source={
             selectedIcon === "mess"
-              ? require("../Icon/mess_check.png")
-              : require("../Icon/mess_uncheck.png")
+              ? require("../../Icon/mess_check.png")
+              : require("../../Icon/mess_uncheck.png")
           }
           style={styles.imgIcon}
         />
       </TouchableOpacity>
 
       {/* Account Icon */}
-      <TouchableOpacity onPress={() => handleIconPress("account")} style={styleName}>
+      <TouchableOpacity
+        onPress={() => handleIconPress("account")}
+        style={styleName}
+
+      >
         <Image
           source={
             avatar
               ? { uri: avatar }
               : selectedIcon === "account"
-              ? require("../Icon/acount_check.png")
-              : require("../Icon/acount_uncheck.png")
+              ? require("../../Icon/acount_check.png")
+              : require("../../Icon/acount_uncheck.png")
           }
           style={styles.imgIcon}
         />

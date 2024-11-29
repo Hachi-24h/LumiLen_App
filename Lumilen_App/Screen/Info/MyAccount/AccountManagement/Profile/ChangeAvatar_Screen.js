@@ -5,7 +5,7 @@ import * as ImagePicker from 'expo-image-picker';
 import axios from 'axios';
 import styles from '../../../../../Css/ChangeAvatar_Css';
 import { UserContext } from '../../../../../Hook/UserContext';
-import BASE_URL from '../../../../../IpAdress';
+import BASE_URL from '../../../../../config/IpAdress';
 
 const ChangeAvatarScreen = ({ navigation }) => {
   const DefaultAvatar = require('../../../../../Picture/defaultavatar.jpg');

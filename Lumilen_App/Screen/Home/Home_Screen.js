@@ -13,10 +13,10 @@ import {
   TextInput,
   ActivityIndicator,
 } from "react-native";
-import Footer from "../footer";
+import Footer from "../Other/footer";
 import styles from "../../Css/Home_Css";
 import { UserContext } from "../../Hook/UserContext";
-import BASE_URL from "../../IpAdress";
+import BASE_URL from "../../config/IpAdress";
 import { convertDataWithSize } from "../../Hook/imageUtils";
 import { Ionicons } from "@expo/vector-icons";
 import * as FileSystem from "expo-file-system";

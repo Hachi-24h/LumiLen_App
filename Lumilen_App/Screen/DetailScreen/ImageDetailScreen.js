@@ -8,7 +8,7 @@ import {
   Dimensions,
   Alert,
 } from "react-native";
-import Footer from "../footer";
+import Footer from "../Other/footer";
 import { UserContext } from "../../Hook/UserContext";
 import Ionicons from "react-native-vector-icons/Ionicons";
 import styles from "../../Css/ImageDetail_Css";

@@ -22,7 +22,7 @@ import { Ionicons } from "@expo/vector-icons";
 import * as FileSystem from "expo-file-system";
 import * as MediaLibrary from "expo-media-library";
 import axios from "axios";
-
+import { showNotification } from "../../Custom/notification";
 
 const { width } = Dimensions.get("window");
 const COLUMN_COUNT = 2; // Số cột
@@ -35,13 +35,11 @@ const HomeTabs = ({ navigation }) => {
   const [images, setImages] = useState([]); // Danh sách ảnh đầy đủ
   const [filteredImages, setFilteredImages] = useState([]); // Danh sách ảnh được lọc
   const [selectedItem, setSelectedItem] = useState(null); // Lưu ảnh được chọn
+  const [ Table , setTable ] = useState(null); // L
   const [isModalGhim, setModalGhim] = useState(false); // Trạng thái của Modal
-  const [isPinModalVisible, setPinModalVisible] = useState(false); // Trạng thái của modal ghim ảnh
-  const [pinTitle, setPinTitle] = useState(""); // Khai báo pinTitle để lưu giá trị tiêu đề ghim
   const [isModalBang, setModalBang] = useState(false); // Modal chọn bảng
   const [boards, setBoards] = useState([]); // Danh sách bảng
   const [loading, setLoading] = useState(true); // Trạng thái tải API
-
   const userId = userData ? userData._id : null; // Lấy userId từ dữ liệu người dùng
   // Hàm lấy dữ liệu từ API
   const fetchDataFromAPI = async () => {
@@ -160,80 +158,73 @@ const HomeTabs = ({ navigation }) => {
   };
 
 // Hàm xử lý khi bấm vào ba chấm
-const handleMoreOptions = (item) => {
-  setSelectedItem(item); // Gán giá trị selectedItem khi bấm vào ảnh
+const handleMoreOptions = (idPicture) => {
+  setSelectedItem(idPicture); // Gán giá trị selectedItem khi bấm vào ảnh
   setModalGhim(true); // Mở modal
 };
 
   const handleBoardSelection = () => {
     setModalBang(true);
     setModalGhim(false);
+    
   };
- // Hàm xử lý lưu ảnh vào bảng và Ghim
-const handleBoard = async (selectedBoard) => {
+
+const handleBoard = async (Table) => {
   try {
-    // Kiểm tra xem đã chọn ảnh và bảng chưa
-    if (!selectedItem || !selectedItem._id) {
-      Alert.alert("Lỗi", "Vui lòng chọn ảnh trước khi ghim.");
+    // Kiểm tra selectedItem trước khi xử lý
+    if (!selectedItem) {
+      showNotification("Có lỗi xảy ra với chọn ảnh !", "error");
       return;
     }
-
-    if (!selectedBoard || !selectedBoard._id) {
-      Alert.alert("Lỗi", "Vui lòng chọn một bảng.");
-      return;
-    }
-
-    setModalBang(false);
-    setPinModalVisible(true);
-
-    console.log("Selected Item ID: ", selectedItem._id); // Kiểm tra ID ảnh
-    console.log("Selected Board ID: ", selectedBoard._id); // Kiểm tra ID bảng
-    console.log("User ID: ", userId);
-
-    // Gửi yêu cầu lưu ảnh vào bảng
-    const response = await axios.post(
-      `${BASE_URL}:5000/picture/addPictureToTableUser`,
-      {
-        tableUserId: selectedBoard._id, // Chắc chắn bảng đã chọn có ID hợp lệ
-        pictureId: selectedItem._id,    // Chắc chắn ảnh đã chọn có ID hợp lệ
-        userId: userId,
-      }
-    );
-
-    if (response.status === 200) {
-      Alert.alert("Thành công", "Ảnh đã được lưu vào bảng!");
-    } else {
-      Alert.alert("Lỗi", "Không thể lưu ảnh vào bảng.");
-    }
-
-    // Lưu ảnh vào Ghim
-    const pinResponse = await axios.post(
-      `${BASE_URL}:5000/picture/addPicture`,
-      {
-        uri: selectedItem.uri,
-        title: selectedItem.title,
-        userId: userId,
-      }
-    );
-
-    if (pinResponse.status === 200) {
-      Alert.alert("Thành công", "Ảnh đã được lưu vào Ghim!");
-    }
+    setTable(Table);
+    
   } catch (error) {
-    console.error("Lỗi khi lưu ảnh vào bảng hoặc Ghim:", error.response || error);
+    showNotification("Có lỗi xảy ra !", "error");
     Alert.alert("Lỗi", "Có lỗi xảy ra khi lưu ảnh vào bảng hoặc Ghim.");
   }
 };
+
+useEffect(() => {
+  if (Table) {
+    console.log("ID bảng đã được cập nhật: ", Table);
+    // Gửi request lưu ảnh vào bảng
+    setModalBang(false);
+    setModalGhim(false);
+    axios.post(
+      `${BASE_URL}:5000/picture/addPictureToTableUser`,
+      {
+        tableUserId: Table._id, // Sử dụng idTable đã được cập nhật
+        pictureId: selectedItem, // Sử dụng selectedItem đã được cập nhậ
+        userId: userId,
+      }
+    )
+    .then(response => {
+      if (response.status === 200) {
+        showNotification(`ảnh của bạn đã đã lưu vào ${Table.name}  !`, "success");
+      }
+    })
+    .catch(error => {
+      console.error("Lỗi khi lưu ảnh vào bảng:", error);
+      Alert.alert("Lỗi", "Không thể lưu ảnh vào bảng.");
+    });
+  }
+}, [Table]);  // Theo dõi sự thay đổi của idTable
+
+
+// useEffect(() => { 
+//   console.log("Selected Item: ", selectedItem);
+// }, [selectedItem]);
   
+
   const renderColumn = (columnData, columnIndex) => {
     return (
       <View
         key={`column-${columnIndex}`}
-        style={{ flex: 1, marginHorizontal: SPACING / 2 }}
+        style={{ flex: 1, marginHorizontal: SPACING / 2  }}
       >
         {columnData.map((item, index) => {
           const imageHeight = (item.height / item.width) * columnWidth;
-
+          // console.log("item", item);
           return (
             <View
               key={item._id || `${columnIndex}-${index}`} // Đảm bảo key là duy nhất
@@ -262,12 +253,12 @@ const handleBoard = async (selectedBoard) => {
                   }}
                   style={styles.footerIcon}
                 />
-                <Text style={styles.footerText} numberOfLines={1}>
-                  {item.title || "Không có tiêu đề"}
+                <Text style={styles.footerText} numberOfLines={1} ellipsizeMode="tail" >
+                  {item.title || ""}
                 </Text>
                 <TouchableOpacity
                   style={styles.moreButton}
-                  onPress={() => handleMoreOptions(item)}
+                  onPress={() => handleMoreOptions(item.id)}
                 >
                   <Ionicons
                     name="ellipsis-horizontal"
@@ -361,9 +352,10 @@ const handleBoard = async (selectedBoard) => {
                 data={boards}
                 keyExtractor={(item) => item._id}
                 renderItem={({ item }) => (
+                  
                   <TouchableOpacity
                     style={styles.boardItem}
-                    onPress={() => handleBoard(item.name)}
+                    onPress={() => handleBoard(item)}
                   >
                     <Image
                       source={

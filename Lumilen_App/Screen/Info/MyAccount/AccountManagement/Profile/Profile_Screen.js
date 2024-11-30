@@ -2,7 +2,7 @@ import React, { useEffect, useState } from 'react';
 import { View, Text, Image, TouchableOpacity, ScrollView, ActivityIndicator } from 'react-native';
 import styles from "../../../../../Css/Proflie_Css";
 import { Ionicons } from "@expo/vector-icons";
-import BASE_URL from "../../../../../IpAdress";
+import BASE_URL from '../../../../../config/IpAdress';
 import axios from "axios"; // Import axios để gọi API
 
 const ProfileScreen = ({ navigation, route }) => {

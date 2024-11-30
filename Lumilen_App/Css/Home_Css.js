@@ -1,5 +1,5 @@
 import { StyleSheet, Dimensions } from "react-native";
-import colors from "./../Other/Color";
+import colors from "../Custom/Color";
 const { width, height } = Dimensions.get("window");
 
 const styles = StyleSheet.create({
@@ -30,14 +30,15 @@ const styles = StyleSheet.create({
     borderRadius: 5, // Tạo bo góc
   },
   footerIcon: {
-    width: 40,
-    height: 40,
-    marginRight: 10, // Khoảng cách giữa icon và chữ
-    borderRadius: 20, // Bo góc icon
+    width: width* 0.06,
+    height: width *0.06,
+    marginRight: width *0.02, // Khoảng cách giữa icon và chữ
+    borderRadius: width*0.03, // Bo góc icon
   },
   footerText: {
     fontSize: 14,
     color: "#333",
+    width: "50%", 
   },
   moreButton: {
     position: "absolute",

@@ -1,0 +1,58 @@
+nam
+picture - tableuser
+tìm 1 picture theo id ====================
+xóa 1 ảnh  ============================================
+list All ảnh ========================================
+tìm 1 tableuser theo tên name của 1 user ====================
+        - iduser
+        - name 
+xóa 1 tableuser của 1 user =============================
+        - iduser 
+        - idtableuser
+thêm 1 tableuser      ==============================
+sửa tên tableuser  ========================================
+        - idtableuser
+        - Newname
+xóa 1 ảnh trong tableuser của 1 user =======================================
+        - iduser
+        - idtableuser
+        - idPicture
+thay đổi trạng thái của tableuser ==========================================
+thêm 1 ảnh vào tableuser của user ==============================================
+        - iduser
+        - idtableuser
+        - idPicture
+tính 
+- user vs notifi
+
+viết hàm cập nhật user 
+viết hàm thêm 1 ảnh vào listAnhGhim 
+viết hàm thêm 1 iduser vào following
+         - iduser
+         - idPicture
+viết hàm thêm 1 iduser vào followers
+         - iduser
+         - idPicture
+viết hàm thêm 1 notifi cho 1 user
+         - tối đa 30 thông báo
+Viết hàm tìm kiếm 
+- theo _id
+- theo iduser
+- theo tên
+- theo email
+
+
+npm install axios
+
+pip install aiohttp
+
+pip install googletrans==4.0.0-rc1
+
+
+
+python N:\Lumilen\Lumilen_Backend\src\routes\Picturess\app.py
+
+- viết lại addUsers
+- viết lại Home 
+- viết trang chi tiết ảnh ( lấy data từ routes ) -> user
+- user

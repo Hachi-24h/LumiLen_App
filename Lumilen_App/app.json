@@ -1,0 +1,34 @@
+{
+  "expo": {
+    "name": "Lumilen_App",
+    "slug": "Lumilen_App",
+    "owner": "phongnet321",
+    "version": "1.0.0",
+    "orientation": "portrait",
+    "icon": "",
+    "newArchEnabled": true,
+    "userInterfaceStyle": "light",
+    "splash": {
+      "image": "./assets/splash.png",
+      "resizeMode": "contain",
+      "backgroundColor": "#ffffff"
+    },
+    "ios": {
+      "supportsTablet": true
+    },
+    "android": {
+      "adaptiveIcon": {
+        "foregroundImage": "./assets/adaptive-icon.png",
+        "backgroundColor": "#ffffff"
+      },
+      "package": "com.lumilen.lumilenapp"
+    },
+    "web": {
+      "favicon": "./assets/favicon.png"
+    },
+    "scheme": "lumilen",
+    "plugins": [
+      "expo-asset"
+    ]
+  }
+}

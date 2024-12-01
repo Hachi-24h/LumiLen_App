@@ -14,7 +14,7 @@ import Ionicons from "react-native-vector-icons/Ionicons";
 import styles from "../../Css/ImageDetail_Css";
 import BASE_URL from "../../config/IpAdress";
 import { convertDataWithSize } from "../../Hook/imageUtils";
-
+import PageTransition from "../../Custom/PageTransition";
 const { width, height } = Dimensions.get("window");
 
 const ImageDetailScreen = ({ route, navigation }) => {

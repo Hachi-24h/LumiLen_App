@@ -2,7 +2,8 @@ import React, { useState, useEffect , useContext} from "react";
 import { View, TouchableOpacity, Image ,Modal ,Text, TouchableWithoutFeedback} from "react-native";
 import styles from "../../Css/footer_css";
 import { UserContext } from "../../Hook/UserContext";
-const Footer = ({ navigation, avatar, initialSelectedIcon, namePage }) => {
+import { useNavigationState } from "@react-navigation/native"; 
+const Footer = ({ navigation, avatar, initialSelectedIcon, namePage, }) => {
   const [selectedIcon, setSelectedIcon] = useState(
     initialSelectedIcon || "HomeTabs"
   );
@@ -10,6 +11,10 @@ const Footer = ({ navigation, avatar, initialSelectedIcon, namePage }) => {
   const userId = userData ? userData._id : null;
   const [styleName, setStyleName] = useState(styles.Touch_unselected);
   const [isCreateModalVisible, setCreateModalVisible] = useState(false);
+  const navigationState = useNavigationState((state) => state);  // Lấy trạng thái navigation
+  
+  
+
   const handleIconPress = (iconName) => {
     if (iconName === "account") {
       if (selectedIcon === "account") {

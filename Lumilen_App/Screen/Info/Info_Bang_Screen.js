@@ -17,7 +17,7 @@ import {
 import styles from "../../Css/Info_Bang_Css";
 import Footer from "../Other/footer";
 import { UserContext } from "../../Hook/UserContext";
-
+import PageTransition from "../../Custom/PageTransition";
 const { width, height } = Dimensions.get("window");
 
 const Info_Bang_Screen = ({ navigation, route }) => {
@@ -36,6 +36,7 @@ const Info_Bang_Screen = ({ navigation, route }) => {
   const [isSortModalVisible, setSortModalVisible] = useState(false);
   const [isCreateModalVisible, setCreateModalVisible] = useState(false);
   const [status, setStatus] = useState("Oldest");
+
   useEffect(() => {
     handleSearch(searchQuery);
   }, [selectItem, searchQuery, originalListTableUser]);
@@ -172,6 +173,7 @@ const Info_Bang_Screen = ({ navigation, route }) => {
   }, [isSortModalVisible]);
 
   return (
+    <PageTransition effect={2} duration={300} delay={0}>
     <KeyboardAvoidingView
       style={{ flex: 1 }}
       behavior={Platform.OS === "ios" ? "padding" : "height"}
@@ -443,6 +445,7 @@ const Info_Bang_Screen = ({ navigation, route }) => {
         </Modal>
       </View>
     </KeyboardAvoidingView>
+    </PageTransition>
   );
 };
 

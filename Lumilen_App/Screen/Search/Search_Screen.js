@@ -18,7 +18,7 @@ import { Ionicons } from "@expo/vector-icons";
 import BASE_URL from "../../config/IpAdress";
 import { UserContext } from "../../Hook/UserContext";
 import { convertDataWithSize } from "../../Hook/imageUtils";
-import MasonryList from "react-native-masonry-list";
+import PageTransition from "../../Custom/PageTransition";
 const { width } = Dimensions.get("window");
 const COLUMN_COUNT = 2;
 const SPACING = 2;
@@ -335,6 +335,7 @@ const Search = ({ navigation }) => {
   };
 
   return (
+    <PageTransition effect={1} duration={300} delay={0}>
     <View style={styles.container}>
       <View style={styles.header}>
         {currentView === "results" && (
@@ -441,6 +442,7 @@ const Search = ({ navigation }) => {
         namePage={"Trang tìm kiếm"}
       />
     </View>
+    </PageTransition>
   );
 };
 export default Search;

@@ -40,7 +40,7 @@ export default {
   Profile,
   ChangeAvatar,
   UpdateInfo,
-  // demo,
+  demo,
   AddGhim,
   TableDetail,
   

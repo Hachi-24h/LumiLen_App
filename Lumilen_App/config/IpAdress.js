@@ -1,3 +1,3 @@
 // IPaddress.js
-const BASE_URL = "http://172.21.34.5";
+const BASE_URL = "http://192.168.1.8";
 export default BASE_URL;

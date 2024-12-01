@@ -73,25 +73,25 @@ router.get('/getUserImages', async (req, res) => {
 // Hàm thêm ảnh vào Ghim
 router.post('/addPicture', async (req, res) => {
     try {
-        const { uri, title, userId } = req.body;
+        const { uri, title, id } = req.body;
 
         // Kiểm tra ID
-        if (!mongoose.Types.ObjectId.isValid(userId)) {
-            return res.status(400).json({ message: "Invalid userId format." });
+        if (!mongoose.Types.ObjectId.isValid(id)) {
+            return res.status(400).json({ message: "Invalid id format." });
         }
 
         // Tạo một Picture mới
         const newPicture = new Picture({
             uri,
             title,
-            id: userId,
+            id: id,
         });
 
         // Lưu Picture vào cơ sở dữ liệu
         const savedPicture = await newPicture.save();
 
         // Thêm ảnh vào ListAnhGhim của User
-        const user = await User.findById(userId);
+        const user = await User.findById(id);
         user.ListAnhGhim.push(savedPicture._id);
         await user.save();
 

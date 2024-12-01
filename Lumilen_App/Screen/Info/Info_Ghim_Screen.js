@@ -135,7 +135,7 @@ const Info_Ghim_Screen = ({ navigation, route }) => {
   };
 
   return (
-    <PageTransition effect={1} duration={300} delay={0}>
+    <PageTransition effect={1} duration={400} delay={0}>
       <KeyboardAvoidingView
         style={{ flex: 1 }}
         behavior={Platform.OS === "ios" ? "padding" : "height"}

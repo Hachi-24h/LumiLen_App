@@ -203,7 +203,7 @@ const PinCreationScreen = ({navigation, route}) => {
       const newPictureData = {
         uri: uploadedImageUri,
         title: title.trim(),
-        id: userId,
+        userId: userId,
         typePicture: description.trim(),
       };
       console.log("Dữ liệu ảnh mới:", newPictureData);
@@ -230,6 +230,7 @@ const PinCreationScreen = ({navigation, route}) => {
         throw new Error("Không tìm thấy bảng được chọn");
       }
 
+      cons
       console.log("Id bảng được chọn:", selectedBoardData._id);
       const addPictureToTableResponse = await axios.post(
         `${BASE_URL}:5000/picture/addPictureToTableUser`,

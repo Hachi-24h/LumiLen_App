@@ -87,9 +87,9 @@ const LoginScreen = ({ navigation }) => {
        
       }
     } catch (error) {
-      // console.error("Login error:", error);
-      setEmailBorderColor("red");
-      setPasswordBorderColor("red");
+      console.error("Login error:", error);
+      setEmailBorderColor("blue");
+      setPasswordBorderColor("blue");
       
     }
   };

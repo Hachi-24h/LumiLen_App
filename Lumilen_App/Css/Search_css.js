@@ -199,7 +199,14 @@ const styles = StyleSheet.create({
   userID:{
     fontSize:height*0.015,
     color: colors.darkgray,
-  }
+  },
+
+  // danh sách ảnh 
+  imageListsearchpicture: {
+    flex: 1,
+    marginTop: height * 0.01,
+    paddingHorizontal: width * 0.015,
+  },
 });
 
 export default styles;

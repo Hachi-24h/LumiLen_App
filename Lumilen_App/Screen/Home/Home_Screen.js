@@ -205,8 +205,7 @@ useEffect(() => {
       }
     })
     .catch(error => {
-      console.error("Lỗi khi lưu ảnh vào bảng:", error);
-      Alert.alert("Lỗi", "Không thể lưu ảnh vào bảng.");
+      showNotification(`Ảnh đã có trong bảng ${Table.name} `, "warning");
     });
   }
 }, [Table]);  // Theo dõi sự thay đổi của idTable

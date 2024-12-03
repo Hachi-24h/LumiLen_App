@@ -19,6 +19,7 @@ import { showNotification } from "../../Custom/notification";
 import LoadingModal from "../../Custom/Loading";
 import { UserContext } from "../../Hook/UserContext";
 import colors from "../../Custom/Color";
+
 const PinCreationScreen = ({navigation, route}) => {
   const userId = route.params.userId;
   
@@ -38,7 +39,9 @@ const PinCreationScreen = ({navigation, route}) => {
   const [loading, setLoading] = useState(true); // Trạng thái tải API
   const [title, setTitle] = useState(""); // Tiêu đề Ghim
   const [description, setDescription] = useState(""); // Mô tả Ghim
-  const { userdata } = useContext(UserContext);
+  const { userData ,fetchUserData} = useContext(UserContext);
+  const [file, setFile] = useState(null);
+  const email = userData.email;
 
   
   // console.log("Id người dùng:", userId);
@@ -94,6 +97,8 @@ const PinCreationScreen = ({navigation, route}) => {
         });
 
         setImageUri(selectedImageUri);
+        console.log("Đường dẫn ảnh đã chọn:", selectedImageUri);
+        setFile(selectedImageUri);
         setStatusText("Ảnh của bạn đây");
         
       }
@@ -155,6 +160,25 @@ const PinCreationScreen = ({navigation, route}) => {
     }
   };
 
+  async function handleUpload_Tong() {
+    const formData = new FormData();
+    formData.append("img", file);  // Chọn file ảnh để upload
+
+    // Gửi yêu cầu tới API tổng hợp để upload ảnh, tạo dữ liệu ảnh, và thêm ảnh vào bảng
+    const response = await fetch('/addPictureAndAssignToTable', {
+        method: 'POST',
+        body: formData
+    });
+
+    const result = await response.json();
+
+    if (response.ok) {
+        console.log("Picture added successfully:", result);
+    } else {
+        console.error("Error:", result.message);
+    }
+}
+
   // Xử lý khi nhấn nút "Tạo"
   const handleUpload = async () => {
     if (!imageUri) {
@@ -203,8 +227,8 @@ const PinCreationScreen = ({navigation, route}) => {
       const newPictureData = {
         uri: uploadedImageUri,
         title: title.trim(),
-        userId: userId,
-        typePicture: description.trim(),
+        iduser: userId,
+        description: description.trim(),
       };
       console.log("Dữ liệu ảnh mới:", newPictureData);
 
@@ -230,8 +254,14 @@ const PinCreationScreen = ({navigation, route}) => {
         throw new Error("Không tìm thấy bảng được chọn");
       }
 
-      cons
-      console.log("Id bảng được chọn:", selectedBoardData._id);
+      
+      const dataaddPictureToTable = {
+        userId,
+        tableUserId: selectedBoardData._id,
+        pictureId: newPicture._id,
+      };
+      console.log("Dữ liệu thêm ảnh vào bảng:", dataaddPictureToTable);
+      
       const addPictureToTableResponse = await axios.post(
         `${BASE_URL}:5000/picture/addPictureToTableUser`,
         {
@@ -240,15 +270,18 @@ const PinCreationScreen = ({navigation, route}) => {
           pictureId: newPicture._id,
         }
       );
-      console.log("Kết quả thêm ảnh vào bảng:", addPictureToTableResponse.data);
+      // console.log("Kết quả thêm ảnh vào bảng:", addPictureToTableResponse.data);
 
       if (addPictureToTableResponse.status === 200) {
         showNotification("Tạo ghim thành công!", "success");
+        await fetchUserData(email, true);
+        navigation.navigate("Info_Bang");
       } else {
         throw new Error("Thêm ảnh vào bảng thất bại");
       }
     } catch (error) {
       showNotification(error.message || "Có lỗi xảy ra!", "error");
+      console.error("Lỗi khi tạo ghim:", error);
     } finally {
       setLoading(false); // Tắt loading
     }

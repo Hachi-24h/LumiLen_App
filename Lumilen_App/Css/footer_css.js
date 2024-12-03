@@ -97,5 +97,30 @@ const styles = StyleSheet.create({
     justifyContent: "center",
     alignItems: "center",
   },
+  footerContainer: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    padding: 10,
+    backgroundColor: '#fff',
+  },
+  iconContainer: {
+    position: 'relative',
+  },
+  unreadDot: {
+    position: 'absolute',
+    top: -5,
+    right: -5,
+    width: 15,
+    height: 15,
+    backgroundColor: 'red',
+    borderRadius: 50,
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+  unreadDotText: {
+    color: 'white',
+    fontSize: 10,
+    fontWeight: 'bold',
+  }
 });
 export default styles;

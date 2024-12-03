@@ -24,6 +24,7 @@ const ImageDetailScreen = ({ route, navigation }) => {
   const [isFollowing, setIsFollowing] = useState(false); // Trạng thái theo dõi
   const [followersCount, setFollowersCount] = useState(0); // Số lượng người theo dõi
   const dataAnh = route.params.dataAnh;
+  console.log(dataAnh);
   const userID = dataAnh.userId; // Lấy userID từ dữ liệu ảnh
   const [relatedImages, setRelatedImages] = useState([]); // Lưu danh sách ảnh liên quan
   const uriImage = dataAnh.uri; // Lấy URI của ảnh chính

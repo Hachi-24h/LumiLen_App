@@ -4,43 +4,87 @@ const User = require('../../model/User'); // Đảm bảo đường dẫn đúng
 const Notification = require('../../model/Notification'); // Đảm bảo đường dẫn đúng đến file Notification.js
 const mongoose = require('mongoose');
 
-// Route để thêm một thông báo vào danh sách Notifi của người dùng
-router.post('/addNotification/:userId', async (req, res) => {
-    const { userId } = req.params; // ID của người dùng nhận thông báo
-    const { message, isRead, userID, picture } = req.body; // Nội dung thông báo
+// Route để thêm một thông báo mới
+router.post('/addNotification', async (req, res) => {
+    const { message, userID, picture } = req.body;
+
+    // Kiểm tra dữ liệu yêu cầu
+    if (!message || !userID || !picture) {
+        return res.status(400).json({ message: "Vui lòng cung cấp đầy đủ thông tin thông báo." });
+    }
 
     try {
-        // Tạo thông báo mới
+        // Tạo thông báo mới với trường isRead mặc định là false
         const newNotification = new Notification({
-            message,
-            isRead: isRead || false, // Mặc định isRead là false nếu không được cung cấp
+            mess: message,
             userID,
-            picture
+            picture,
+            isRead: false,  // Thêm trường isRead, mặc định là false
         });
 
-        // Lưu thông báo mới vào cơ sở dữ liệu
+        // Lưu thông báo vào cơ sở dữ liệu
         await newNotification.save();
 
-        // Tìm người dùng và thêm ID của thông báo mới vào danh sách Notifi
-        const user = await User.findById(userId);
-        if (!user) {
-            return res.status(404).json({ message: "Người dùng không tồn tại." });
-        }
-
-        // Kiểm tra nếu danh sách Notifi có nhiều hơn 29 thông báo
-        if (user.Notifi.length >= 30) {
-            // Xóa thông báo cũ nhất (thông báo đầu tiên trong mảng)
-            user.Notifi.shift();
-        }
-
-        // Thêm ID của thông báo mới vào Notifi
-        user.Notifi.push(newNotification._id);
-        await user.save();
-
-        res.status(200).json({ message: "Thông báo đã được thêm thành công.", user });
+        res.status(200).json({ message: "Thông báo đã được thêm thành công." });
     } catch (error) {
-        res.status(500).json({ message: error.message });
+        console.error(error);
+        res.status(500).json({ message: "Lỗi khi thêm thông báo." });
     }
 });
+
+// Route để lấy tất cả thông báo từ cơ sở dữ liệu
+router.get('/allNotifications', async (req, res) => {
+    try {
+        const notifications = await Notification.find().sort({ createdAt: -1 }); // Sắp xếp theo thời gian tạo (mới nhất lên đầu)
+
+        if (!notifications || notifications.length === 0) {
+            return res.status(404).json({ message: "Chưa có thông báo nào." });
+        }
+
+        res.status(200).json({ notifications });
+    } catch (error) {
+        console.error("Error fetching all notifications:", error);
+        res.status(500).json({ message: "Lỗi server khi lấy tất cả thông báo." });
+    }
+});
+  
+
+// Route để lấy danh sách thông báo của người dùng
+router.get('/notifications/:userId', async (req, res) => {
+    const { userId } = req.params;  // Lấy ID của người dùng từ URL
+  
+    try {
+      // Tìm người dùng và populate thông báo (Notifi)
+      const user = await User.findById(userId).populate('Notifi');
+      if (!user) {
+        return res.status(404).json({ message: "Người dùng không tồn tại." });
+      }
+  
+      // Trả về danh sách thông báo của người dùng
+      res.status(200).json({ notifications: user.Notifi });
+    } catch (error) {
+      console.error("Error fetching notifications:", error);
+      res.status(500).json({ message: "Lỗi server khi lấy thông báo." });
+    }
+  });
+
+  // Route để lấy tất cả thông báo từ cơ sở dữ liệu
+router.get('/allNotifications', async (req, res) => {
+    try {
+        // Lấy tất cả các thông báo
+        const notifications = await Notification.find().sort({ createdAt: -1 }); // Sắp xếp theo thời gian tạo (mới nhất lên đầu)
+
+        if (!notifications || notifications.length === 0) {
+            return res.status(404).json({ message: "Chưa có thông báo nào." });
+        }
+
+        // Trả về danh sách thông báo
+        res.status(200).json({ notifications });
+    } catch (error) {
+        console.error("Error fetching all notifications:", error);
+        res.status(500).json({ message: "Lỗi server khi lấy tất cả thông báo." });
+    }
+});
+
 
 module.exports = router;

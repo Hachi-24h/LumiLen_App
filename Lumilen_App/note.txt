@@ -83,3 +83,13 @@ Nam
 
 
 yarn add react-native
+
+
+Thông báo khi ai đó tym
+Thông báo khi ai đó Ghim
+Thay kính lúp bằng User mà đã tym hay like cho mình
+Hiển thị ngày, tuần, tháng (giờ)
+Bấm vào user -> user người đó
+Bấm nguyên thông báo -> bài viết
+Thay thành đã đọc với xóa thông báo 
+xóa những ảnh đã có trong tableuser

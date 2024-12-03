@@ -20,6 +20,8 @@ import demo from "../DemoFuntion";
 import UpdateInfo from "../Screen/Info/MyAccount/AccountManagement/Profile/UpdateInfo_Screen";
 import AddGhim from "../Screen/Info/addGhim_Screen";
 import TableDetail from "../Screen/DetailScreen/TableDetail_Screen";
+import Notification from "../Screen/Notification/Notification_Screen";
+
 export default {
   HomeTabs,
   ImageDetailScreen,
@@ -43,5 +45,5 @@ export default {
   demo,
   AddGhim,
   TableDetail,
-  
+  Notification,
 };

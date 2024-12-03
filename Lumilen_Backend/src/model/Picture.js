@@ -22,6 +22,10 @@ const PictureSchema = new mongoose.Schema({
         maxlength: 200, // Không quá 200 ký tự
         default: null,
         trim: true // Xóa khoảng trắng đầu/cuối
+    },
+    listUserHeart:{
+        type: mongoose.Schema.Types.ObjectId,
+        default:[],
     }
 }, {
     timestamps: true,

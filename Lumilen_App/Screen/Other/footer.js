@@ -12,8 +12,6 @@ const Footer = ({ navigation, avatar, initialSelectedIcon, namePage, }) => {
   const [styleName, setStyleName] = useState(styles.Touch_unselected);
   const [isCreateModalVisible, setCreateModalVisible] = useState(false);
   const navigationState = useNavigationState((state) => state);  // Lấy trạng thái navigation
-  
-  
 
   const handleIconPress = (iconName) => {
     if (iconName === "account") {
@@ -79,10 +77,10 @@ const Footer = ({ navigation, avatar, initialSelectedIcon, namePage, }) => {
       </TouchableOpacity>
 
       {/* Message Icon */}
-      <TouchableOpacity onPress={() => handleIconPress("Search")}>
+      <TouchableOpacity onPress={() => handleIconPress("Notification")}>
         <Image
           source={
-            selectedIcon === "mess"
+            selectedIcon === "Notification"
               ? require("../../Icon/mess_check.png")
               : require("../../Icon/mess_uncheck.png")
           }

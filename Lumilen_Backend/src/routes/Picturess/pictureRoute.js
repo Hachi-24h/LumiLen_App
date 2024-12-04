@@ -70,37 +70,42 @@ router.get('/getUserImages', async (req, res) => {
 });
 
 // Route để thêm một Picture mới
-// Hàm thêm ảnh vào Ghim
+
 router.post('/addPicture', async (req, res) => {
     try {
-        const { uri, title, id } = req.body;
+        const { uri, title, description, iduser } = req.body;
 
-        // Kiểm tra ID
-        if (!mongoose.Types.ObjectId.isValid(id)) {
-            return res.status(400).json({ message: "Invalid id format." });
+        // Kiểm tra ID người dùng
+        if (!mongoose.Types.ObjectId.isValid(iduser)) {
+            return res.status(400).json({ message: "Invalid iduser format." });
         }
 
         // Tạo một Picture mới
         const newPicture = new Picture({
             uri,
             title,
-            id: id,
+            description,
+            idUser: iduser,
+            listUserHeart: [] // Mảng rỗng mặc định
         });
 
         // Lưu Picture vào cơ sở dữ liệu
         const savedPicture = await newPicture.save();
 
         // Thêm ảnh vào ListAnhGhim của User
-        const user = await User.findById(id);
-        user.ListAnhGhim.push(savedPicture._id);
-        await user.save();
+        const user = await User.findById(iduser);
+        if (user) {
+            user.ListAnhGhim.push(savedPicture._id);
+            await user.save();
+        }
 
-        res.status(200).json({ message: "Picture added to Ghim successfully.", picture: savedPicture });
+        res.status(200).json({ message: "Picture added successfully.", picture: savedPicture });
     } catch (error) {
-        console.error("Error adding picture to Ghim:", error);
+        console.error("Error adding picture:", error);
         res.status(500).json({ message: error.message });
     }
 });
+
 
 // Hàm tìm ảnh theo id
 // http://172.21.80.105:5000/picture/getPictureById/6728e2c2893cc88bd98fd342
@@ -250,63 +255,72 @@ router.delete('/remPicFroTab', async (req, res) => {
     }
 });
 
-// router.post('/classify-images', async (req, res) => {
+// router.post('/addPictureAndAssignToTable', upload.fields([{ name: 'img', maxCount: 1 }]), async (req, res) => {
 //     try {
-//         console.log('Step 1: Gọi API nội bộ');
-//         const allPicturesResponse = await axios.get('http://localhost:5000/picture/getAllPictures');
-//         console.log('Step 2: Dữ liệu trả về:', allPicturesResponse.data);
+//         const { title, description, iduser, tableUserId } = req.body;
 
-//         const pictures = allPicturesResponse.data;
-//         if (!pictures || !Array.isArray(pictures) || pictures.length === 0) {
-//             return res.status(400).json({ error: 'No images found in the system' });
+//         // Kiểm tra xem file ảnh có được upload hay không
+//         if (!req.files || !req.files['img']) {
+//             return res.status(400).json({ message: "No files uploaded." });
 //         }
 
-//         const imageUris = pictures.map(picture => picture.uri);
-//         console.log('Step 3: URI ảnh:', imageUris);
+//         // Lấy URL của ảnh từ file đã upload
+//         const link_img = req.files['img'][0].path;
 
-//         const prompt = `Group these image URIs into categories: ${imageUris.join(', ')}`;
+//         // Kiểm tra ID người dùng
+//         if (!mongoose.Types.ObjectId.isValid(iduser)) {
+//             return res.status(400).json({ message: "Invalid iduser format." });
+//         }
 
+//         // Tạo một Picture mới
+//         const newPicture = new Picture({
+//             uri: link_img,  // Lưu đường dẫn ảnh
+//             title,
+//             description,
+//             idUser: iduser,
+//             listUserHeart: [] // Mảng rỗng mặc định
+//         });
 
-//         console.log('Step 4: Gọi OpenAI API với prompt:', prompt);
-//         const response = await axios.post(
-//             'https://api.openai.com/v1/chat/completions', // Đường dẫn mới cho mô hình GPT-4 hoặc GPT-3.5
-//             {
-//                 model: 'gpt-3.5-turbo', // Hoặc 'gpt-3.5-turbo'
-//                 messages: [
-//                     {
-//                         role: 'system',
-//                         content: 'You are an assistant that helps classify and group images based on their content.',
-//                     },
-//                     {
-//                         role: 'user',
-//                         content: `
-//                             I have the following images with these URIs: ${imageUris.join(', ')}.
-//                             Please group these images into categories based on their content (e.g., animals, objects, people) and generate a title for each group.
-//                             Respond in JSON format with "groups" containing image URIs and "titles" containing the title for each group.
-//                         `,
-//                     },
-//                 ],
-//                 max_tokens: 100,
-//                 temperature: 0.7,
-//             },
-//             {
-//                 headers: {
-//                     'Content-Type': 'application/json',
-//                     Authorization: `Bearer ${OPENAI_API_KEY}`,
-//                 },
-//             }
-//         );
-//         console.log('Step 5: Kết quả từ OpenAI:', response.data);
-//         const data = response.data.choices[0].text.trim();
-//         res.status(200).json({ success: true, result: JSON.parse(data) });
+//         // Lưu Picture vào cơ sở dữ liệu
+//         const savedPicture = await newPicture.save();
+
+//         // Tìm user
+//         const user = await User.findById(iduser).populate('collectionUser');
+//         if (!user) {
+//             return res.status(404).json({ message: "User not found." });
+//         }
+
+//         // Kiểm tra xem tableUserId có thuộc User này hay không
+//         const tableUser = user.collectionUser.find(table => table._id.toString() === tableUserId);
+//         if (!tableUser) {
+//             return res.status(404).json({ message: "TableUser not found for this user." });
+//         }
+
+//         // Kiểm tra xem ảnh đã tồn tại trong listAnh của TableUser chưa
+//         const isPictureExists = tableUser.listAnh.some((pic) => pic.equals(new mongoose.Types.ObjectId(savedPicture._id))); // Sử dụng `equals()` để so sánh ObjectId
+//         if (isPictureExists) {
+//             return res.status(400).json({ message: "Picture already exists in this TableUser's list." });
+//         }
+
+//         // Thêm pictureId vào listAnh của TableUser
+//         tableUser.listAnh.push(savedPicture._id);
+//         await tableUser.save(); // Lưu vào bảng
+
+//         // Cập nhật lại thông tin bảng trong User nếu cần
+//         await user.save();
+
+//         // Trả về kết quả
+//         res.status(200).json({
+//             message: "Picture uploaded, created and added to table successfully.",
+//             picture: savedPicture,
+//             tableUser: tableUser
+//         });
 //     } catch (error) {
-//         console.error('Error:', error.message);
-//         if (error.response) {
-//             console.error('Error response:', error.response.data);
-//         }
-//         res.status(500).json({ error: 'Failed to classify images', details: error.message });
+//         console.error("Error processing request:", error);
+//         res.status(500).json({ message: error.message });
 //     }
 // });
+
 
 
 

@@ -105,6 +105,7 @@ const HomeTabs = ({ navigation }) => {
         setLoading(false);
       } catch (error) {
         console.error("Lỗi khi tải dữ liệu bảng:", error);
+        showNotification("Ảnh này đã có trong bảng ")
         setLoading(false);
       }
     };

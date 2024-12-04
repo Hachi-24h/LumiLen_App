@@ -12,20 +12,20 @@ const PictureSchema = new mongoose.Schema({
         trim: true, // Xóa khoảng trắng đầu/cuối
         default: null // Cho phép null hoặc để trống
     },
-    id: {
+    idUser: {
         type: String,
         required: true,
         trim: true 
     },
-    typePicture: {
+    description: {
         type: String,
         maxlength: 200, // Không quá 200 ký tự
-        default: null,
+        default: "", // Chuỗi rỗng mặc định
         trim: true // Xóa khoảng trắng đầu/cuối
     },
-    listUserHeart:{
-        type: mongoose.Schema.Types.ObjectId,
-        default:[],
+    listUserHeart: {
+        type: [String], // Mảng các chuỗi
+        default: [] // Mảng trống mặc định
     }
 }, {
     timestamps: true,

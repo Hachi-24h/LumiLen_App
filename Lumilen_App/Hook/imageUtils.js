@@ -1,6 +1,7 @@
 import { Image } from "react-native";
 
 export const convertDataWithSize = async (data) => {
+  
   const imagesWithSize = await Promise.all(
     data.map(async (item) => {
       return new Promise((resolve) => {

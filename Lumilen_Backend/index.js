@@ -10,6 +10,7 @@ const { picture } = require('./src/config/cloudinary');
 const pictureRoute = require('./src/routes/Picturess/pictureRoute');
 const tableUserRoute = require('./src/routes/TableUser/tableUserRoute');
 const NotifiRoute = require('./src/routes/Notification/NotifiRoutes');
+const DataSearch = require('./src/routes/DataSearch/dataSearchRoutes');
 
 const connectDB = async () => {
     try {
@@ -44,6 +45,7 @@ app.use('/upload', upLoadRoutes);
 app.use('/picture',pictureRoute);
 app.use('/tableUser',tableUserRoute);
 app.use('/notification',NotifiRoute);
+app.use('/data',DataSearch)
 
 app.post('/api/search_image', async (req, res) => {
     try {

@@ -56,3 +56,10 @@ python N:\Lumilen\Lumilen_Backend\src\routes\Picturess\app.py
 - viết lại Home 
 - viết trang chi tiết ảnh ( lấy data từ routes ) -> user
 - user
+
+
+
+/// yarn add string-similarity
+pip install spacy
+python -m spacy download en_core_web_md
+pip install spacy

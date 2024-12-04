@@ -30,7 +30,7 @@ const SPACING = 15; // Khoảng cách giữa các cột
 const columnWidth = (width - (COLUMN_COUNT + 1) * SPACING) / COLUMN_COUNT;
 
 const HomeTabs = ({ navigation }) => {
-  const { userData } = useContext(UserContext);
+  const { userData, fetchUserData } = useContext(UserContext);
   const avatar = userData ? userData.avatar : null;
   const [images, setImages] = useState([]); // Danh sách ảnh đầy đủ
   const [filteredImages, setFilteredImages] = useState([]); // Danh sách ảnh được lọc

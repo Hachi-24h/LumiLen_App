@@ -605,8 +605,4 @@ router.get('/findUserByIdUser', async (req, res) => {
     }
 });
 
-
-
-
-
 module.exports = router;

@@ -22,6 +22,8 @@ import AddGhim from "../Screen/Info/addGhim_Screen";
 import TableDetail from "../Screen/DetailScreen/TableDetail_Screen";
 import Notification from "../Screen/Notification/Notification_Screen";
 
+
+
 export default {
   HomeTabs,
   ImageDetailScreen,
@@ -46,4 +48,5 @@ export default {
   AddGhim,
   TableDetail,
   Notification,
+  ChatBoxAi,
 };

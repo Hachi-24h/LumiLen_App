@@ -80,7 +80,7 @@ const LoginScreen = ({ navigation }) => {
         setEmailBorderColor("black");
         setPasswordBorderColor("black");
         await fetchUserData(email);
-        navigation.navigate("Profile");
+        navigation.navigate("HomeTabs");
       } else {
         setEmailBorderColor("red");
         setPasswordBorderColor("red");

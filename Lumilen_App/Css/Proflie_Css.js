@@ -211,6 +211,17 @@ export default StyleSheet.create({
     marginVertical  : height * 0.015,
   },
   modalOption :{
+    textAlign: "left",
+    width: width * 0.9,
+    height: height * 0.05,
+    borderRadius: height * 0.02,
+    
+    alignItems : "flex-start",
+    alignContent : "center",
+    
+
+  },
+  modalOption1 :{
     textAlign: "center",
     width: width * 0.2,
     height: height * 0.05,
@@ -224,8 +235,9 @@ export default StyleSheet.create({
   modalOptionText1: {
     fontSize: height * 0.02,
     marginTop: height * 0.01,
-    color: "white",
+    color: "black",
     textAlign: "center",
     fontWeight: "bold",
   },
+  
 });

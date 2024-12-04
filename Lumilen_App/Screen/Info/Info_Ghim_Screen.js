@@ -119,7 +119,8 @@ const Info_Ghim_Screen = ({ navigation, route }) => {
                 style={{
                   width: columnWidth,
                   height: imageHeight,
-
+                  borderRadius: 10,
+                  marginBottom: SPACING,
                   resizeMode: "cover",
                 }}
               />

@@ -252,19 +252,29 @@ router.get('/findUserById/:id', async (req, res) => {
     const { id } = req.params; // Lấy _id từ params
 
     try {
-        // Tìm người dùng theo _id
-        const user = await User.findById(id);
+        // Tìm người dùng theo _id và nạp dữ liệu liên kết
+        const user = await User.findById(id)
+            .populate({
+                path: 'collectionUser',
+                populate: {
+                    path: 'listAnh',
+                    model: 'Picture' // nạp dữ liệu liên quan đến hình ảnh từ model Picture
+                }
+            })
+            .populate('ListAnhGhim', 'uri title typePicture') // nạp dữ liệu ghim hình ảnh
+            .populate('Notifi', 'mess createdAt isRead'); // nạp thông báo
 
         if (!user) {
             return res.status(404).json({ message: "Người dùng không tồn tại." });
         }
 
-        // Trả về thông tin người dùng
+        // Trả về thông tin người dùng với các dữ liệu liên kết
         res.status(200).json(user);
     } catch (error) {
         res.status(500).json({ message: error.message });
     }
 });
+
 
 // Route để tìm người dùng theo firstName và lastName
 router.get('/findUserByName', async (req, res) => {

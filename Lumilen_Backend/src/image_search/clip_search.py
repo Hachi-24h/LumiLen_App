@@ -13,7 +13,7 @@ model, preprocess = clip.load("ViT-B/32", device=device)
 if device == "cuda":
     model = model.half()
 
-SIMILARITY_THRESHOLD = 0.6
+SIMILARITY_THRESHOLD = 30.0
 
 # Hàm dịch từ khóa
 def translate_keyword(keyword, src='vi', dest='en'):
@@ -65,16 +65,20 @@ def find_best_matches(image_data, image_urls, keyword, top_k=6):
         image_features = model.encode_image(image_tensors)
         similarity_scores = (text_features @ image_features.T).squeeze().cpu().numpy()
 
+    print("Similarity scores for each image:")
+    for i, score in enumerate(similarity_scores):
+        print(f"Image {i+1}: {score:.4f}")
     # Lọc ra các ảnh có độ tương đồng cao
     matching_indices = [i for i, score in enumerate(similarity_scores) if score >= SIMILARITY_THRESHOLD]
-
+    for i, score in enumerate(matching_indices):
+        print(f"Image hợp : {i+1}: {score:.4f}")
     # Nếu không có ảnh nào phù hợp
     if not matching_indices:
         print("No matches found above the similarity threshold.")
         return []
 
     # Sắp xếp và lấy top_k ảnh có độ tương đồng cao nhất
-    top_indices = sorted(matching_indices, key=lambda i: similarity_scores[i], reverse=True)[:top_k]
+    top_indices = sorted(matching_indices, key=lambda i: similarity_scores[i], reverse=True)
 
     # Trả về các ảnh cùng với độ tương đồng
     best_matches = [{**image_data[i], "similarity_score": float(similarity_scores[i])} for i in top_indices]

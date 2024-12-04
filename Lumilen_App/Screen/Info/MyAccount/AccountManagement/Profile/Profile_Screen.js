@@ -23,23 +23,25 @@ import BASE_URL from "../../../../../config/IpAdress";
 import { showNotification } from "../../../../../Custom/notification";
 const ProfileScreen = ({ navigation, route }) => {
   const [loading, setLoading] = useState(true);
-  const userIDshow = "672cd1f6ea6637803a6b8424"; // Lấy userID từ route.params
-  const {width, height} = Dimensions.get("window");
+  const userIDshow = route.params.userID;
+  console.log("userIDshow :", userIDshow);
+  const { width, height } = Dimensions.get("window");
   const [userShow, setUserShow] = useState(null); // Lưu thông tin người dùng
   const DefaultAvatar = require("../../../../../Picture/defaulttableuser.jpg");
+  const avatar = userShow ? userShow.avatar : null;
   const { userData, fetchUserData } = useContext(UserContext);
   const userIdCurrent = userData ? userData._id : null;
-  const userId = userData ? userData.idUser : null;
+  const userId = userShow ? userShow.idUser : null;
   const email = userData ? userData.email : null;
+  console.log("email :", email);
   const [isSameUser, setIsSameUser] = useState(false);
-  const name = userData ? userData.firstName + " " + userData.lastName : null;
-  const follower = userData ? userData.followers.length : 0;
-  const following = userData ? userData.following.length : 0;
-  const originalListTableUser = userData ? userData.collectionUser : [];
+  const name = userShow ? userShow.firstName + " " + userData.lastName : null;
+  const follower = userShow?.followers?.length || 0;
+  const following = userShow?.following?.length || 0;
+  const originalListTableUser = userShow ? userShow.collectionUser : [];
   const [displayedListTableUser, setDisplayedListTableUser] = useState(
     originalListTableUser
   );
- 
   const [modalVisible, setModalVisible] = useState(false);
   const [editModalVisible, setEditModalVisible] = useState(false);
   const [IsTableSelected, setIsTableSelected] = useState(null);
@@ -85,17 +87,53 @@ const ProfileScreen = ({ navigation, route }) => {
       { cancelable: false }
     );
   };
+
+  const handleSave = async () => {
+    try {
+      if (!newTableName) {
+        showNotification("Vui lòng nhập tên bảng", "error");
+        return;
+      }
+      const statustab = newStatus ? "block" : "unblock";
+
+      console.log("IsTableSelected :", IsTableSelected);
+      const dataupdate = {
+        userId: userIdCurrent,
+        tableUserId: IsTableSelected,
+        newName: newTableName,
+        newStatus: statustab,
+      };
+      console.log("dataupdate :", dataupdate);
+      const response = await axios.put(
+        `${BASE_URL}:5000/tableUser/updateTableUser`,
+        dataupdate
+      );
+
+      // Kiểm tra nếu phản hồi thành công
+      if (response.status === 200) {
+       
+        await fetchUserData(email,true);
+        showNotification("Cập nhật bảng thành công", "success");
+        setModalVisible(false);
+        setEditModalVisible(false);
+      } else {
+        Alert.alert(
+          "Lỗi",
+          response.data.message || "Có lỗi xảy ra khi cập nhật."
+        );
+      }
+    } catch (error) {
+      console.error("Lỗi khi lưu bảng:", error);
+      showNotification("Có lỗi xảy ra hãy làm lại nhé ", "error");
+    }
+  };
+
   // Hàm cập nhật thông tin bảng
   const handleEdit = () => {
     onEdit(table._id, newTableName, newStatus);
     setEditModalVisible(false);
   };
 
-  const ClickHandleDeleteTable = (idTable) => {
-    setModalVisible(true);
-    setIsTableSelected(idTable);
-  };
-  console.log("idTableSelected :", IsTableSelected);
   useEffect(() => {
     // Hàm gọi API để lấy thông tin người dùng
     const fetchUserById = async () => {
@@ -118,8 +156,6 @@ const ProfileScreen = ({ navigation, route }) => {
   // kiểm tra user xem có phải là user hiện tại không
   useEffect(() => {
     if (userIdCurrent && userIDshow) {
-      console.log("userIdCure :", userIdCurrent);
-      console.log("userIDshow :", userIDshow);
       if (userIdCurrent === userIDshow) {
         setIsSameUser(true); // Cả hai userID giống nhau
       } else {
@@ -129,8 +165,7 @@ const ProfileScreen = ({ navigation, route }) => {
   }, [userId, userIDshow]);
 
   useEffect(() => {
-    console.log("trang thai user :", isSameUser);
-    if (isSameUser === false) {
+    if (isSameUser !== true) {
       const filteredList = originalListTableUser.filter(
         (table) => table.statusTab === "unblock"
       );
@@ -143,13 +178,23 @@ const ProfileScreen = ({ navigation, route }) => {
 
   const renderTableUser = ({ item }) => {
     const tableName = item.name;
-    const numberOfImages = item.listAnh.length;
+    // console.log("item :", item);
+    const numberOfImages = Array.isArray(item.listAnh)
+      ? item.listAnh.length
+      : 0;
+    
     const styleIcon = item.statusTab === "block" ? styles.lock : styles.null;
-
+    // Kiểm tra nếu item.listAnh là mảng hợp lệ trước khi sử dụng
     const images = [
-      item.listAnh[0] ? { uri: item.listAnh[0].uri } : DefaultAvatar,
-      item.listAnh[1] ? { uri: item.listAnh[1].uri } : DefaultAvatar,
-      item.listAnh[2] ? { uri: item.listAnh[2].uri } : DefaultAvatar,
+      item.listAnh && item.listAnh[0]
+        ? { uri: item.listAnh[0].uri }
+        : DefaultAvatar,
+      item.listAnh && item.listAnh[1]
+        ? { uri: item.listAnh[1].uri }
+        : DefaultAvatar,
+      item.listAnh && item.listAnh[2]
+        ? { uri: item.listAnh[2].uri }
+        : DefaultAvatar,
     ];
 
     return (
@@ -159,7 +204,7 @@ const ProfileScreen = ({ navigation, route }) => {
           onPress={() =>
             navigation.navigate("TableDetail", {
               tableId: item._id,
-              userId: userId,
+              userId: userIdCurrent,
             })
           }
           style={styles.boardImage}
@@ -203,19 +248,22 @@ const ProfileScreen = ({ navigation, route }) => {
             <Text style={styles.boardTitle}>{tableName}</Text>
             <Text style={styles.boardDetails}>{numberOfImages} ghim</Text>
           </View>
-          <TouchableOpacity
-            onPress={() => {
-              setModalVisible(true);
-              setIsTableSelected(item._id);
-              setNewTableName(item.name);
-            }}
-          >
-            <Ionicons name="ellipsis-horizontal" size={20} color="black" />
-          </TouchableOpacity>
+          {isSameUser === true && (
+            <TouchableOpacity
+              onPress={() => {
+                setModalVisible(true);
+                setIsTableSelected(item._id);
+                setNewTableName(item.name);
+              }}
+            >
+              <Ionicons name="ellipsis-horizontal" size={20} color="black" />
+            </TouchableOpacity>
+          )}
         </View>
       </View>
     );
   };
+
   return (
     <View style={styles.container}>
       {/* Header */}
@@ -235,14 +283,17 @@ const ProfileScreen = ({ navigation, route }) => {
 
       {/* Profile Section */}
       <View style={styles.profileContainer}>
-        <TouchableOpacity onPress={() => navigation.navigate("ChangeAvatar")}>
-          {/* Hiển thị avatar mới nếu có, nếu không hiển thị ảnh mặc định */}
+        <StatusBar hidden={false} />
+
+        <TouchableOpacity
+          onPress={
+            isSameUser === true
+              ? () => navigation.navigate("ChangeAvatar")
+              : null
+          }
+        >
           <Image
-            source={
-              userData?.avatar
-                ? { uri: userData.avatar }
-                : require("../../../../../Picture/image_1.png")
-            }
+            source={avatar ? { uri: avatar } : DefaultAvatar}
             style={styles.avatar}
           />
         </TouchableOpacity>
@@ -251,31 +302,35 @@ const ProfileScreen = ({ navigation, route }) => {
         <Text style={styles.followInfo}>
           {follower} người theo dõi · {following} đang theo dõi
         </Text>
-        <TouchableOpacity
-          style={styles.editProfileButton}
-          onPress={() => navigation.navigate("UpdateInfo")}
-        >
-          <Text style={styles.editProfileText}>Chỉnh sửa hồ sơ</Text>
-        </TouchableOpacity>
+        {isSameUser === true && (
+          <TouchableOpacity
+            style={styles.editProfileButton}
+            onPress={() => navigation.navigate("UpdateInfo")}
+          >
+            <Text style={styles.editProfileText}>Chỉnh sửa hồ sơ</Text>
+          </TouchableOpacity>
+        )}
       </View>
 
       <View style={styles.ListTab}>
         {displayedListTableUser.length === 0 ? (
-          <View style={styles.emptyMessageContainer}>
-            <Text style={styles.emptyMessageText}>
-              {searchQuery
-                ? "Không có bảng nào hic hic . đi tạo bảng ngay nào"
-                : "Không có bảng nào , tạo ngay nào"}
+          // Nếu không có phần tử nào trong displayedListTableUser
+          <View style={styles.emptyMessageContainer }>
+            <Text style={{marginTop:height*0.12, fontSize:height*0.022}}>
+              Không có bảng nào để hiển thị!!
             </Text>
           </View>
         ) : (
+          // Nếu có phần tử, hiển thị FlatList
           <FlatList
             data={displayedListTableUser}
             renderItem={renderTableUser}
             numColumns={2}
             columnWrapperStyle={styles.row}
             contentContainerStyle={styles.boardList}
-            keyExtractor={(item) => item._id}
+            keyExtractor={(item) =>
+              item._id ? item._id.toString() : Math.random().toString()
+            } // Đảm bảo key là duy nhất
           />
         )}
       </View>
@@ -334,11 +389,17 @@ const ProfileScreen = ({ navigation, route }) => {
             />
 
             {/* Trạng thái bảng */}
-            <View style={{flexDirection:"row", width:width*0.9, justifyContent:"space-between"}}>
+            <View
+              style={{
+                flexDirection: "row",
+                width: width * 0.9,
+                justifyContent: "space-between",
+              }}
+            >
               <Text style={styles.titlecss}>Trạng thái bảng</Text>
               <Switch
                 value={newStatus}
-                style={{marginTop:height*0.005}}
+                style={{ marginTop: height * 0.005 }}
                 onValueChange={(value) => setNewStatus(value)}
                 thumbColor={newStatus ? "#34c759" : "#ff3b30"} // Adjust thumb color based on status
                 trackColor={{ false: "#d3d3d3", true: "#81b0ff" }} // Track color for different states
@@ -349,8 +410,7 @@ const ProfileScreen = ({ navigation, route }) => {
             <Pressable
               style={styles.modalOption}
               onPress={() => {
-               
-               
+                handleSave();
               }}
             >
               <Text style={styles.modalOptionText1}>Lưu</Text>

@@ -35,12 +35,13 @@ const HomeTabs = ({ navigation }) => {
   const [images, setImages] = useState([]); // Danh sách ảnh đầy đủ
   const [filteredImages, setFilteredImages] = useState([]); // Danh sách ảnh được lọc
   const [selectedItem, setSelectedItem] = useState(null); // Lưu ảnh được chọn
-  const [ Table , setTable ] = useState(null); // L
+  const [Table, setTable] = useState(null); // L
   const [isModalGhim, setModalGhim] = useState(false); // Trạng thái của Modal
   const [isModalBang, setModalBang] = useState(false); // Modal chọn bảng
   const [boards, setBoards] = useState([]); // Danh sách bảng
   const [loading, setLoading] = useState(true); // Trạng thái tải API
   const userId = userData ? userData._id : null; // Lấy userId từ dữ liệu người dùng
+  // console.log("selectted :", selectedItem);
   // Hàm lấy dữ liệu từ API
   const fetchDataFromAPI = async () => {
     try {
@@ -48,7 +49,7 @@ const HomeTabs = ({ navigation }) => {
       const data = await response.json();
       return data;
     } catch (error) {
-      console.error("Error fetching images:", error);
+      // console.error("Error fetching images:", error);
       return [];
     }
   };
@@ -103,7 +104,7 @@ const HomeTabs = ({ navigation }) => {
         setLoading(false);
       } catch (error) {
         console.error("Lỗi khi tải dữ liệu bảng:", error);
-        showNotification("Ảnh này đã có trong bảng ")
+        showNotification("Ảnh này đã có trong bảng ");
         setLoading(false);
       }
     };
@@ -151,76 +152,73 @@ const HomeTabs = ({ navigation }) => {
         await MediaLibrary.addAssetsToAlbumAsync([asset], album, false);
       }
 
-      Alert.alert("Thành công", "Ảnh đã được tải xuống thư mục Download!");
+      showNotification("Ảnh của bạn đã được tải xuống !", "success");
     } catch (error) {
-      console.error("Lỗi khi tải ảnh:", error);
-      Alert.alert("Lỗi", "Không thể tải xuống ảnh.");
+      // console.error("Lỗi khi tải ảnh:", error);
+      showNotification("Có lỗi xảy ra !", "error");
     }
   };
 
-// Hàm xử lý khi bấm vào ba chấm
-const handleMoreOptions = (idPicture) => {
-  setSelectedItem(idPicture); // Gán giá trị selectedItem khi bấm vào ảnh
-  setModalGhim(true); // Mở modal
-};
+  // Hàm xử lý khi bấm vào ba chấm
+  const handleMoreOptions = (Picture) => {
+    setSelectedItem(Picture); // Gán giá trị selectedItem khi bấm vào ảnh
+    setModalGhim(true); // Mở modal
+  };
 
   const handleBoardSelection = () => {
     setModalBang(true);
     setModalGhim(false);
-    
   };
 
-const handleBoard = async (Table) => {
-  try {
-    // Kiểm tra selectedItem trước khi xử lý
-    if (!selectedItem) {
-      showNotification("Có lỗi xảy ra với chọn ảnh !", "error");
-      return;
+  const handleBoard = async (Table) => {
+    try {
+      // Kiểm tra selectedItem trước khi xử lý
+      if (!selectedItem) {
+        showNotification("Có lỗi xảy ra với chọn ảnh !", "error");
+        return;
+      }
+      setTable(Table);
+    } catch (error) {
+      showNotification("Có lỗi xảy ra !", "error");
+      Alert.alert("Lỗi", "Có lỗi xảy ra khi lưu ảnh vào bảng hoặc Ghim.");
     }
-    setTable(Table);
-    
-  } catch (error) {
-    showNotification("Có lỗi xảy ra !", "error");
-    Alert.alert("Lỗi", "Có lỗi xảy ra khi lưu ảnh vào bảng hoặc Ghim.");
-  }
-};
+  };
 
-useEffect(() => {
-  if (Table) {
-    console.log("ID bảng đã được cập nhật: ", Table);
-    // Gửi request lưu ảnh vào bảng
-    setModalBang(false);
-    setModalGhim(false);
-    axios.post(
-      `${BASE_URL}:5000/picture/addPictureToTableUser`,
-      {
-        tableUserId: Table._id, // Sử dụng idTable đã được cập nhật
-        pictureId: selectedItem, // Sử dụng selectedItem đã được cập nhậ
-        userId: userId,
-      }
-    )
-    .then(response => {
-      if (response.status === 200) {
-        showNotification(`ảnh của bạn đã đã lưu vào ${Table.name}  !`, "success");
-      }
-    })
-    .catch(error => {
-      showNotification(`Ảnh đã có trong bảng ${Table.name} `, "warning");
-    });
-  }
-}, [Table]);  // Theo dõi sự thay đổi của idTable
+  useEffect(() => {
+    if (Table) {
+      // console.log("ID bảng đã được cập nhật: ", Table);
+      // Gửi request lưu ảnh vào bảng
+      setModalBang(false);
+      setModalGhim(false);
+      axios
+        .post(`${BASE_URL}:5000/picture/addPictureToTableUser`, {
+          tableUserId: Table._id, // Sử dụng idTable đã được cập nhật
+          pictureId: selectedItem.id, // Sử dụng selectedItem đã được cập nhậ
+          userId: userId,
+        })
+        .then((response) => {
+          if (response.status === 200) {
+            showNotification(
+              `ảnh của bạn đã đã lưu vào ${Table.name}  !`,
+              "success"
+            );
+          }
+        })
+        .catch((error) => {
+          showNotification(`Ảnh đã có trong bảng ${Table.name} `, "warning");
+        });
+    }
+  }, [Table]); // Theo dõi sự thay đổi của idTable
 
-
-// useEffect(() => { 
-//   console.log("Selected Item: ", selectedItem);
-// }, [selectedItem]);
-  
+  // useEffect(() => {
+  //   console.log("Selected Item: ", selectedItem);
+  // }, [selectedItem]);
 
   const renderColumn = (columnData, columnIndex) => {
     return (
       <View
         key={`column-${columnIndex}`}
-        style={{ flex: 1, marginHorizontal: SPACING / 2  }}
+        style={{ flex: 1, marginHorizontal: SPACING / 2 }}
       >
         {columnData.map((item, index) => {
           const imageHeight = (item.height / item.width) * columnWidth;
@@ -247,18 +245,30 @@ useEffect(() => {
               </TouchableOpacity>
 
               <View style={styles.footerContainer}>
-                <Image
-                  source={{
-                    uri: item.avatar || "https://via.placeholder.com/150",
-                  }}
-                  style={styles.footerIcon}
-                />
-                <Text style={styles.footerText} numberOfLines={1} ellipsizeMode="tail" >
+                <TouchableOpacity
+                  onPress={() =>
+                    navigation.navigate("Profile", {
+                      userID: item.userId,
+                    })
+                  }
+                >
+                  <Image
+                    source={{
+                      uri: item.avatar || "https://via.placeholder.com/150",
+                    }}
+                    style={styles.footerIcon}
+                  />
+                </TouchableOpacity>
+                <Text
+                  style={styles.footerText}
+                  numberOfLines={1}
+                  ellipsizeMode="tail"
+                >
                   {item.title || ""}
                 </Text>
                 <TouchableOpacity
                   style={styles.moreButton}
-                  onPress={() => handleMoreOptions(item.id)}
+                  onPress={() => handleMoreOptions(item)}
                 >
                   <Ionicons
                     name="ellipsis-horizontal"
@@ -352,7 +362,6 @@ useEffect(() => {
                 data={boards}
                 keyExtractor={(item) => item._id}
                 renderItem={({ item }) => (
-                  
                   <TouchableOpacity
                     style={styles.boardItem}
                     onPress={() => handleBoard(item)}

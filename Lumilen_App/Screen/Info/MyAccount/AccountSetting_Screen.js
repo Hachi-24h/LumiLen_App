@@ -20,7 +20,7 @@ const AccountScreen = ({ navigation }) => {
   const name = userData
     ? userData.lastName + " " + userData.firstName
     : "Chưa cập nhật";
-
+  const userID = userData ? userData._id : "Chưa cập nhật";
   // Hàm xử lý đăng xuất
   const handleLogout = async () => {
     try {
@@ -44,8 +44,8 @@ const AccountScreen = ({ navigation }) => {
     } catch (error) {
       console.error("Error during logout:", error.message);
     }
-  };  
-  
+  };
+
   return (
     <View style={styles.container}>
       <View style={styles.header}>
@@ -54,7 +54,11 @@ const AccountScreen = ({ navigation }) => {
 
       <TouchableOpacity
         style={styles.profileSection}
-        onPress={() => navigation.navigate("Profile")}
+        onPress={() =>
+          navigation.navigate("Profile", {
+            userID: userID,
+          })
+        }
       >
         <View style={styles.profileImageContainer}>
           <Image source={{ uri: avatar }} style={styles.profileImage} />

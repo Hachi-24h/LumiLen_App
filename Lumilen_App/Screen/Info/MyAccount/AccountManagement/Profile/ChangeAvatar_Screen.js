@@ -92,7 +92,9 @@ const ChangeAvatarScreen = ({ navigation }) => {
       <StatusBar hidden={false} />
       
       {/* Nút đóng */}
-      <TouchableOpacity style={styles.closeButton} onPress={() => navigation.navigate("Profile")}>
+      <TouchableOpacity style={styles.closeButton} onPress={() => navigation.navigate("Profile",{
+                      userID:userId ,
+                    })}>
         <Ionicons name="close" size={30} color="black" />
       </TouchableOpacity>
 

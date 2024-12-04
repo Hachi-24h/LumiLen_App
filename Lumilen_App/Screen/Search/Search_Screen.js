@@ -19,6 +19,7 @@ import BASE_URL from "../../config/IpAdress";
 import { UserContext } from "../../Hook/UserContext";
 import { convertDataWithSize } from "../../Hook/imageUtils";
 import PageTransition from "../../Custom/PageTransition";
+import LoadingModal from "../../Custom/Loading";
 const { width } = Dimensions.get("window");
 const COLUMN_COUNT = 2; // Số cột
 const SPACING = 15; // Khoảng cách giữa các cột
@@ -101,6 +102,7 @@ const Search = ({ navigation }) => {
 
   const searchImagesByTitle = async (title) => {
     try {
+      setIsLoading(true); // Bật loading trước khi gọi API
       const response = await axios.post(`${BASE_URL}:5001/api/search_image`, {
         keyword: title,
       });
@@ -108,11 +110,15 @@ const Search = ({ navigation }) => {
     } catch (error) {
       // console.error(`Lỗi khi tìm kiếm ảnh cho tiêu đề "${title}":`, error);
       return [];
+    } finally {
+      setIsLoading(false); // Tắt loading khi xong
     }
   };
   useEffect(() => {
     const fetchImagesForDataSearch = async () => {
+      setIsLoading(true); // Bật loading khi bắt đầu fetch dữ liệu
       const result = [];
+  
       for (const item of dataSearch) {
         const images = await searchImagesByTitle(item.title);
         result.push({
@@ -120,15 +126,20 @@ const Search = ({ navigation }) => {
           images: images,
         });
       }
+  
       if (result.length > 0) {
         setDataFinal(result); // Cập nhật dataFinal sau khi tìm ảnh xong
-      } else {
-        setDataFinal(imageLists);
       }
+      //  else {
+      //   setDataFinal(imageLists); // Sử dụng imageLists nếu không có kết quả
+      // }
+  
+      setIsLoading(false); // Tắt loading sau khi xử lý xong
     };
+  
     fetchImagesForDataSearch();
-  }, [dataSearch]); // Chạy lại khi dataSearch thay đổi
-  // Fetch history text
+  }, [dataSearch]); // Dữ liệu sẽ được tìm kiếm khi dataSearch thay đổi
+ 
   useEffect(() => {
     const fetchHistoryText = async () => {
       if (!userId) return;
@@ -383,7 +394,14 @@ const Search = ({ navigation }) => {
             // console.log(`Rendering item ${index}: ${item.firstName} ${item.lastName}, avatar URL: ${item.avatar}`);
 
             return (
-              <TouchableOpacity style={styles.userItem}>
+              <TouchableOpacity
+                style={styles.userItem}
+                onPress={() =>
+                  navigation.navigate("Profile", {
+                    userID: item.id,
+                  })
+                }
+              >
                 <View style={styles.imageContainer}>
                   {item.avatar ? (
                     <Image
@@ -536,11 +554,11 @@ const Search = ({ navigation }) => {
 
               {/* Danh sách ảnh */}
               <View>
-                {imageLists.map((list, index) => (
+                {dataFinal.map((list, index) => (
                   <View key={index} style={styles.listContainer}>
                     <View style={styles.listHeader}>
                       <Text style={styles.listTitle}>{list.title}</Text>
-                      <TouchableOpacity>
+                      <TouchableOpacity    onPress={() => handleDirectSearch(list.title)}  >
                         <Text style={styles.seeMore}>Xem thêm</Text>
                       </TouchableOpacity>
                     </View>
@@ -582,6 +600,7 @@ const Search = ({ navigation }) => {
           namePage={"Trang tìm kiếm"}
         />
       </View>
+      {isLoading && <LoadingModal loading={isLoading} text="Đang load" />}
     </PageTransition>
   );
 };

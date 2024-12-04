@@ -132,7 +132,7 @@ const AccountScreen = ({ navigation }) => {
 
           <TouchableOpacity
             style={styles.settingItem}
-            onPress={() => navigation.navigate("ChatBoxAI")}
+            onPress={() => navigation.navigate("ChatBoxAi")}
           >
             <Text style={styles.settingText}>Trung tâm Trợ giúp</Text>
             <Ionicons name="chevron-forward-outline" size={20} />

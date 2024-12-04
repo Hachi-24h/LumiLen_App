@@ -82,7 +82,7 @@ const SignUp = ({ navigation }) => {
               onPress={() => navigation.navigate("SignUp1")}
             >
               <Text style={styles.button}>
-                {dataTest && dataTest.length > 0 ? dataTest[0].name : "Sign Up"}
+                SignUp
               </Text>
             </TouchableOpacity>
           </View>

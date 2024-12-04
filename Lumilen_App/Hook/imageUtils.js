@@ -12,7 +12,7 @@ export const convertDataWithSize = async (data) => {
               uri: item.uri,
               width,
               height,
-              userId: item.id,
+              userId: item.idUser,
               title: item.title,
             });
           },

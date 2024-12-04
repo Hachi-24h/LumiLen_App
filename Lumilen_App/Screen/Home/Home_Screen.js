@@ -30,7 +30,7 @@ const SPACING = 15; // Khoảng cách giữa các cột
 const columnWidth = (width - (COLUMN_COUNT + 1) * SPACING) / COLUMN_COUNT;
 
 const HomeTabs = ({ navigation }) => {
-  const { userData } = useContext(UserContext);
+  const { userData, fetchUserData } = useContext(UserContext);
   const avatar = userData ? userData.avatar : null;
   const [images, setImages] = useState([]); // Danh sách ảnh đầy đủ
   const [filteredImages, setFilteredImages] = useState([]); // Danh sách ảnh được lọc
@@ -41,6 +41,8 @@ const HomeTabs = ({ navigation }) => {
   const [boards, setBoards] = useState([]); // Danh sách bảng
   const [loading, setLoading] = useState(true); // Trạng thái tải API
   const userId = userData ? userData._id : null; // Lấy userId từ dữ liệu người dùng
+  const email = userData ? userData.email : null; // Lấy email từ dữ liệu người dùng
+
   // Hàm lấy dữ liệu từ API
   const fetchDataFromAPI = async () => {
     try {
@@ -200,7 +202,9 @@ useEffect(() => {
     )
     .then(response => {
       if (response.status === 200) {
-        showNotification(`ảnh của bạn đã đã lưu vào ${Table.name}  !`, "success");
+       // Lấy dữ liệu mới từ API
+        fetchU
+        showNotification(`Ảnh của bạn đã đã lưu vào ${Table.name}  !`, "success");
       }
     })
     .catch(error => {

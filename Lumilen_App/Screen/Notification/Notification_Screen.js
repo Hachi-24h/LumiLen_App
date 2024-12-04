@@ -29,10 +29,29 @@ const NotificationScreen = ({ navigation }) => {
         setLoading(false); // Đặt loading thành false khi lấy xong dữ liệu
       }
     };
-  
+
     fetchNotifications();
   }, []); // Chạy một lần khi component được mount
   
+  // Hàm tạo thông báo khi ai đó ghim ảnh của bạn
+  const sendNotification = async (user1Id, pictureId) => {
+    try {
+      const message = `${user1Id} vừa ghim ảnh của bạn!`; // Nội dung thông báo
+      const userID = userData._id; // ID của bạn (người nhận thông báo)
+      
+      // Gửi yêu cầu tạo thông báo
+      await axios.post(`${BASE_URL}:5000/notification/addNotification`, {
+        mess: message,
+        userID,  // ID người nhận (bạn)
+        picture: pictureId,  // ID của ảnh bị ghim
+      });
+
+      // Cập nhật lại danh sách thông báo
+      fetchNotifications();
+    } catch (error) {
+      console.error("Error sending notification:", error);
+    }
+  };
 
   // Mark a notification as read
   const handleMarkAsRead = (notificationId) => {
@@ -106,4 +125,3 @@ const NotificationScreen = ({ navigation }) => {
 };
 
 export default NotificationScreen;
-
